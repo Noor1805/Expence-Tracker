@@ -150,48 +150,77 @@ export async function getMe(req, res, next) {
 
 //forgot password
 export async function forgotPassword(req, res, next) {
-    try {
-        const user = await User.findOne({ email: req.body.email });
-        if (!user) {
-            return res.status(404).json({ success: false, message: "User not found" });
-        }
-        const resetToken = crypto.randomBytes(32).toString("hex");
+  try {
+    const user = await User.findOne({ email: req.body.email });
 
-        user.resetPasswordToken = resetToken;
-        user.resetPasswordExpires = Date.now() + 3600000;
-        await user.save();
-
-        const resetURL = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
-        await sendEmail({
-            to: user.email,
-            subject: "Password Reset",
-            html: `<a href="${resetURL}">Reset Password</a>`
-        });
-
-        res.json({ success: true, message: "Password reset email sent" });
-    } catch (error) {
-        next(error);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "Email not found",
+      });
     }
+
+    const resetToken = crypto.randomBytes(32).toString("hex");
+
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = Date.now() + 3600000; 
+    await user.save();
+
+    const resetURL = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
+
+    await sendEmail({
+      to: user.email,
+      subject: "Reset Your Password",
+      html: `
+        <p>You requested a password reset.</p>
+        <p>Click the link below to reset:</p>
+        <a href="${resetURL}">${resetURL}</a>
+      `,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset email sent",
+    });
+
+  } catch (error) {
+    next(error);
+  }
 }
 
+
 //reset password
-export async function resetPassword(res, req, next) {
-    try {
-        const user = await user.findOne({
-            resetPasswordToken: req.params.token,
-            resetPasswordExpires: { $gt: Date.now() }
-        })
-        if (!user) {
-            return res.status(400).json({ success: false, message: "Invalid token" })
-        }
+export async function resetPassword(req, res, next) {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
 
-        user.password = await bcrypt.hash(req.body.password, SALT_ROUNDS);
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpires = undefined;
-        await user.save();
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() }, 
+    });
 
-        res.json({ success: true, message: "Password reset successfully" })
-    } catch (error) {
-        next(error);
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired password reset token",
+      });
     }
+
+    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
+
+    user.password = hashedPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Password reset successful. You can now log in.",
+    });
+
+  } catch (error) {
+    next(error);
+  }
 }
