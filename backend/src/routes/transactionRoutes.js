@@ -1,4 +1,5 @@
 import express from "express";
+
 import {
   createTransaction,
   getTransactions,
@@ -13,44 +14,31 @@ import {
   getPaymentMethodStats,
   getRecentTransactions,
   exportCSV,
+  exportExcel,
   exportPDF,
   importTransactions,
   recurringTransactionHandler,
-  duplicateTransaction,
+  duplicateTransactions,
   clearAllTransactions,
 } from "../controllers/transactionController.js";
 
 import { protect } from "../middleware/authMiddleware.js";
-import upload from "../middleware/multer.js";
+import { upload } from "../utils/fileUpload.js";
 
 const router = express.Router();
 
 router.post("/create", protect, createTransaction);
 router.get("/", protect, getTransactions);
-router.get("/:id", protect, getTransactionById);
-router.put("/:id", protect, updateTransaction);
-router.delete("/:id", protect, deleteTransaction);
-
-router.post("/bulk-delete", protect, bulkDeleteTransactions);
-router.post("/duplicate/:id", protect, duplicateTransaction);
-router.delete("/clear/all", protect, clearAllTransactions);
-
-router.post(
-  "/upload-receipt/:id",
-  protect,
-  upload.single("receipt"),
-  uploadReceipt
-);
+router.get("/recent", protect, getRecentTransactions);
 
 router.get("/stats/total", protect, getTotalStats);
 router.get("/stats/category", protect, getCategoryStats);
 router.get("/stats/monthly", protect, getMonthlyStats);
 router.get("/stats/payment-method", protect, getPaymentMethodStats);
-router.get("/recent", protect, getRecentTransactions);
 
 router.get("/export/csv", protect, exportCSV);
+router.get("/export/excel", protect, exportExcel);
 router.get("/export/pdf", protect, exportPDF);
-
 
 router.post(
   "/import/csv",
@@ -59,8 +47,21 @@ router.post(
   importTransactions
 );
 
+router.post(
+  "/upload-receipt/:id",
+  protect,
+  upload.single("receipt"),
+  uploadReceipt
+);
+
+router.post("/bulk-delete", protect, bulkDeleteTransactions);
+router.post("/duplicate/:id", protect, duplicateTransactions);
+router.delete("/clear/all", protect, clearAllTransactions);
+
+router.get("/:id", protect, getTransactionById);
+router.put("/:id", protect, updateTransaction);
+router.delete("/:id", protect, deleteTransaction);
 
 router.post("/recurring/process", protect, recurringTransactionHandler);
 
 export default router;
-

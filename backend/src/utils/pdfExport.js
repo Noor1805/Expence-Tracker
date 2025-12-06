@@ -9,11 +9,9 @@ export function generatePDF(transactions, res) {
 
     doc.pipe(res);
 
-    // Title
     doc.fontSize(20).text("Expense Tracker - Transactions Report", { align: "center" });
     doc.moveDown(2);
 
-    // Table Header
     doc.fontSize(12);
     doc.text("Type", 40, doc.y, { width: 80 });
     doc.text("Category", 120, doc.y, { width: 100 });
@@ -22,11 +20,10 @@ export function generatePDF(transactions, res) {
     doc.text("Date", 400, doc.y, { width: 120 });
     doc.moveDown();
 
-    // Divider
     doc.moveTo(40, doc.y).lineTo(550, doc.y).stroke();
     doc.moveDown();
 
-    // Rows
+    
     transactions.forEach((t) => {
       doc.fontSize(10);
       doc.text(t.type, 40, doc.y, { width: 80 });
