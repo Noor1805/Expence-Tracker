@@ -126,3 +126,4 @@ Thumbs.db
 .vscode
 *.swp
 *.swo
+.gemini/
