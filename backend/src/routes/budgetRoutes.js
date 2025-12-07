@@ -1,12 +1,12 @@
 import express from "express";
 import {
-    setBudget,
-    getBudgetStats,
-    updateBudget,
-    deleteBudget,
+  setBudget,
+  getBudgetStats,
+  updateBudget,
+  deleteBudget,
 } from "../controllers/budgetController.js";
 
-import { protect } from "../middleware/authMiddleware.js";
+import { protect } from "../middlewares/authMiddleware.js";
 
 const router = express.Router();
 

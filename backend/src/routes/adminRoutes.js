@@ -1,15 +1,15 @@
 import express from "express";
 import {
-    getAllUsers,
-    getUserDetails,
-    deleteUser,
-    toggleBlockUser,
-    promoteToAdmin,
-    getAppStats
+  getAllUsers,
+  getUserDetails,
+  deleteUser,
+  toggleBlockUser,
+  promoteToAdmin,
+  getAppStats,
 } from "../controllers/adminController.js";
 
-import { protect } from "../middleware/authMiddleware.js";
-import { authorizeRoles } from "../middleware/roleMiddleware.js";
+import { protect } from "../middlewares/authMiddleware.js";
+import { authorizeRoles } from "../middlewares/roleMiddleware.js";
 
 const router = express.Router();
 

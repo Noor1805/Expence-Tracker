@@ -9,11 +9,11 @@ import {
   resetPassword,
 } from "../controllers/authController.js";
 
-import { protect } from "../middleware/authMiddleware.js";
+import { protect } from "../middlewares/authMiddleware.js";
 import {
   loginLimiter,
   forgotPasswordLimiter,
-} from "../middleware/rateLimitMiddleware.js";
+} from "../middlewares/rateLimitMiddleware.js";
 
 const router = express.Router();
 

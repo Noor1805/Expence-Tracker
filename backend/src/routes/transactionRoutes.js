@@ -22,7 +22,7 @@ import {
   clearAllTransactions,
 } from "../controllers/transactionController.js";
 
-import { protect } from "../middleware/authMiddleware.js";
+import { protect } from "../middlewares/authMiddleware.js";
 import { upload } from "../utils/fileUpload.js";
 
 const router = express.Router();
@@ -40,12 +40,7 @@ router.get("/export/csv", protect, exportCSV);
 router.get("/export/excel", protect, exportExcel);
 router.get("/export/pdf", protect, exportPDF);
 
-router.post(
-  "/import/csv",
-  protect,
-  upload.single("file"),
-  importTransactions
-);
+router.post("/import/csv", protect, upload.single("file"), importTransactions);
 
 router.post(
   "/upload-receipt/:id",

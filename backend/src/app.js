@@ -1,7 +1,7 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
-import { errorHandler } from "./middleware/errorMiddleware.js";
+import { errorHandler } from "./middlewares/errorMiddleware.js";
 import authRoutes from "./routes/authRoutes.js";
 import transactionRoutes from "./routes/transactionRoutes.js";
 import categoryRoutes from "./routes/categoryRoutes.js";
@@ -14,10 +14,10 @@ const app = express();
 
 // CORS CONFIG
 app.use(
-    cors({
-        origin: "http://localhost:5173",
-        credentials: true,
-    })
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
 );
 
 app.use(express.json());
@@ -32,9 +32,8 @@ app.use("/api/notifications", notificationRoutes);
 app.use("/api/settings", settingsRoutes);
 
 app.get("/", (req, res) => {
-    res.send("Backend is working");
+  res.send("Backend is working");
 });
 app.use(errorHandler);
 
 export default app;
-

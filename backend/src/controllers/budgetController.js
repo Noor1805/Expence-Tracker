@@ -1,78 +1,124 @@
-import Category from "../models/Category.js";
+import Budget from "../models/Budget.js";
 import Transaction from "../models/Transaction.js";
-import { categorySchema } from "../validations/categoryValidation.js";
+import {
+  budgetSchema,
+  budgetUpdateSchema,
+} from "../validations/budgetValidation.js";
 
-export const createCategory = async (req, res) => {
+export const setBudget = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const { error } = categorySchema.validate(req.body);
+    const { error } = budgetSchema.validate(req.body);
     if (error) {
+      return res
+        .status(400)
+        .json({ success: false, message: error.details[0].message });
+    }
+
+    const { overallBudget, categoryBudgets, month, year } = req.body;
+
+    const existingBudget = await Budget.findOne({ user: userId, month, year });
+
+    if (existingBudget) {
       return res.status(400).json({
         success: false,
-        message: error.details[0].message,
+        message: "Budget already exists for this month and year",
       });
     }
 
-    const { name, type, color, icon } = req.body;
-
-    const existing = await Category.findOne({ name, user: userId });
-    if (existing) {
-      return res.status(400).json({
-        success: false,
-        message: "Category already exists",
-      });
-    }
-
-    const newCategory = await Category.create({
-      name,
-      type,
-      color,
-      icon,
+    const budget = await Budget.create({
       user: userId,
+      overallBudget: overallBudget || 0,
+      categoryBudgets: categoryBudgets || [],
+      month,
+      year,
     });
 
     return res.status(201).json({
       success: true,
-      message: "Category created successfully",
-      data: newCategory,
+      message: "Budget created successfully",
+      data: budget,
     });
   } catch (error) {
-    console.error("Create Category Error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+    console.error("Set Budget Error:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
 
-export const getCategories = async (req, res) => {
+export const getBudgetStats = async (req, res) => {
   try {
     const userId = req.user.id;
+    const { month, year } = req.query;
 
-    const categories = await Category.find({ user: userId }).sort({
-      createdAt: -1,
+    if (!month || !year) {
+      return res.status(400).json({
+        success: false,
+        message: "Month and year are required",
+      });
+    }
+
+    const budget = await Budget.findOne({ user: userId, month, year });
+
+    if (!budget) {
+      return res.status(404).json({
+        success: false,
+        message: "No budget found for this month",
+      });
+    }
+
+    const startDate = new Date(year, month, 1);
+    const endDate = new Date(year, Number(month) + 1, 1);
+
+    const transactions = await Transaction.find({
+      user: userId,
+      type: "expense",
+      date: { $gte: startDate, $lt: endDate },
     });
+
+    const totalSpent = transactions.reduce((sum, t) => sum + t.amount, 0);
+
+    const categorySpent = {};
+    transactions.forEach((t) => {
+      if (!categorySpent[t.category]) {
+        categorySpent[t.category] = 0;
+      }
+      categorySpent[t.category] += t.amount;
+    });
+
+    const remainingBudget = budget.overallBudget - totalSpent;
+
+    const percentageUsed =
+      budget.overallBudget > 0 ? (totalSpent / budget.overallBudget) * 100 : 0;
 
     return res.status(200).json({
       success: true,
-      message: "Categories fetched successfully",
-      data: categories,
+      data: {
+        overallBudget: budget.overallBudget,
+        categoryBudgets: budget.categoryBudgets,
+        totalSpent,
+        remainingBudget,
+        percentageUsed,
+        exceeded: totalSpent > budget.overallBudget,
+        categorySpent,
+      },
     });
   } catch (error) {
-    console.error("Get Categories Error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+    console.error("Get Budget Stats Error:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
-export const updateCategory = async (req, res) => {
+
+export const updateBudget = async (req, res) => {
   try {
     const userId = req.user.id;
-    const categoryId = req.params.id;
+    const budgetId = req.params.id;
 
-    const { error } = categorySchema.validate(req.body);
+    const { error } = budgetUpdateSchema.validate(req.body);
     if (error) {
       return res.status(400).json({
         success: false,
@@ -80,78 +126,63 @@ export const updateCategory = async (req, res) => {
       });
     }
 
-    const { name, type, color, icon } = req.body;
+    const { overallBudget, categoryBudgets } = req.body;
 
-    const category = await Category.findOne({
-      _id: categoryId,
-      user: userId,
-    });
+    const budget = await Budget.findOne({ _id: budgetId, user: userId });
 
-    if (!category) {
+    if (!budget) {
       return res.status(404).json({
         success: false,
-        message: "Category not found",
+        message: "Budget not found",
       });
     }
 
-    category.name = name;
-    category.type = type;
-    category.color = color;
-    category.icon = icon;
+    if (overallBudget !== undefined) {
+      budget.overallBudget = overallBudget;
+    }
 
-    await category.save();
+    if (categoryBudgets !== undefined) {
+      budget.categoryBudgets = categoryBudgets;
+    }
+
+    await budget.save();
 
     return res.status(200).json({
       success: true,
-      message: "Category updated successfully",
-      data: category,
+      message: "Budget updated successfully",
+      data: budget,
     });
   } catch (error) {
-    console.error("Update Category Error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+    console.error("Update Budget Error:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 };
 
-export const deleteCategory = async (req, res) => {
+export const deleteBudget = async (req, res) => {
   try {
     const userId = req.user.id;
-    const categoryId = req.params.id;
+    const budgetId = req.params.id;
 
-    const category = await Category.findOne({
-      _id: categoryId,
+    const deletedBudget = await Budget.findOneAndDelete({
+      _id: budgetId,
       user: userId,
     });
 
-    if (!category) {
+    if (!deletedBudget) {
       return res.status(404).json({
         success: false,
-        message: "Category not found",
+        message: "Budget not found",
       });
     }
-    const usedInTransactions = await Transaction.findOne({
-      category: category.name,
-      user: userId,
-    });
-
-    if (usedInTransactions) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "Category cannot be deleted because it is linked with existing transactions",
-      });
-    }
-
-    await Category.findByIdAndDelete(categoryId);
 
     return res.status(200).json({
       success: true,
-      message: "Category deleted successfully",
+      message: "Budget deleted successfully",
     });
   } catch (error) {
-    console.error("Delete Category Error:", error);
+    console.error("Delete Budget Error:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",

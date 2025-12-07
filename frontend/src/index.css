@@ -1,3 +1,25 @@
 @import "tailwindcss";
 
+/* Smooth transitions everywhere */
+* {
+  transition: all 0.25s ease;
+}
+
+/* Custom glass background helper classes */
+.glass {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+}
+
+/* Soft neo shadow */
+.neo {
+  box-shadow: 8px 8px 20px rgba(0,0,0,0.6),
+              -8px -8px 20px rgba(255,255,255,0.03);
+}
+
+/* Glow shadow */
+.glow {
+  box-shadow: 0 0 18px rgba(120,150,255,0.6);
+}
+
 

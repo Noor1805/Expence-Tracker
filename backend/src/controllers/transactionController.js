@@ -75,8 +75,7 @@ export const getTransactionById = async (req, res) => {
       user: req.user.id,
     });
 
-    if (!transaction)
-      return errorResponse(res, "Transaction not found", 404);
+    if (!transaction) return errorResponse(res, "Transaction not found", 404);
 
     return successResponse(res, "Transaction fetched", transaction);
   } catch (error) {
@@ -97,8 +96,7 @@ export const updateTransaction = async (req, res) => {
       { new: true }
     );
 
-    if (!transaction)
-      return errorResponse(res, "Transaction not found", 404);
+    if (!transaction) return errorResponse(res, "Transaction not found", 404);
 
     return successResponse(res, "Transaction updated", transaction);
   } catch (error) {
@@ -114,8 +112,7 @@ export const deleteTransaction = async (req, res) => {
       user: req.user.id,
     });
 
-    if (!deleted)
-      return errorResponse(res, "Transaction not found", 404);
+    if (!deleted) return errorResponse(res, "Transaction not found", 404);
 
     return successResponse(res, "Transaction deleted");
   } catch (error) {
@@ -143,18 +140,29 @@ export const bulkDeleteTransactions = async (req, res) => {
   }
 };
 
+export const clearAllTransactions = async (req, res) => {
+  try {
+    const result = await Transaction.deleteMany({ user: req.user.id });
+    return successResponse(
+      res,
+      `All transactions cleared: ${result.deletedCount} items removed`
+    );
+  } catch (error) {
+    console.error("Clear All Transactions Error:", error);
+    return errorResponse(res, "Internal server error", 500);
+  }
+};
+
 export const uploadReceipt = async (req, res) => {
   try {
-    if (!req.file)
-      return errorResponse(res, "No file uploaded", 400);
+    if (!req.file) return errorResponse(res, "No file uploaded", 400);
 
     const transaction = await Transaction.findOne({
       _id: req.params.id,
       user: req.user.id,
     });
 
-    if (!transaction)
-      return errorResponse(res, "Transaction not found", 404);
+    if (!transaction) return errorResponse(res, "Transaction not found", 404);
 
     const uploadStream = cloudinary.uploader.upload_stream(
       {
@@ -225,7 +233,10 @@ export const exportExcel = async (req, res) => {
       "Content-Type",
       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     );
-    res.setHeader("Content-Disposition", "attachment; filename=transactions.xlsx");
+    res.setHeader(
+      "Content-Disposition",
+      "attachment; filename=transactions.xlsx"
+    );
 
     return res.send(fileBuffer);
   } catch (error) {
@@ -246,4 +257,50 @@ export const exportPDF = async (req, res) => {
     console.error("PDF Export Error:", error);
     return errorResponse(res, "Failed to export PDF", 500);
   }
+};
+
+export const duplicateTransactions = async (req, res) => {
+  try {
+    const transaction = await Transaction.findById(req.params.id);
+    if (!transaction) return errorResponse(res, "Transaction not found", 404);
+
+    const newTransaction = await Transaction.create({
+      ...transaction.toObject(),
+      _id: undefined,
+      createdAt: undefined,
+      updatedAt: undefined,
+      user: req.user.id,
+    });
+    return successResponse(res, "Transaction duplicated", newTransaction, 201);
+  } catch (error) {
+    return errorResponse(res, error.message, 500);
+  }
+};
+
+export const recurringTransactionHandler = async (req, res) => {
+  return successResponse(res, "Recurring functionality not implemented yet");
+};
+
+export const importTransactions = async (req, res) => {
+  return successResponse(res, "Import functionality not implemented yet");
+};
+
+export const getTotalStats = async (req, res) => {
+  return successResponse(res, "Stats not implemented yet");
+};
+
+export const getCategoryStats = async (req, res) => {
+  return successResponse(res, "Category stats not implemented yet");
+};
+
+export const getMonthlyStats = async (req, res) => {
+  return successResponse(res, "Monthly stats not implemented yet");
+};
+
+export const getPaymentMethodStats = async (req, res) => {
+  return successResponse(res, "Payment stats not implemented yet");
+};
+
+export const getRecentTransactions = async (req, res) => {
+  return successResponse(res, "Recent transactions not implemented yet");
 };

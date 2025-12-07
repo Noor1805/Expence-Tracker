@@ -1,0 +1,7 @@
+file:///C:/Expence%20tracker/backend/src/routes/budgetRoutes.js:3
+  setBudget,
+  ^^^^^^^^^
+SyntaxError: The requested module '../controllers/budgetController.js' does not provide an export named 'setBudget'
+    at #_instantiate (node:internal/modules/esm/module_job:254:21)
+    at async ModuleJob.run (node:internal/modules/esm/module_job:369:5)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:671:26)

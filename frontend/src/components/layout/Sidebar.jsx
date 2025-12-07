@@ -51,15 +51,17 @@ export default function Sidebar() {
               }`
             }
           >
-            {({ isActive }) =>
-              isActive && (
-                <span className="absolute left-0 w-1 h-full rounded-r-xl bg-blue-500"></span>
-              )
-            }
+            {({ isActive }) => (
+              <>
+                {isActive && (
+                  <span className="absolute left-0 w-1 h-full rounded-r-xl bg-blue-500"></span>
+                )}
 
-            <span className="text-xl">{item.icon}</span>
+                <span className="text-xl">{item.icon}</span>
 
-            {open && <span className="transition-all">{item.name}</span>}
+                {open && <span className="transition-all">{item.name}</span>}
+              </>
+            )}
           </NavLink>
         ))}
       </nav>
