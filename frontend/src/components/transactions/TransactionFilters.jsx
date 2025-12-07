@@ -1,73 +1,103 @@
-// src/components/transactions/TransactionFilters.jsx
-import React from "react";
-
-export default function TransactionFilters({ filters, setFilters, onApply, onOpenImport }) {
+export default function TransactionFilters({ filters, setFilters, onApply }) {
   return (
-    <div className="glass neo rounded-2xl p-4 flex flex-wrap gap-3 items-center"
-      style={{ border: "1px solid rgba(255,255,255,0.04)" }}>
-      
-      <input
-        className="px-3 py-2 rounded-xl bg-black/30 text-white border border-white/5 outline-none"
-        placeholder="Search notes..."
-        value={filters.search}
-        onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-      />
-
-      <select
-        className="px-3 py-2 rounded-xl bg-black/30 text-white border border-white/5"
-        value={filters.type}
-        onChange={(e) => setFilters({ ...filters, type: e.target.value })}
-      >
-        <option value="">All Types</option>
-        <option value="income">Income</option>
-        <option value="expense">Expense</option>
-      </select>
-
-      <select
-        className="px-3 py-2 rounded-xl bg-black/30 text-white border border-white/5"
-        value={filters.paymentMethod}
-        onChange={(e) => setFilters({ ...filters, paymentMethod: e.target.value })}
-      >
-        <option value="">All Methods</option>
-        <option value="upi">UPI</option>
-        <option value="card">Card</option>
-        <option value="cash">Cash</option>
-      </select>
-
-      <input
-        type="date"
-        className="px-3 py-2 rounded-xl bg-black/30 text-white border border-white/5"
-        value={filters.startDate}
-        onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
-      />
-
-      <input
-        type="date"
-        className="px-3 py-2 rounded-xl bg-black/30 text-white border border-white/5"
-        value={filters.endDate}
-        onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
-      />
-
-      <div className="ml-auto flex items-center gap-3">
-        <button
-          onClick={onOpenImport}
-          className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-cyan-400 text-black font-semibold"
+    <div className="w-full glass neo p-5 rounded-2xl mb-5 border border-white/10">
+      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        {/* Type */}
+        <select
+          value={filters.type}
+          onChange={(e) => setFilters((f) => ({ ...f, type: e.target.value }))}
+          className="w-full p-3 rounded-xl bg-black/40 text-gray-200 border border-white/10
+                     focus:ring-2 focus:ring-blue-500 shadow-inner"
         >
-          Import CSV
-        </button>
+          <option value="" className="text-black">
+            All Types
+          </option>
+          <option value="income" className="text-black">
+            Income
+          </option>
+          <option value="expense" className="text-black">
+            Expense
+          </option>
+        </select>
 
-        <button
-          onClick={() => { setFilters({}); onApply(); }}
-          className="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-semibold"
+        {/* Payment Method */}
+        <select
+          value={filters.paymentMethod}
+          onChange={(e) =>
+            setFilters((f) => ({ ...f, paymentMethod: e.target.value }))
+          }
+          className="w-full p-3 rounded-xl bg-black/40 text-gray-200 border border-white/10
+                     focus:ring-2 focus:ring-teal-400 shadow-inner"
         >
-          Reset
-        </button>
+          <option value="" className="text-black">
+            All Payments
+          </option>
+          <option value="cash" className="text-black">
+            Cash
+          </option>
+          <option value="card" className="text-black">
+            Card
+          </option>
+          <option value="upi" className="text-black">
+            UPI
+          </option>
+        </select>
 
+        {/* Search */}
+        <input
+          type="text"
+          placeholder="Search notes..."
+          value={filters.search}
+          onChange={(e) =>
+            setFilters((f) => ({ ...f, search: e.target.value }))
+          }
+          className="w-full p-3 rounded-xl bg-black/40 text-gray-200 placeholder-gray-500
+                     border border-white/10 focus:ring-2 focus:ring-purple-400 shadow-inner"
+        />
+        
+
+        {/* Date Range Selector */}
+        <div className="flex flex-col md:flex-row md:items-center gap-4">
+          {/* Start Date */}
+          <div className="flex flex-col w-full">
+            <label className="text-xs text-gray-400 mb-1 ml-1">
+              Start Date
+            </label>
+            <input
+              type="date"
+              value={filters.startDate}
+              onChange={(e) =>
+                setFilters((f) => ({ ...f, startDate: e.target.value }))
+              }
+              className="w-full p-3 rounded-xl bg-black/40 text-gray-200 border border-white/10
+                 focus:ring-2 focus:ring-blue-400 shadow-inner"
+            />
+          </div>
+
+          {/* End Date */}
+          <div className="flex flex-col w-full">
+            <label className="text-xs text-gray-400 mb-1 ml-1">End Date</label>
+            <input
+              type="date"
+              value={filters.endDate}
+              onChange={(e) =>
+                setFilters((f) => ({ ...f, endDate: e.target.value }))
+              }
+              className="w-full p-3 rounded-xl bg-black/40 text-gray-200 border border-white/10
+                 focus:ring-2 focus:ring-purple-400 shadow-inner"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-end mt-4">
         <button
           onClick={onApply}
-          className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold"
+          className="px-6 py-2 rounded-xl font-semibold
+                     bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500
+                     text-white shadow-lg hover:opacity-90 transition"
         >
-          Apply
+          Apply Filters
         </button>
       </div>
     </div>

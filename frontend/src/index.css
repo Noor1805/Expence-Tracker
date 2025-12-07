@@ -21,5 +21,29 @@
 .glow {
   box-shadow: 0 0 18px rgba(120,150,255,0.6);
 }
+/* date range picker essential styles */
+.rdrCalendarWrapper,
+.rdrDateRangePickerWrapper {
+  color: white !important;
+}
+
+.rdrDayDisabled {
+  opacity: 0.3 !important;
+}
+
+.rdrDayToday .rdrDayNumber span {
+  color: #00eaff !important;
+}
+
+.rdrSelected,
+.rdrInRange,
+.rdrStartEdge,
+.rdrEndEdge {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6) !important;
+}
+
+.rdrDateDisplayWrapper {
+  background: transparent !important;
+}
 
 

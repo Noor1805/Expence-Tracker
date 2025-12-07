@@ -167,9 +167,9 @@ export default function Transactions() {
 
       {/* pagination simple */}
       <div className="flex items-center justify-center mt-4 gap-3">
-        <button disabled={filters.page <= 1} onClick={() => setFilters(f => ({ ...f, page: f.page - 1 }))} className="px-3 py-2 bg-white/5 rounded-xl">Prev</button>
+        <button disabled={filters.page <= 1} onClick={() => setFilters(f => ({ ...f, page: f.page - 1 }))} className="px-3 py-2 bg-white/50 rounded-xl">Prev</button>
         <span className="text-gray-300">Page {filters.page}</span>
-        <button onClick={() => setFilters(f => ({ ...f, page: f.page + 1 }))} className="px-3 py-2 bg-white/5 rounded-xl">Next</button>
+        <button onClick={() => setFilters(f => ({ ...f, page: f.page + 1 }))} className="px-3 py-2 bg-white/50 rounded-xl">Next</button>
       </div>
 
       {/* modals */}
