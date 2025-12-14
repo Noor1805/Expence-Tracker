@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import * as THREE from "three";
 
 const VERT = `
@@ -289,7 +289,7 @@ export const LaserFlow = ({
     };
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const mount = mountRef.current;
     const renderer = new THREE.WebGLRenderer({
       antialias: false,
@@ -511,12 +511,8 @@ export const LaserFlow = ({
       uniforms.uFlowTime.value += cdt;
       uniforms.uFogTime.value += cdt;
 
-      if (!hasFadedRef.current) {
-        const fadeDur = 1.0;
-        fade = Math.min(1, fade + cdt / fadeDur);
-        uniforms.uFade.value = fade;
-        if (fade >= 1) hasFadedRef.current = true;
-      }
+      // 🔥 INSTANT SHOW (No fade-in delay)
+      uniforms.uFade.value = 1.0;
 
       const tau = Math.max(1e-3, mouseSmoothTime);
       const alpha = 1 - Math.exp(-cdt / tau);

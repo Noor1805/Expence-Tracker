@@ -2,10 +2,14 @@ import React from "react";
 import LightRays from "../components/layout/effects/LightRays";
 import PublicNavbar from "../components/layout/PublicNavbar";
 import heroImg from "../assets/images/Dashboard.png";
+import Features from "./Features";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[#050505] text-white overflow-hidden">
+    <div
+      id="home"
+      className="min-h-screen bg-[#050505] text-white overflow-hidden"
+    >
       <PublicNavbar />
 
       <div className="relative">
@@ -80,6 +84,9 @@ export default function Home() {
           />
         </div>
       </div>
+
+      {/* FEATURES SECTION */}
+      <Features />
     </div>
   );
 }

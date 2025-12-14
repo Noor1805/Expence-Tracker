@@ -5,9 +5,9 @@ import AppLayout from "./components/layout/AppLayout";
 
 // Public Pages
 import Home from "./pages/Home";
+import Features from "./pages/Features";
 {/*}
 import About from "./pages/About";
-import Services from "./pages/Services";
 import Pricing from "./pages/Pricing";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
@@ -30,9 +30,9 @@ export default function App() {
 
           {/* ---------- PUBLIC ROUTES ---------- */}
           <Route path="/" element={<Home />} />
+          <Route path="/features" element={<Features />} />
           {/*}
-          <Route path="/about" element={<About />} />
-          <Route path="/services" element={<Services />} />
+          
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/contact" element={<Contact />} />
 
