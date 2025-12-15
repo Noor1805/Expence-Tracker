@@ -137,3 +137,17 @@
   margin-top: 22px;
   color: #f0f0f0;
 }
+
+.input {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: white;
+  outline: none;
+}
+
+.input:focus {
+  border-color: rgba(255,140,0,0.6);
+}
