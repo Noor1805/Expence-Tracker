@@ -9,7 +9,7 @@ export default function PublicNavbar() {
     <header className="fixed top-0 left-0 w-full z-50 bg-black/60 backdrop-blur-xl border-b border-orange-500/20 shadow-[0_0_15px_rgba(255,120,0,0.3)]">
       <div className="max-w-7xl mx-auto flex items-center justify-between px-6 md:px-10 py-4">
 
-        <h1 className="text-2xl font-bold tracking-wide text-white">
+        <h1 className="text-2xl audiowide-regular font-bold tracking-wide text-white">
           Mon<span className="text-orange-500 drop-shadow-[0_0_1px_orange]">exa</span>
         </h1>
 

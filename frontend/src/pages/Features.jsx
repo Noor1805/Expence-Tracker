@@ -50,7 +50,7 @@ export default function FeaturesBento() {
       <div className="max-w-7xl mx-auto">
         
         <div className="text-center mb-20">
-          <h2 className="text-4xl md:text-5xl font-bold text-white">
+          <h2 className="text-4xl audiowide-regular md:text-5xl font-bold text-white">
             Everything You Need to
             <span className="lava-text"> Control Your Money</span>
           </h2>
@@ -71,7 +71,7 @@ export default function FeaturesBento() {
           
           <div className="absolute inset-0 rounded-[36px] bg-black/20" />
 
-          <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="relative  grid grid-cols-1 lg:grid-cols-2 gap-6">
             
             <div className="grid grid-rows-[auto_1fr_1fr] gap-6">
               <BentoBig
@@ -81,7 +81,7 @@ export default function FeaturesBento() {
                 icon={<FiBarChart2 />}
               />
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid audiowide-regular grid-cols-2 gap-6">
                 <BentoSmall
                   refEl={(el) => mediumRef.current.push(el)}
                   title="Smart Budgets"

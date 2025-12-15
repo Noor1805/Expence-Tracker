@@ -43,10 +43,10 @@ export default function Pricing() {
       <h1
         className="
           absolute top-2
-          text-[160px] md:text-[220px]
+          text-[100px] md:text-[220px]
           font-bold tracking-tight
           text-orange-500
-          select-none
+          select-none audiowide-regular
         "
       >
         Pricing
@@ -83,7 +83,7 @@ export default function Pricing() {
             />
 
             <p className="text-sm text-gray-400">Plan</p>
-            <h3 className="text-3xl font-semibold text-white">{plan.name}</h3>
+            <h3 className="text-3xl audiowide-regular font-semibold text-white">{plan.name}</h3>
 
             <div className="mt-4 text-5xl font-bold text-white">
               {plan.price}

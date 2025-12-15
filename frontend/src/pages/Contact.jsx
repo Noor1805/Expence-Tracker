@@ -36,10 +36,10 @@ export default function Contact() {
       <div className="w-full max-w-4xl">
 
         <div className="text-center mb-14">
-          <span className="px-4 py-1 rounded-full text-sm bg-white/5 border border-white/10">
+          <span className="px-4 audiowide-regular py-1 rounded-full text-sm bg-white/5 border border-white/10">
             Contact
           </span>
-          <h1 className="text-4xl md:text-5xl font-bold mt-4">
+          <h1 className="text-4xl audiowide-regular md:text-5xl font-bold mt-4">
             Get in <span className="text-orange-500">Touch</span> with Us
           </h1>
           <p className="text-gray-400 mt-4 max-w-xl mx-auto">
