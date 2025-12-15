@@ -3,6 +3,7 @@ import LightRays from "../components/layout/effects/LightRays";
 import PublicNavbar from "../components/layout/PublicNavbar";
 import heroImg from "../assets/images/Dashboard.png";
 import Features from "./Features";
+import Pricing from "./Pricing";
 
 export default function Home() {
   return (
@@ -87,6 +88,7 @@ export default function Home() {
 
       {/* FEATURES SECTION */}
       <Features />
+      <Pricing />
     </div>
   );
 }
