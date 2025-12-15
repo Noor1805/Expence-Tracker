@@ -87,7 +87,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* FEATURES SECTION */}
       <Features />
       <Pricing />
       <Contact />

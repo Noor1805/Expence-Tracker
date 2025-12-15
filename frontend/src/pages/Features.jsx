@@ -48,7 +48,7 @@ export default function FeaturesBento() {
   return (
     <section ref={sectionRef} className="py-28 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* HEADING */}
+        
         <div className="text-center mb-20">
           <h2 className="text-4xl md:text-5xl font-bold text-white">
             Everything You Need to
@@ -59,7 +59,6 @@ export default function FeaturesBento() {
           </p>
         </div>
 
-        {/* BENTO */}
         <div
           style={{ backgroundImage: `url(${bg})` }}
           className="
@@ -69,11 +68,11 @@ export default function FeaturesBento() {
             p-6 md:p-8
           "
         >
-          {/* VERY LIGHT TINT (image kill nahi karega) */}
+          
           <div className="absolute inset-0 rounded-[36px] bg-black/20" />
 
           <div className="relative grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* LEFT */}
+            
             <div className="grid grid-rows-[auto_1fr_1fr] gap-6">
               <BentoBig
                 refEl={(el) => bigRef.current.push(el)}
@@ -108,8 +107,6 @@ export default function FeaturesBento() {
                 />
               </div>
             </div>
-
-            {/* RIGHT */}
             <div className="grid grid-rows-[1fr_auto_1fr] gap-6">
               <div className="grid grid-cols-2 gap-6">
                 <BentoSmall
@@ -151,7 +148,6 @@ export default function FeaturesBento() {
   );
 }
 
-/* COMPONENTS */
 
 function BentoBig({ title, desc, icon, refEl }) {
   return (

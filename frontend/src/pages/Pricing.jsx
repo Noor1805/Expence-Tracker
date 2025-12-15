@@ -40,7 +40,6 @@ const plans = [
 export default function Pricing() {
   return (
     <section className="relative min-h-screen bg-[#050505] overflow-hidden flex items-center justify-center">
-      {/* HUGE BACKGROUND TEXT */}
       <h1
         className="
           absolute top-2
@@ -53,7 +52,6 @@ export default function Pricing() {
         Pricing
       </h1>
 
-      {/* PRICING CARDS */}
       <div className="relative z-10 mt-40 grid grid-cols-1 md:grid-cols-3 gap-10 px-6 max-w-6xl">
         {plans.map((plan, i) => (
           <div
@@ -72,7 +70,6 @@ export default function Pricing() {
               }
             `}
           >
-            {/* TOP GLASS BLUR STREAK */}
             <div
               className="
                 absolute top-0 left-0 right-0
@@ -85,17 +82,14 @@ export default function Pricing() {
               "
             />
 
-            {/* PLAN NAME */}
             <p className="text-sm text-gray-400">Plan</p>
             <h3 className="text-3xl font-semibold text-white">{plan.name}</h3>
 
-            {/* PRICE */}
             <div className="mt-4 text-5xl font-bold text-white">
               {plan.price}
               <span className="text-base text-gray-400"> / mo</span>
             </div>
 
-            {/* FEATURES */}
             <ul className="mt-8 space-y-4">
               {plan.features.map((f, idx) => (
                 <li key={idx} className="flex items-start gap-3 text-gray-300">
@@ -105,7 +99,6 @@ export default function Pricing() {
               ))}
             </ul>
 
-            {/* BUTTON */}
             <button
               className={`
                 mt-10 w-full py-3 rounded-xl font-semibold

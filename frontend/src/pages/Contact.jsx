@@ -35,7 +35,6 @@ export default function Contact() {
     <section className="min-h-screen bg-[#050505] text-white flex items-center justify-center px-4 py-24">
       <div className="w-full max-w-4xl">
 
-        {/* Heading */}
         <div className="text-center mb-14">
           <span className="px-4 py-1 rounded-full text-sm bg-white/5 border border-white/10">
             Contact
@@ -49,7 +48,6 @@ export default function Contact() {
           </p>
         </div>
 
-        {/* Info cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
           <div className="bg-[#0F0F0F] border border-orange-500/20 rounded-2xl p-6 flex gap-4">
             <Mail className="text-orange-500" />
@@ -72,7 +70,6 @@ export default function Contact() {
           </div>
         </div>
 
-        {/* Form */}
         <form
           onSubmit={handleSubmit}
           className="bg-[#0F0F0F] border border-white/10 rounded-3xl p-8 shadow-[0_0_50px_rgba(0,0,0,0.6)]"

@@ -13,7 +13,7 @@ import contactRoutes from "./routes/contactRoutes.js";
 
 const app = express();
 
-// CORS CONFIG
+
 app.use(
   cors({
     origin: "http://localhost:5173",

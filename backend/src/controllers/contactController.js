@@ -14,15 +14,15 @@ export const sendContactEmail = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL_USER,   // your gmail
-        pass: process.env.EMAIL_PASS,   // app password
+        user: process.env.EMAIL_USER,   
+        pass: process.env.EMAIL_PASS,   
       },
     });
 
     const mailOptions = {
-      from: `"Monexa Contact" <${process.env.EMAIL_USER}>`, // ✅ FIX
-      to: process.env.EMAIL_USER,                            // you receive
-      replyTo: email,                                        // user email here
+      from: `"Monexa Contact" <${process.env.EMAIL_USER}>`,
+      to: process.env.EMAIL_USER,                            
+      replyTo: email,                                        
       subject: `New Contact Message from ${firstName} ${lastName}`,
       html: `
         <h2>New Contact Submission</h2>
@@ -40,7 +40,7 @@ export const sendContactEmail = async (req, res) => {
       message: "Email sent successfully",
     });
   } catch (error) {
-    console.error("EMAIL ERROR 👉", error); // keep this
+    console.error("EMAIL ERROR 👉", error); 
     res.status(500).json({
       success: false,
       message: "Failed to send email",
