@@ -13,13 +13,13 @@
 
 /* Soft neo shadow */
 .neo {
-  box-shadow: 8px 8px 20px rgba(0,0,0,0.6),
-              -8px -8px 20px rgba(255,255,255,0.03);
+  box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.6),
+    -8px -8px 20px rgba(255, 255, 255, 0.03);
 }
 
 /* Glow shadow */
 .glow {
-  box-shadow: 0 0 18px rgba(120,150,255,0.6);
+  box-shadow: 0 0 18px rgba(120, 150, 255, 0.6);
 }
 /* date range picker essential styles */
 .rdrCalendarWrapper,
@@ -46,12 +46,94 @@
   background: transparent !important;
 }
 
-
 @keyframes scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .animate-scroll {
   animation: scroll 12s linear infinite;
+}
+.lava-text {
+  background: linear-gradient(90deg, #ff6a00, #ff9f0a, #ffb347);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* CARD GLASS ONLY */
+.lava-card {
+  position: relative;
+  overflow: hidden;
+  padding: 26px;
+  border-radius: 28px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(119, 113, 113, 0.22),
+    rgba(47, 44, 44, 0.08)
+  );
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  border: 2px solid rgba(255, 140, 0, 0.45);
+
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.14),
+    0 25px 60px rgba(0, 0, 0, 0.75),
+    0 0 60px rgba(255, 106, 0, 0.4);
+
+  transition: all 0.3s ease;
+}
+
+.lava-card:hover {
+  transform: translateY(-4px);
+}
+
+/* BIG CARD GLOW */
+.lava-big::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -120px;
+  width: 340px;
+  height: 340px;
+
+  background: radial-gradient(
+    circle,
+    rgba(255, 106, 0, 0.9),
+    rgba(255, 98, 0, 0.875),
+    transparent 70%
+  );
+
+  filter: blur(45px);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* ICON + TEXT */
+.lava-icon {
+  font-size: 26px;
+  color: #ff890a;
+}
+
+.lava-title {
+  margin-top: 18px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.lava-desc {
+  margin-top: 8px;
+  color: #e0e0e0;
+}
+
+.lava-small-title {
+  margin-top: 22px;
+  color: #f0f0f0;
 }
