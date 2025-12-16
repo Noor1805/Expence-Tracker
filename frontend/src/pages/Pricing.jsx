@@ -39,10 +39,13 @@ const plans = [
 
 export default function Pricing() {
   return (
-    <section className="relative min-h-screen bg-[#050505] overflow-hidden flex items-center justify-center">
+    <section
+      id="pricing"
+      className="relative min-h-screen bg-[#050505] overflow-hidden flex items-center justify-center"
+    >
       <h1
         className="
-          absolute top-2
+          absolute top-2 md:top-12 lg:top-18
           text-[100px] md:text-[220px]
           font-bold tracking-tight
           text-orange-500
@@ -83,7 +86,9 @@ export default function Pricing() {
             />
 
             <p className="text-sm text-gray-400">Plan</p>
-            <h3 className="text-3xl audiowide-regular font-semibold text-white">{plan.name}</h3>
+            <h3 className="text-3xl audiowide-regular font-semibold text-white">
+              {plan.name}
+            </h3>
 
             <div className="mt-4 text-5xl font-bold text-white">
               {plan.price}

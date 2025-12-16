@@ -1,16 +1,16 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
-import { useNavigate } from "react-router-dom";
+import { Mail, Lock, User } from "lucide-react";
 
 export default function Signup() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState({
     name: "",
     email: "",
     password: "",
   });
-
-  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,85 +18,90 @@ export default function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const res = await api.post("/auth/register", form);
-      localStorage.setItem("token", res.data.token);
-      navigate("/");
+      // Backend returns { success: true, accessToken: "..." }
+      localStorage.setItem("token", res.data.accessToken);
+      navigate("/app");
     } catch (err) {
-      alert("Signup failed");
+      alert(err.response?.data?.message || "Signup failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black/95 px-4">
-      
-      <div className="w-full max-w-md p-8 rounded-3xl 
-          bg-[#0e0e0e]
-          shadow-[10px_10px_25px_rgba(0,0,0,0.6),_-10px_-10px_25px_rgba(40,40,40,0.2)]
-          border border-white/5 backdrop-blur-xl
-      ">
-        
-        <h1 className="text-3xl font-semibold text-white text-center mb-6 
-          bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
-          Create an Account
-        </h1>
+    <div className="min-h-screen bg-[#050505] flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-[#0F0F0F] border border-orange-500/20 rounded-3xl p-8 shadow-[0_0_60px_rgba(255,120,0,0.15)]">
+        <h1 className="text-3xl font-bold text-white mb-2">Create Account</h1>
+        <p className="text-gray-400 mb-8">
+          Start tracking your finances with Monexa
+        </p>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            value={form.name}
-            onChange={handleChange}
-            className="w-full p-3 rounded-xl bg-black/40 text-gray-200 
-              border border-white/10 shadow-inner"
-          />
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="text-sm text-gray-400">Full Name</label>
+            <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-xl px-4 py-3 mt-1">
+              <User size={18} className="text-orange-500" />
+              <input
+                type="text"
+                name="name"
+                required
+                value={form.name}
+                onChange={handleChange}
+                placeholder="Your name"
+                className="bg-transparent outline-none w-full text-white"
+              />
+            </div>
+          </div>
 
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            className="w-full p-3 rounded-xl bg-black/40 text-gray-200 
-              border border-white/10 shadow-inner"
-          />
+          <div>
+            <label className="text-sm text-gray-400">Email</label>
+            <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-xl px-4 py-3 mt-1">
+              <Mail size={18} className="text-orange-500" />
+              <input
+                type="email"
+                name="email"
+                required
+                value={form.email}
+                onChange={handleChange}
+                placeholder="you@example.com"
+                className="bg-transparent outline-none w-full text-white"
+              />
+            </div>
+          </div>
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            className="w-full p-3 rounded-xl bg-black/40 text-gray-200 
-              border border-white/10 shadow-inner"
-          />
+          <div>
+            <label className="text-sm text-gray-400">Password</label>
+            <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-xl px-4 py-3 mt-1">
+              <Lock size={18} className="text-orange-500" />
+              <input
+                type="password"
+                name="password"
+                required
+                value={form.password}
+                onChange={handleChange}
+                placeholder="Minimum 6 characters"
+                className="bg-transparent outline-none w-full text-white"
+              />
+            </div>
+          </div>
 
           <button
-            type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl font-semibold text-white
-              bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500
-              shadow-lg hover:opacity-90 transition"
+            className="w-full py-3 rounded-xl font-semibold
+              bg-orange-500 text-black hover:bg-orange-400 transition"
           >
-            {loading ? "Creating..." : "Sign Up"}
+            {loading ? "Creating..." : "Create Account"}
           </button>
         </form>
 
-        <p className="text-gray-400 text-center text-sm mt-5">
-          Already registered?{" "}
-          <span
-            onClick={() => navigate("/login")}
-            className="text-purple-400 cursor-pointer hover:underline"
-          >
+        <p className="text-gray-400 text-sm text-center mt-6">
+          Already have an account?{" "}
+          <Link to="/login" className="text-orange-500 hover:underline">
             Login
-          </span>
+          </Link>
         </p>
-
       </div>
     </div>
   );

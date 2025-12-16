@@ -32,9 +32,11 @@ export default function Contact() {
   };
 
   return (
-    <section className="min-h-screen bg-[#050505] text-white flex items-center justify-center px-4 py-24">
+    <section
+      id="contact"
+      className="min-h-screen bg-[#050505] text-white flex items-center justify-center px-4 py-24"
+    >
       <div className="w-full max-w-4xl">
-
         <div className="text-center mb-14">
           <span className="px-4 audiowide-regular py-1 rounded-full text-sm bg-white/5 border border-white/10">
             Contact
@@ -53,9 +55,7 @@ export default function Contact() {
             <Mail className="text-orange-500" />
             <div>
               <h3 className="font-semibold">Email Us</h3>
-              <p className="text-gray-400 text-sm">
-                kashafnoor346@gmail.com
-              </p>
+              <p className="text-gray-400 text-sm">kashafnoor346@gmail.com</p>
             </div>
           </div>
 

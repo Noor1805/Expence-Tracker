@@ -33,7 +33,7 @@ export async function register(req, res, next) {
       role: user.role,
     });
 
-    user.refreshToken.push({ token: refreshToken, createdAt: new Date() });
+    user.refreshTokens.push({ token: refreshToken, createdAt: new Date() });
     await user.save();
 
     res.cookie("refreshToken", refreshToken, {

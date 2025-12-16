@@ -1,11 +1,15 @@
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import api from "../services/api";
-import { useNavigate } from "react-router-dom";
+import { Mail, Lock } from "lucide-react";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -13,80 +17,73 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
     try {
       const res = await api.post("/auth/login", form);
-      localStorage.setItem("token", res.data.token);
-      navigate("/");
+      // Controller returns: { success: true, data: { accessToken, user } }
+      localStorage.setItem("token", res.data.data.accessToken);
+      navigate("/app");
     } catch (err) {
-      alert("Invalid email or password");
+      alert(err.response?.data?.message || "Login failed");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black/95 px-4">
-      
-      {/* CARD */}
-      <div className="w-full max-w-md p-8 rounded-3xl 
-          bg-[#0e0e0e] 
-          shadow-[10px_10px_25px_rgba(0,0,0,0.6),_-10px_-10px_25px_rgba(40,40,40,0.2)]
-          border border-white/5 backdrop-blur-xl
-      ">
+    <div className="min-h-screen bg-[#050505] flex items-center justify-center px-4">
+      <div className="w-full max-w-md bg-[#0F0F0F] border border-orange-500/20 rounded-3xl p-8 shadow-[0_0_60px_rgba(255,120,0,0.15)]">
+        <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
+        <p className="text-gray-400 mb-8">
+          Login to continue managing your expenses
+        </p>
 
-        {/* Title */}
-        <h1 className="text-3xl font-semibold text-white text-center mb-6 
-          bg-gradient-to-r from-blue-400 via-cyan-300 to-purple-400 bg-clip-text text-transparent">
-          Welcome Back
-        </h1>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="text-sm text-gray-400">Email</label>
+            <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-xl px-4 py-3 mt-1">
+              <Mail size={18} className="text-orange-500" />
+              <input
+                type="email"
+                name="email"
+                required
+                value={form.email}
+                onChange={handleChange}
+                placeholder="you@example.com"
+                className="bg-transparent outline-none w-full text-white"
+              />
+            </div>
+          </div>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
-          
-          {/* Email */}
-          <input
-            type="email"
-            name="email"
-            placeholder="Email"
-            value={form.email}
-            onChange={handleChange}
-            className="w-full p-3 rounded-xl bg-black/40 text-gray-200 
-              border border-white/10 shadow-inner"
-          />
+          <div>
+            <label className="text-sm text-gray-400">Password</label>
+            <div className="flex items-center gap-3 bg-black/40 border border-white/10 rounded-xl px-4 py-3 mt-1">
+              <Lock size={18} className="text-orange-500" />
+              <input
+                type="password"
+                name="password"
+                required
+                value={form.password}
+                onChange={handleChange}
+                placeholder="••••••••"
+                className="bg-transparent outline-none w-full text-white"
+              />
+            </div>
+          </div>
 
-          {/* Password */}
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleChange}
-            className="w-full p-3 rounded-xl bg-black/40 text-gray-200 
-              border border-white/10 shadow-inner"
-          />
-
-          {/* Button */}
           <button
-            type="submit"
             disabled={loading}
-            className="w-full py-3 rounded-xl font-semibold text-white 
-              bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-600 
-              shadow-lg hover:opacity-90 transition"
+            className="w-full py-3 rounded-xl font-semibold
+              bg-orange-500 text-black hover:bg-orange-400 transition"
           >
             {loading ? "Logging in..." : "Login"}
           </button>
-
         </form>
 
-        {/* Already have account */}
-        <p className="text-gray-400 text-center text-sm mt-5">
+        <p className="text-gray-400 text-sm text-center mt-6">
           Don’t have an account?{" "}
-          <span
-            onClick={() => navigate("/signup")}
-            className="text-blue-400 cursor-pointer hover:underline"
-          >
-            Sign Up
-          </span>
+          <Link to="/signup" className="text-orange-500 hover:underline">
+            Sign up
+          </Link>
         </p>
       </div>
     </div>
