@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Transaction from "../models/Transaction.js";
 import cloudinary from "../config/cloudinary.js";
 import { v4 as uuidv4 } from "uuid";
@@ -277,6 +278,20 @@ export const duplicateTransactions = async (req, res) => {
   }
 };
 
+// Basic implementation to find recurring transactions
+export const getUpcomingTransactions = async (req, res) => {
+  try {
+    const recurring = await Transaction.find({
+      user: req.user.id,
+      isRecurring: true,
+    });
+    // For a real app, you'd calculate the next date. Simplified here:
+    return successResponse(res, "Upcoming transactions fetched", recurring);
+  } catch (error) {
+    return errorResponse(res, error.message, 500);
+  }
+};
+
 export const recurringTransactionHandler = async (req, res) => {
   return successResponse(res, "Recurring functionality not implemented yet");
 };
@@ -286,21 +301,143 @@ export const importTransactions = async (req, res) => {
 };
 
 export const getTotalStats = async (req, res) => {
-  return successResponse(res, "Stats not implemented yet");
+  try {
+    const stats = await Transaction.aggregate([
+      { $match: { user: new mongoose.Types.ObjectId(req.user.id) } },
+      {
+        $group: {
+          _id: null,
+          totalIncome: {
+            $sum: {
+              $cond: [{ $eq: ["$type", "income"] }, "$amount", 0],
+            },
+          },
+          totalExpense: {
+            $sum: {
+              $cond: [{ $eq: ["$type", "expense"] }, "$amount", 0],
+            },
+          },
+        },
+      },
+    ]);
+
+    const data = stats[0] || { totalIncome: 0, totalExpense: 0 };
+
+    return successResponse(res, "Total stats fetched", {
+      totalIncome: data.totalIncome,
+      totalExpense: data.totalExpense,
+      balance: data.totalIncome - data.totalExpense,
+    });
+  } catch (error) {
+    console.error("Get Total Stats Error:", error);
+    return errorResponse(res, "Internal server error", 500);
+  }
+};
+
+export const getBalanceHistory = async (req, res) => {
+  try {
+    const days = 30;
+    const dateLimit = new Date();
+    dateLimit.setDate(dateLimit.getDate() - days);
+
+    const history = await Transaction.aggregate([
+      {
+        $match: {
+          user: new mongoose.Types.ObjectId(req.user.id),
+          date: { $gte: dateLimit },
+        },
+      },
+      {
+        $group: {
+          _id: {
+            year: { $year: "$date" },
+            month: { $month: "$date" },
+            day: { $dayOfMonth: "$date" },
+          },
+          dailyIncome: {
+            $sum: { $cond: [{ $eq: ["$type", "income"] }, "$amount", 0] },
+          },
+          dailyExpense: {
+            $sum: { $cond: [{ $eq: ["$type", "expense"] }, "$amount", 0] },
+          },
+        },
+      },
+      { $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1 } },
+    ]);
+
+    return successResponse(res, "Balance history fetched", history);
+  } catch (error) {
+    return errorResponse(res, error.message, 500);
+  }
 };
 
 export const getCategoryStats = async (req, res) => {
-  return successResponse(res, "Category stats not implemented yet");
+  try {
+    const stats = await Transaction.aggregate([
+      {
+        $match: {
+          user: new mongoose.Types.ObjectId(req.user.id),
+          type: "expense",
+        },
+      },
+      { $group: { _id: "$category", total: { $sum: "$amount" } } },
+      { $sort: { total: -1 } },
+    ]);
+    return successResponse(res, "Category stats fetched", stats);
+  } catch (error) {
+    return errorResponse(res, error.message, 500);
+  }
 };
 
 export const getMonthlyStats = async (req, res) => {
-  return successResponse(res, "Monthly stats not implemented yet");
+  try {
+    const stats = await Transaction.aggregate([
+      { $match: { user: new mongoose.Types.ObjectId(req.user.id) } },
+      {
+        $group: {
+          _id: {
+            month: { $month: "$date" },
+            year: { $year: "$date" },
+            type: "$type",
+          },
+          total: { $sum: "$amount" },
+        },
+      },
+      { $sort: { "_id.year": 1, "_id.month": 1 } },
+    ]);
+    return successResponse(res, "Monthly stats fetched", stats);
+  } catch (error) {
+    return errorResponse(res, error.message, 500);
+  }
 };
 
 export const getPaymentMethodStats = async (req, res) => {
-  return successResponse(res, "Payment stats not implemented yet");
+  try {
+    const stats = await Transaction.aggregate([
+      {
+        $match: {
+          user: new mongoose.Types.ObjectId(req.user.id),
+          type: "expense",
+        },
+      },
+      { $group: { _id: "$paymentMethod", total: { $sum: "$amount" } } },
+      { $sort: { total: -1 } },
+    ]);
+    return successResponse(res, "Payment stats fetched", stats);
+  } catch (error) {
+    return errorResponse(res, error.message, 500);
+  }
 };
 
 export const getRecentTransactions = async (req, res) => {
-  return successResponse(res, "Recent transactions not implemented yet");
+  try {
+    const transactions = await Transaction.find({ user: req.user.id })
+      .sort({ date: -1 })
+      .limit(5);
+
+    return successResponse(res, "Recent transactions fetched", transactions);
+  } catch (error) {
+    console.error("Get Recent Transactions Error:", error);
+    return errorResponse(res, "Internal server error", 500);
+  }
 };

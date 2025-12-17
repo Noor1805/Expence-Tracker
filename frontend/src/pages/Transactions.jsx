@@ -20,53 +20,17 @@ export default function Transactions() {
   });
 
   const [transactions, setTransactions] = useState([]);
-  const [stats, setStats] = useState({ totalIncome: 0, totalExpense: 0, balance: 0 });
+  const [stats, setStats] = useState({
+    totalIncome: 0,
+    totalExpense: 0,
+    balance: 0,
+  });
   const [loading, setLoading] = useState(false);
 
   const [showAdd, setShowAdd] = useState(false);
   const [editing, setEditing] = useState(null);
   const [showImport, setShowImport] = useState(false);
 
-  const fetchTransactions = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get("/transactions", { params: filters });
-      // backend returned { success, data, total, ... } earlier in your code
-      setTransactions(res.data.data || []);
-    } catch (err) {
-      console.error("Fetch transactions", err);
-    } finally { setLoading(false); }
-  };
-
-  const fetchStats = async () => {
-    try {
-      const res = await api.get("/transactions/stats/total");
-      if (res.data) {
-        // your backend returns keys maybe at top level, inspect and adjust
-        const d = res.data;
-        setStats({
-          totalIncome: d.totalIncome ?? d.totalIncome ?? 0,
-          totalExpense: d.totalExpense ?? d.totalExpense ?? 0,
-          balance: (d.totalIncome ?? 0) - (d.totalExpense ?? 0),
-        });
-      }
-    } catch (err) { console.error("stats err", err); }
-  };
-
-  useEffect(() => {
-    fetchTransactions();
-    fetchStats();
-    // eslint-disable-next-line
-  }, [filters.page, filters.limit]);
-
-  // apply filter button triggers new fetch with fresh filters
-  const applyFilters = () => {
-    // page reset
-    setFilters(f => ({ ...f, page: 1 }));
-    fetchTransactions();
-  };
-
-  // add new transaction
   const handleSave = async (payload) => {
     try {
       if (editing) {
@@ -84,98 +48,183 @@ export default function Transactions() {
     }
   };
 
-  const handleEdit = (item) => {
-    setEditing(item);
-    setShowAdd(true);
-  };
-
-  const handleDelete = async (id) => {
-    if (!confirm("Delete transaction?")) return;
-    try {
-      await api.delete(`/transactions/${id}`);
-      fetchTransactions();
-      fetchStats();
-    } catch (err) {
-      console.error("delete err", err);
-      alert("Delete failed");
-    }
-  };
-
   const handleImportSuccess = () => {
     fetchTransactions();
     fetchStats();
   };
 
+  const fetchTransactions = async () => {
+    setLoading(true);
+    try {
+      const res = await api.get("/transactions", { params: filters });
+      setTransactions(res.data.data.transactions || []);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchStats = async () => {
+    try {
+      const res = await api.get("/transactions/stats/total");
+      if (res.data && res.data.data) {
+        const d = res.data.data;
+        setStats({
+          totalIncome: d.totalIncome ?? 0,
+          totalExpense: d.totalExpense ?? 0,
+          balance: d.balance ?? (d.totalIncome ?? 0) - (d.totalExpense ?? 0),
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+    fetchStats();
+  }, [filters.page, filters.limit]);
+
+  const applyFilters = () => {
+    setFilters((f) => ({ ...f, page: 1 }));
+    fetchTransactions();
+  };
+
   return (
-    <div className="space-y-6">
-      {/* top row: stats + controls */}
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        <div className="lg:col-span-3 space-y-4">
-          <div className="flex items-center justify-between">
-            <h1 className="text-2xl font-semibold text-white">Transactions</h1>
-            <div className="flex gap-3">
-              <button onClick={() => { setEditing(null); setShowAdd(true); }} className="px-4 py-2 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-semibold">+ Add</button>
-              <button onClick={() => setShowImport(true)} className="px-4 py-2 rounded-xl bg-gradient-to-r from-teal-400 to-cyan-400 text-black font-semibold">Import</button>
-            </div>
-          </div>
+    <div className="relative space-y-8">
+      <div className="flex items-center z-50 justify-between">
+        <h1 className="text-3xl font-bold text-white tracking-tight">
+          Transactions
+        </h1>
 
-          <TransactionFilters filters={filters} setFilters={setFilters} onApply={applyFilters} onOpenImport={() => setShowImport(true)} />
+        <div className="flex gap-3">
+          <button
+            onClick={() => {
+              setEditing(null);
+              setShowAdd(true);
+            }}
+            className="
+              px-5 py-2.5 rounded-full font-semibold
+              bg-gradient-to-r from-orange-500 to-orange-600
+              text-black
+              shadow-[0_0_25px_rgba(249,115,22,0.55)]
+              hover:shadow-[0_0_35px_rgba(249,115,22,0.75)]
+              transition-all
+            "
+          >
+            + Add
+          </button>
 
-          {/* stats row */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <StatsCard title="Income" value={`₹${stats.totalIncome}`} accent="text-green-400" />
-            <StatsCard title="Expense" value={`₹${stats.totalExpense}`} accent="text-red-400" />
-            <StatsCard title="Balance" value={`₹${stats.balance}`} accent="text-cyan-400" />
-          </div>
+          <button
+            onClick={() => setShowImport(true)}
+            className="
+              px-5 py-2.5 rounded-full font-semibold
+              bg-black/40 text-orange-400
+              border border-orange-500/40
+              hover:bg-black/60
+              hover:shadow-[0_0_25px_rgba(249,115,22,0.5)]
+              transition-all
+            "
+          >
+            Import
+          </button>
         </div>
+      </div>
+      <TransactionFilters
+        filters={filters}
+        setFilters={setFilters}
+        onApply={applyFilters}
+        onOpenImport={() => setShowImport(true)}
+      />
 
-        {/* recent / mini list column */}
-        <aside className="hidden lg:block">
-          <div className="glass neo rounded-2xl p-4" style={{ border: "1px solid rgba(255,255,255,0.04)" }}>
-            <h3 className="text-sm text-gray-300 mb-3">Recent</h3>
-            {transactions.slice(0, 5).map(t => (
-              <div key={t._id} className="flex items-center justify-between py-2 border-b border-white/5 text-sm">
-                <div>
-                  <div className="text-white">{t.category}</div>
-                  <div className="text-gray-400 text-xs">{t.paymentMethod}</div>
-                </div>
-                <div className={`text-sm ${t.type === "income" ? "text-green-400" : "text-red-400"}`}>₹{t.amount}</div>
-              </div>
-            ))}
-            {transactions.length === 0 && <div className="text-gray-400 text-sm">No recent</div>}
-          </div>
-        </aside>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <StatsCard title="Income" value={`₹${stats.totalIncome}`} />
+        <StatsCard title="Expense" value={`₹${stats.totalExpense}`} />
+        <StatsCard title="Balance" value={`₹${stats.balance}`} />
       </div>
 
-      {/* main grid of transactions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+      <div className="mt-4">
         {loading ? (
-          Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="glass neo rounded-2xl p-4 animate-pulse h-28" />
-          ))
+          <div className="glass rounded-2xl h-[260px] animate-pulse" />
         ) : transactions.length === 0 ? (
-          <div className="glass neo rounded-2xl p-8 text-center md:col-span-2 xl:col-span-3">
-            <h3 className="text-lg text-gray-200">No transactions yet</h3>
-            <p className="text-gray-400">Add your first transaction or import a CSV</p>
+          <div
+            className="
+            glass rounded-3xl h-[320px]
+            flex flex-col items-center justify-center
+            text-gray-400
+          "
+          >
+            <div className="text-5xl mb-4 opacity-40">📦</div>
+            <p className="text-lg">No transactions yet</p>
           </div>
         ) : (
-          transactions.map(t => (
-            <TransactionCard key={t._id} item={t} onEdit={handleEdit} onDelete={handleDelete} />
-          ))
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {transactions.map((t) => (
+              <TransactionCard
+                key={t._id}
+                item={t}
+                onEdit={(item) => {
+                  setEditing(item);
+                  setShowAdd(true);
+                }}
+                onDelete={async (id) => {
+                  if (!confirm("Delete transaction?")) return;
+                  await api.delete(`/transactions/${id}`);
+                  fetchTransactions();
+                  fetchStats();
+                }}
+              />
+            ))}
+          </div>
         )}
       </div>
 
-      {/* pagination simple */}
-      <div className="flex items-center justify-center mt-4 gap-3">
-        <button disabled={filters.page <= 1} onClick={() => setFilters(f => ({ ...f, page: f.page - 1 }))} className="px-3 py-2 bg-white/50 rounded-xl">Prev</button>
+      <div className="flex justify-center items-center gap-4 pt-4">
+        <button
+          disabled={filters.page <= 1}
+          onClick={() => setFilters((f) => ({ ...f, page: f.page - 1 }))}
+          className="
+            px-4 py-2 rounded-xl
+            bg-black/40 text-orange-400
+            border border-orange-500/30
+            disabled:opacity-40
+            hover:bg-black/60
+          "
+        >
+          Prev
+        </button>
+
         <span className="text-gray-300">Page {filters.page}</span>
-        <button onClick={() => setFilters(f => ({ ...f, page: f.page + 1 }))} className="px-3 py-2 bg-white/50 rounded-xl">Next</button>
+
+        <button
+          onClick={() => setFilters((f) => ({ ...f, page: f.page + 1 }))}
+          className="
+            px-4 py-2 rounded-xl
+            bg-black/40 text-orange-400
+            border border-orange-500/30
+            hover:bg-black/60
+          "
+        >
+          Next
+        </button>
       </div>
 
-      {/* modals */}
-      <AddEditTransactionForm open={showAdd} onClose={() => { setShowAdd(false); setEditing(null); }} onSave={handleSave} initial={editing} />
-      <ImportCSVModal open={showImport} onClose={() => setShowImport(false)} onImported={handleImportSuccess} />
+      <AddEditTransactionForm
+        open={showAdd}
+        onClose={() => {
+          setShowAdd(false);
+          setEditing(null);
+        }}
+        onSave={handleSave}
+        initial={editing}
+      />
+
+      <ImportCSVModal
+        open={showImport}
+        onClose={() => setShowImport(false)}
+        onImported={handleImportSuccess}
+      />
     </div>
   );
 }
-

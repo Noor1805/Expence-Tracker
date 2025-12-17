@@ -20,6 +20,8 @@ import {
   recurringTransactionHandler,
   duplicateTransactions,
   clearAllTransactions,
+  getBalanceHistory,
+  getUpcomingTransactions,
 } from "../controllers/transactionController.js";
 
 import { protect } from "../middlewares/authMiddleware.js";
@@ -29,12 +31,16 @@ const router = express.Router();
 
 router.post("/create", protect, createTransaction);
 router.get("/", protect, getTransactions);
-router.get("/recent", protect, getRecentTransactions);
 
+// Stats routes
 router.get("/stats/total", protect, getTotalStats);
 router.get("/stats/category", protect, getCategoryStats);
 router.get("/stats/monthly", protect, getMonthlyStats);
 router.get("/stats/payment-method", protect, getPaymentMethodStats);
+router.get("/stats/balance", protect, getBalanceHistory); // New
+
+router.get("/recent", protect, getRecentTransactions);
+router.get("/upcoming", protect, getUpcomingTransactions); // New
 
 router.get("/export/csv", protect, exportCSV);
 router.get("/export/excel", protect, exportExcel);

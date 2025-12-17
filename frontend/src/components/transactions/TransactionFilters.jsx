@@ -2,12 +2,11 @@ export default function TransactionFilters({ filters, setFilters, onApply }) {
   return (
     <div className="w-full glass neo p-5 rounded-2xl mb-5 border border-white/10">
       <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        {/* Type */}
         <select
           value={filters.type}
           onChange={(e) => setFilters((f) => ({ ...f, type: e.target.value }))}
           className="w-full p-3 rounded-xl bg-black/40 text-gray-200 border border-white/10
-                     focus:ring-2 focus:ring-blue-500 shadow-inner"
+                     focus:ring-2 focus:ring-orange-500 shadow-inner"
         >
           <option value="" className="text-black">
             All Types
@@ -20,7 +19,6 @@ export default function TransactionFilters({ filters, setFilters, onApply }) {
           </option>
         </select>
 
-        {/* Payment Method */}
         <select
           value={filters.paymentMethod}
           onChange={(e) =>
@@ -43,7 +41,6 @@ export default function TransactionFilters({ filters, setFilters, onApply }) {
           </option>
         </select>
 
-        {/* Search */}
         <input
           type="text"
           placeholder="Search notes..."
@@ -54,11 +51,8 @@ export default function TransactionFilters({ filters, setFilters, onApply }) {
           className="w-full p-3 rounded-xl bg-black/40 text-gray-200 placeholder-gray-500
                      border border-white/10 focus:ring-2 focus:ring-purple-400 shadow-inner"
         />
-        
 
-        {/* Date Range Selector */}
         <div className="flex flex-col md:flex-row md:items-center gap-4">
-          {/* Start Date */}
           <div className="flex flex-col w-full">
             <label className="text-xs text-gray-400 mb-1 ml-1">
               Start Date
@@ -74,7 +68,6 @@ export default function TransactionFilters({ filters, setFilters, onApply }) {
             />
           </div>
 
-          {/* End Date */}
           <div className="flex flex-col w-full">
             <label className="text-xs text-gray-400 mb-1 ml-1">End Date</label>
             <input
@@ -93,9 +86,14 @@ export default function TransactionFilters({ filters, setFilters, onApply }) {
       <div className="flex items-center justify-end mt-4">
         <button
           onClick={onApply}
-          className="px-6 py-2 rounded-xl font-semibold
-                     bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500
-                     text-white shadow-lg hover:opacity-90 transition"
+          className="
+    px-6 py-2 rounded-xl font-semibold
+    bg-gradient-to-r from-orange-500 to-orange-600
+    text-black
+    shadow-[0_0_3px_rgba(249,115,22,0.45)]
+    hover:shadow-[0_0_6px_rgba(249,115,22,0.65)]
+    transition-all
+  "
         >
           Apply Filters
         </button>
