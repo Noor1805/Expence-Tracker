@@ -1,6 +1,7 @@
 import Category from "../models/Category.js";
 import Transaction from "../models/Transaction.js";
 import { categorySchema } from "../validations/categoryValidation.js";
+import mongoose from "mongoose";
 
 export const createCategory = async (req, res) => {
   try {
@@ -50,9 +51,40 @@ export const getCategories = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    const categories = await Category.find({ user: userId }).sort({
-      createdAt: -1,
-    });
+    const categories = await Category.aggregate([
+      { $match: { user: new mongoose.Types.ObjectId(userId) } },
+      {
+        $lookup: {
+          from: "transactions",
+          let: { catName: "$name" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$category", "$$catName"] },
+                    { $eq: ["$user", new mongoose.Types.ObjectId(userId)] },
+                  ],
+                },
+              },
+            },
+          ],
+          as: "transactions",
+        },
+      },
+      {
+        $addFields: {
+          transactionCount: { $size: "$transactions" },
+          totalAmount: { $sum: "$transactions.amount" },
+        },
+      },
+      {
+        $project: {
+          transactions: 0, 
+        },
+      },
+      { $sort: { createdAt: -1 } },
+    ]);
 
     return res.status(200).json({
       success: true,
@@ -67,6 +99,7 @@ export const getCategories = async (req, res) => {
     });
   }
 };
+
 export const updateCategory = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -94,12 +127,20 @@ export const updateCategory = async (req, res) => {
       });
     }
 
+    const oldName = category.name;
+
     category.name = name;
     category.type = type;
     category.color = color;
     category.icon = icon;
-
     await category.save();
+
+    if (oldName !== name) {
+      await Transaction.updateMany(
+        { user: userId, category: oldName },
+        { $set: { category: name } }
+      );
+    }
 
     return res.status(200).json({
       success: true,
@@ -131,6 +172,7 @@ export const deleteCategory = async (req, res) => {
         message: "Category not found",
       });
     }
+
     const usedInTransactions = await Transaction.findOne({
       category: category.name,
       user: userId,
@@ -140,7 +182,7 @@ export const deleteCategory = async (req, res) => {
       return res.status(400).json({
         success: false,
         message:
-          "Category cannot be deleted because it is linked with existing transactions",
+          "Cannot delete category: It has linked transactions. Please delete them first.",
       });
     }
 

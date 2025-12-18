@@ -22,13 +22,13 @@ const categorySchema = new mongoose.Schema(
 
     color: {
       type: String,
-      default: "#6c5ce7", 
+      default: "#6c5ce7",
     },
 
     icon: {
       type: String,
-      default: "📁", 
-    }
+      default: "📁",
+    },
   },
   { timestamps: true }
 );
