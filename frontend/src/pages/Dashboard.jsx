@@ -322,25 +322,27 @@ export default function Dashboard() {
             Income Trend
           </h3>
           <div className="w-full h-[85%] relative">
-            <Bar
-              data={{
-                labels: monthlyStats.map((m) => `${m._id.month}/${m._id.year}`),
-                datasets: [
-                  {
-                    label: "Income",
-                    data: monthlyStats
-                      .filter((m) => m._id.type === "income")
-                      .map((m) => m.total),
-                    backgroundColor: "#34D399",
-                    borderRadius: 6,
-                  },
-                ],
-              }}
-              options={{
-                ...chartOptions,
-                plugins: { legend: { display: false } },
-              }}
-            />
+            <div className="w-full h-[85%] relative">
+              <Bar
+                data={{
+                  labels: balanceHistory.map(
+                    (b) => `${b._id.day}/${b._id.month}`
+                  ),
+                  datasets: [
+                    {
+                      label: "Income",
+                      data: balanceHistory.map((b) => b.dailyIncome),
+                      backgroundColor: "#34D399",
+                      borderRadius: 6,
+                    },
+                  ],
+                }}
+                options={{
+                  ...chartOptions,
+                  plugins: { legend: { display: false } },
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
@@ -379,25 +381,27 @@ export default function Dashboard() {
             Expense Trend
           </h3>
           <div className="w-full h-[85%] relative">
-            <Bar
-              data={{
-                labels: monthlyStats.map((m) => `${m._id.month}/${m._id.year}`),
-                datasets: [
-                  {
-                    label: "Expense",
-                    data: monthlyStats
-                      .filter((m) => m._id.type === "expense")
-                      .map((m) => m.total),
-                    backgroundColor: "#F87171",
-                    borderRadius: 6,
-                  },
-                ],
-              }}
-              options={{
-                ...chartOptions,
-                plugins: { legend: { display: false } },
-              }}
-            />
+            <div className="w-full h-[85%] relative">
+              <Bar
+                data={{
+                  labels: balanceHistory.map(
+                    (b) => `${b._id.day}/${b._id.month}`
+                  ),
+                  datasets: [
+                    {
+                      label: "Expense",
+                      data: balanceHistory.map((b) => b.dailyExpense),
+                      backgroundColor: "#F87171",
+                      borderRadius: 6,
+                    },
+                  ],
+                }}
+                options={{
+                  ...chartOptions,
+                  plugins: { legend: { display: false } },
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
