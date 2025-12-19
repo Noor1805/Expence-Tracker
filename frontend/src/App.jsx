@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "./context/ThemeContext";
 
 import AppLayout from "./components/layout/AppLayout";
+import NotFound from "./pages/NotFound";
 
 // Public Pages
 import Home from "./pages/Home";
@@ -44,6 +45,9 @@ export default function App() {
               <Route path="settings" element={<Settings />} />
             </Route>
           </Route>
+
+          {/* ---------- 404 CATCH-ALL ---------- */}
+          <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
