@@ -1,20 +1,33 @@
 import Settings from "../models/Settings.js";
 
+
 export const getSettings = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    let settings = await Settings.findOne({ user: userId });
+    let settings = await Settings.findOne({ user: userId }).populate(
+      "user",
+      "name email"
+    );
 
     if (!settings) {
       settings = await Settings.create({ user: userId });
+      settings = await Settings.findOne({ user: userId }).populate(
+        "user",
+        "name email"
+      );
     }
+
+    const responseData = {
+      ...settings.toObject(),
+      name: settings.user?.name || "User",
+      email: settings.user?.email || "",
+    };
 
     return res.status(200).json({
       success: true,
-      settings,
+      data: responseData,
     });
-
   } catch (error) {
     console.error("Get Settings Error:", error);
     return res.status(500).json({
@@ -24,18 +37,10 @@ export const getSettings = async (req, res) => {
   }
 };
 
-
 export const updateSettings = async (req, res) => {
   try {
     const userId = req.user.id;
-
-    const {
-      currency,
-      theme,
-      language,
-      monthlyGoal,
-      notificationsEnabled,
-    } = req.body;
+    const { currency, theme, notificationsEnabled } = req.body;
 
     let settings = await Settings.findOne({ user: userId });
 
@@ -43,15 +48,8 @@ export const updateSettings = async (req, res) => {
       settings = await Settings.create({ user: userId });
     }
 
-    
     if (currency) settings.currency = currency;
     if (theme) settings.theme = theme;
-    if (language) settings.language = language;
-
-    if (monthlyGoal !== undefined) {
-      settings.monthlyGoal = monthlyGoal;
-    }
-
     if (notificationsEnabled !== undefined) {
       settings.notificationsEnabled = notificationsEnabled;
     }
@@ -61,9 +59,10 @@ export const updateSettings = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Settings updated successfully",
-      settings,
+      data: {
+        ...settings.toObject(),
+      },
     });
-
   } catch (error) {
     console.error("Update Settings Error:", error);
     return res.status(500).json({

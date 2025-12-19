@@ -3,10 +3,12 @@ import {
   register,
   login,
   logout,
+  logoutAll,
   refreshToken,
   getMe,
   forgotPassword,
   resetPassword,
+  deleteAccount,
 } from "../controllers/authController.js";
 
 import { protect } from "../middlewares/authMiddleware.js";
@@ -29,5 +31,7 @@ router.post("/refresh-token", refreshToken);
 
 router.get("/me", protect, getMe);
 router.post("/logout", protect, logout);
+router.post("/logout-all", protect, logoutAll);
+router.delete("/delete-account", protect, deleteAccount);
 
 export default router;

@@ -127,6 +127,24 @@ export async function logout(req, res, next) {
   }
 }
 
+// LOGOUT ALL DEVICES
+export async function logoutAll(req, res, next) {
+  try {
+    const userId = req.user.id;
+    await User.updateOne({ _id: userId }, { $set: { refreshTokens: [] } });
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    res.json({ success: true, message: "Logged out from all devices" });
+  } catch (err) {
+    next(err);
+  }
+}
+
 //refreshtoken
 export async function refreshToken(req, res, next) {
   try {
@@ -248,5 +266,25 @@ export async function resetPassword(req, res, next) {
     });
   } catch (error) {
     next(error);
+  }
+}
+
+// DELETE ACCOUNT
+export async function deleteAccount(req, res, next) {
+  try {
+    const userId = req.user.id;
+
+    // Optional: Delete related data
+    await User.findByIdAndDelete(userId);
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    });
+
+    res.json({ success: true, message: "Account deleted successfully" });
+  } catch (err) {
+    next(err);
   }
 }
