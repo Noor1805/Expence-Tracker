@@ -1,15 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import api from "../services/api";
 import { ThemeContext } from "../context/ThemeContext";
-import {
-  FiSun,
-  FiMoon,
-  FiBell,
-  FiShield,
-  FiTrash2,
-  FiUser,
-  FiInfo,
-} from "react-icons/fi";
+import { FiBell, FiShield, FiTrash2, FiUser, FiInfo } from "react-icons/fi";
 import { motion } from "framer-motion";
 
 export default function Settings() {
@@ -38,11 +30,6 @@ export default function Settings() {
           theme: data.theme || theme,
           notifications: data.notificationsEnabled ?? prev.notifications,
         }));
-
-        // Sync Context if backend differs
-        if (data.theme && data.theme !== theme) {
-          toggleTheme(data.theme);
-        }
       }
     } catch (err) {
       console.error("Settings fetch failed", err);
@@ -59,11 +46,6 @@ export default function Settings() {
   const saveSettings = async (updated) => {
     // Optimistic UI update
     setSettings(updated);
-
-    // Sync Theme Context
-    if (updated.theme !== theme) {
-      toggleTheme(updated.theme);
-    }
 
     try {
       await api.put("/settings", {
@@ -159,46 +141,6 @@ export default function Settings() {
 
       {/* APPEARANCE & PREFERENCES */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Appearance */}
-        <section className="glass neo rounded-3xl p-8 border border-white/5">
-          <h2 className="text-xl text-white font-semibold mb-6 flex items-center gap-3">
-            Appearance
-          </h2>
-
-          <button
-            onClick={() =>
-              saveSettings({
-                ...settings,
-                theme: settings.theme === "dark" ? "light" : "dark",
-              })
-            }
-            className="w-full flex items-center justify-between px-6 py-4 rounded-2xl bg-white/5 hover:bg-white/10 border border-white/5 transition-all group"
-          >
-            <div className="flex items-center gap-4">
-              <div
-                className={`p-3 rounded-xl ${
-                  settings.theme === "dark"
-                    ? "bg-orange-500/20 text-orange-400"
-                    : "bg-blue-500/20 text-blue-400"
-                }`}
-              >
-                {settings.theme === "dark" ? (
-                  <FiSun size={24} />
-                ) : (
-                  <FiMoon size={24} />
-                )}
-              </div>
-              <div className="text-left">
-                <p className="text-white font-medium text-lg">
-                  {settings.theme === "dark" ? "Dark Mode" : "Light Mode"}
-                </p>
-                <p className="text-gray-400 text-sm"> Currently Active</p>
-              </div>
-            </div>
-            <div className="w-4 h-4 rounded-full border-2 border-white/20 group-hover:border-white/60"></div>
-          </button>
-        </section>
-
         {/* Currency */}
         <section className="glass neo rounded-3xl p-8 border border-white/5">
           <h2 className="text-xl text-white font-semibold mb-6 flex items-center gap-3">

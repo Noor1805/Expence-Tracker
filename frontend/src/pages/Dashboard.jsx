@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import api from "../services/api";
 import { Link } from "react-router-dom";
+import { ThemeContext } from "../context/ThemeContext";
 import {
   Chart as ChartJS,
   ArcElement,
@@ -30,6 +31,9 @@ ChartJS.register(
 );
 
 export default function Dashboard() {
+  const { theme } = useContext(ThemeContext);
+  const isDark = theme === "dark";
+
   const [stats, setStats] = useState({
     totalIncome: 0,
     totalExpense: 0,
@@ -92,6 +96,26 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
+  // CHART CONFIGURATION BASED ON THEME
+  const chartTextColor = isDark ? "#9ca3af" : "#4b5563"; // gray-400 vs gray-600
+  const chartGridColor = isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.05)";
+
+  const chartOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { position: "top", labels: { color: chartTextColor } } },
+    scales: {
+      x: {
+        ticks: { color: chartTextColor },
+        grid: { color: chartGridColor },
+      },
+      y: {
+        ticks: { color: chartTextColor },
+        grid: { color: chartGridColor },
+      },
+    },
+  };
+
   const categoryChartData = {
     labels: categoryStats.map((c) => c._id),
     datasets: [
@@ -104,7 +128,7 @@ export default function Dashboard() {
           "#A78BFA",
           "#34D399",
           "#FB7185",
-          50,
+          "#60A5FA",
         ],
         borderWidth: 0,
         hoverOffset: 10,
@@ -186,22 +210,6 @@ export default function Dashboard() {
     ],
   };
 
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: { legend: { position: "top", labels: { color: "#9ca3af" } } },
-    scales: {
-      x: {
-        ticks: { color: "#9ca3af" },
-        grid: { color: "rgba(255,255,255,0.05)" },
-      },
-      y: {
-        ticks: { color: "#9ca3af" },
-        grid: { color: "rgba(255,255,255,0.05)" },
-      },
-    },
-  };
-
   const handleDownloadPDF = async () => {
     try {
       const response = await api.get("/transactions/export/pdf", {
@@ -221,15 +229,18 @@ export default function Dashboard() {
 
   return (
     <div className="space-y-6 animate-fadeIn pb-10">
-      <h1 className="text-3xl font-semibold text-white tracking-wide drop-shadow-lg">
+      <h1 className="text-3xl font-semibold text-gray-900 dark:text-white tracking-wide">
         My Dashboard
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-        <div className="p-6 rounded-2xl bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-[#1a1a25] shadow-lg relative overflow-hidden group hover:shadow-[0_0_25px_rgba(34,211,238,0.2)] transition-all duration-300">
+        {/* Balance Card */}
+        <div className="p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#1a1a25] shadow-lg dark:shadow-none relative overflow-hidden group hover:shadow-xl dark:hover:shadow-[0_0_25px_rgba(34,211,238,0.2)] transition-all duration-300">
           <div className="relative z-10">
-            <h2 className="text-gray-400 text-sm">Balance</h2>
-            <p className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500 mt-2">
+            <h2 className="text-gray-500 dark:text-gray-400 text-sm">
+              Balance
+            </h2>
+            <p className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-600 dark:from-cyan-400 dark:to-blue-500 mt-2">
               ₹{stats.balance}
             </p>
           </div>
@@ -245,31 +256,36 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="p-6 rounded-2xl bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-[#26131a] shadow-lg hover:shadow-[0_0_25px_rgba(244,114,182,0.2)] transition-all duration-300">
-          <h2 className="text-gray-400 text-sm">Expense</h2>
-          <p className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-500 mt-2">
+        {/* Expense Card */}
+        <div className="p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#26131a] shadow-lg dark:shadow-none hover:shadow-xl dark:hover:shadow-[0_0_25px_rgba(244,114,182,0.2)] transition-all duration-300">
+          <h2 className="text-gray-500 dark:text-gray-400 text-sm">Expense</h2>
+          <p className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-600 dark:from-pink-500 dark:to-rose-500 mt-2">
             ₹{stats.totalExpense}
           </p>
         </div>
 
-        <div className="p-6 rounded-2xl bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-[#123122] shadow-lg hover:shadow-[0_0_25px_rgba(52,211,153,0.2)] transition-all duration-300">
-          <h2 className="text-gray-400 text-sm">Income</h2>
-          <p className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-green-500 mt-2">
+        {/* Income Card */}
+        <div className="p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#123122] shadow-lg dark:shadow-none hover:shadow-xl dark:hover:shadow-[0_0_25px_rgba(52,211,153,0.2)] transition-all duration-300">
+          <h2 className="text-gray-500 dark:text-gray-400 text-sm">Income</h2>
+          <p className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-green-600 dark:from-emerald-400 dark:to-green-500 mt-2">
             ₹{stats.totalIncome}
           </p>
         </div>
 
-        <div className="p-6 rounded-2xl bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-yellow-900/20 shadow-lg hover:shadow-[0_0_25px_rgba(251,191,36,0.2)] transition-all duration-300 relative overflow-hidden">
+        {/* Budget Health Card */}
+        <div className="p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-yellow-900/20 shadow-lg dark:shadow-none hover:shadow-xl dark:hover:shadow-[0_0_25px_rgba(251,191,36,0.2)] transition-all duration-300 relative overflow-hidden">
           <div className="relative z-10">
-            <h2 className="text-gray-400 text-sm">Budget Health</h2>
-            <p className="text-xl font-bold text-white mt-2">
+            <h2 className="text-gray-500 dark:text-gray-400 text-sm">
+              Budget Health
+            </h2>
+            <p className="text-xl font-bold text-gray-900 dark:text-white mt-2">
               {budgetStats?.remainingBudget < 0 ? "-" : ""}₹
               {Math.abs(budgetStats?.remainingBudget || 0).toLocaleString()}
-              <span className="text-xs text-gray-500 font-normal ml-1">
+              <span className="text-xs text-gray-400 dark:text-gray-500 font-normal ml-1">
                 left
               </span>
             </p>
-            <div className="w-full h-2 bg-white/10 rounded-full mt-3 overflow-hidden">
+            <div className="w-full h-2 bg-gray-200 dark:bg-white/10 rounded-full mt-3 overflow-hidden">
               <div
                 className={`h-full ${
                   budgetStats?.percentageUsed > 100
@@ -281,7 +297,7 @@ export default function Dashboard() {
                 }}
               />
             </div>
-            <p className="text-xs text-gray-400 mt-2">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
               {budgetStats?.percentageUsed?.toFixed(0) || 0}% used of ₹
               {budgetStats?.overallBudget?.toLocaleString() || 0}
             </p>
@@ -290,8 +306,9 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-2 p-6 rounded-2xl bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-[#1a1a25] shadow-lg h-[350px]">
-          <h3 className="text-gray-300 mb-6 text-lg font-medium">
+        {/* Balance History Chart */}
+        <div className="xl:col-span-2 p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#1a1a25] shadow-lg dark:shadow-none h-[350px]">
+          <h3 className="text-gray-900 dark:text-gray-300 mb-6 text-lg font-medium">
             Balance History
           </h3>
           <div className="w-full h-[85%] relative">
@@ -299,8 +316,9 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="xl:col-span-1 p-6 rounded-2xl bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-[#123122] shadow-lg h-[350px]">
-          <h3 className="text-emerald-400 mb-4 text-lg font-medium">
+        {/* Income Trend Chart */}
+        <div className="xl:col-span-1 p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#123122] shadow-lg dark:shadow-none h-[350px]">
+          <h3 className="text-emerald-500 dark:text-emerald-400 mb-4 text-lg font-medium">
             Income Trend
           </h3>
           <div className="w-full h-[85%] relative">
@@ -326,9 +344,11 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-1 p-6 rounded-2xl bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-[#1a1a25] shadow-lg h-[350px] flex flex-col items-center justify-center">
-          <h3 className="text-gray-300 mb-2 text-sm font-medium">
+        {/* Category Chart */}
+        <div className="xl:col-span-1 p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#1a1a25] shadow-lg dark:shadow-none h-[350px] flex flex-col items-center justify-center">
+          <h3 className="text-gray-900 dark:text-gray-300 mb-2 text-sm font-medium">
             Expense Categories
           </h3>
           <div className="w-full h-full relative">
@@ -340,7 +360,7 @@ export default function Dashboard() {
                   plugins: {
                     legend: {
                       position: "bottom",
-                      labels: { color: "#9ca3af" },
+                      labels: { color: chartTextColor },
                     },
                   },
                 }}
@@ -353,8 +373,9 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="xl:col-span-2 p-6 rounded-2xl bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-[#26131a] shadow-lg h-[350px]">
-          <h3 className="text-rose-400 mb-4 text-lg font-medium">
+        {/* Expense Trend Chart */}
+        <div className="xl:col-span-2 p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#26131a] shadow-lg dark:shadow-none h-[350px]">
+          <h3 className="text-rose-500 dark:text-rose-400 mb-4 text-lg font-medium">
             Expense Trend
           </h3>
           <div className="w-full h-[85%] relative">
@@ -382,14 +403,15 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-2 p-6 rounded-2xl bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-[#1b1b25] shadow-lg h-[400px] flex flex-col">
+        {/* Recent Transactions */}
+        <div className="xl:col-span-2 p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#1b1b25] shadow-lg dark:shadow-none h-[400px] flex flex-col">
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-white font-semibold text-lg">
+            <h2 className="text-gray-900 dark:text-white font-semibold text-lg">
               Recent Transactions
             </h2>
             <Link
               to="/app/transactions"
-              className="text-sm text-blue-400 hover:text-blue-300"
+              className="text-sm text-blue-500 hover:text-blue-400"
             >
               View All
             </Link>
@@ -398,22 +420,24 @@ export default function Dashboard() {
             {recentTransactions.map((t) => (
               <div
                 key={t._id}
-                className="flex items-center justify-between p-3 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition"
+                className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition"
               >
                 <div className="flex items-center gap-3">
                   <div className="w-2 h-10 rounded-full bg-blue-500/20" />
                   <div>
-                    <p className="text-white font-medium text-sm">
+                    <p className="text-gray-900 dark:text-white font-medium text-sm">
                       {t.category}
                     </p>
-                    <p className="text-xs text-gray-400">
+                    <p className="text-xs text-gray-500 dark:text-gray-400">
                       {new Date(t.date).toLocaleDateString()}
                     </p>
                   </div>
                 </div>
                 <span
                   className={`font-bold text-sm ${
-                    t.type === "income" ? "text-emerald-400" : "text-rose-400"
+                    t.type === "income"
+                      ? "text-emerald-500 dark:text-emerald-400"
+                      : "text-rose-500 dark:text-rose-400"
                   }`}
                 >
                   {t.type === "income" ? "+" : "-"}₹{t.amount}
@@ -428,8 +452,9 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <div className="xl:col-span-1 p-6 rounded-2xl bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-[#1a1a25] shadow-lg h-[400px] flex flex-col">
-          <h2 className="text-white font-semibold text-lg mb-4">
+        {/* Upcoming Bills */}
+        <div className="xl:col-span-1 p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#1a1a25] shadow-lg dark:shadow-none h-[400px] flex flex-col">
+          <h2 className="text-gray-900 dark:text-white font-semibold text-lg mb-4">
             Upcoming Bills
           </h2>
           <div className="space-y-3 overflow-y-auto custom-scrollbar flex-1">
@@ -437,12 +462,14 @@ export default function Dashboard() {
               upcoming.map((u) => (
                 <div
                   key={u._id}
-                  className="flex justify-between p-3 bg-white/5 rounded-lg border-l-2 border-yellow-500"
+                  className="flex justify-between p-3 bg-gray-50 dark:bg-white/5 rounded-lg border-l-2 border-yellow-500"
                 >
-                  <span className="text-gray-300">
+                  <span className="text-gray-700 dark:text-gray-300">
                     {u.category} ({u.recurringFrequency})
                   </span>
-                  <span className="text-white font-bold">₹{u.amount}</span>
+                  <span className="text-gray-900 dark:text-white font-bold">
+                    ₹{u.amount}
+                  </span>
                 </div>
               ))
             ) : (
@@ -453,20 +480,23 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <div className="xl:col-span-1 p-6 rounded-2xl bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-[#12323b] shadow-lg h-[350px]">
-          <h3 className="text-gray-300 mb-4 text-sm font-medium">
+        {/* Payment Methods */}
+        <div className="xl:col-span-1 p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#12323b] shadow-lg dark:shadow-none h-[350px]">
+          <h3 className="text-gray-900 dark:text-gray-300 mb-4 text-sm font-medium">
             Payment Methods
           </h3>
           <div className="w-full h-full pb-6 relative">
             <Bar data={paymentChartData} options={chartOptions} />
           </div>
         </div>
-        <div className="xl:col-span-2 p-6 rounded-2xl bg-gradient-to-r from-indigo-900/20 to-purple-900/20 backdrop-blur-xl border border-white/5 shadow-lg h-[350px] flex items-center justify-center">
+
+        {/* PDF Download Card */}
+        <div className="xl:col-span-2 p-6 rounded-2xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 backdrop-blur-xl border border-gray-200 dark:border-white/5 shadow-lg dark:shadow-none h-[350px] flex items-center justify-center">
           <div className="text-center">
-            <h3 className="text-xl text-white font-bold mb-2">
+            <h3 className="text-xl text-gray-900 dark:text-white font-bold mb-2">
               Detailed Reports
             </h3>
-            <p className="text-gray-400">
+            <p className="text-gray-600 dark:text-gray-400">
               Download your financial statement in PDF format.
             </p>
             <button

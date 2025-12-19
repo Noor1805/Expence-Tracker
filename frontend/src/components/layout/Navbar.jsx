@@ -1,18 +1,11 @@
-import {
-  FiSun,
-  FiMoon,
-  FiBell,
-  FiUser,
-  FiLogOut,
-  FiSettings,
-} from "react-icons/fi";
+import { FiBell, FiUser, FiLogOut, FiSettings } from "react-icons/fi";
 import { useEffect, useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { ThemeContext } from "../../context/ThemeContext";
 import api from "../../services/api";
 
 export default function Navbar() {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
   const [showProfile, setShowProfile] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -60,18 +53,7 @@ export default function Navbar() {
       </h1>
 
       <div className="flex items-center gap-4 relative">
-        <button
-          onClick={() => toggleTheme()}
-          className="p-2 rounded-full
-          bg-black/5 dark:bg-white/5
-          hover:bg-black/10 dark:hover:bg-white/10 transition"
-        >
-          {theme === "dark" ? (
-            <FiSun className="text-orange-400" />
-          ) : (
-            <FiMoon className="text-gray-700" />
-          )}
-        </button>
+        {/* Toggle Button Removed Here */}
 
         <div ref={notifRef} className="relative">
           <button

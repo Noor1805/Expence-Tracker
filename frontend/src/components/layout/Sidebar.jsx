@@ -16,20 +16,20 @@ export default function Sidebar() {
 
   return (
     <div
-      className={`h-full bg-[#080808] border-r border-gray-900 
-      transition-all duration-300 flex flex-col shadow-xl
+      className={`h-full bg-white dark:bg-[#080808] border-r border-gray-200 dark:border-gray-900 
+      transition-all duration-300 flex flex-col shadow-xl z-50
       ${open ? "w-64" : "w-20"}`}
     >
       <div className="flex items-center justify-between px-4 py-5">
         {open && (
-          <h2 className="text-xl font-semibold text-white tracking-wide">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white tracking-wide">
             My <span className="text-orange-500">Finance</span>
           </h2>
         )}
 
         <button
           onClick={() => setOpen(!open)}
-          className="text-gray-400 hover:text-orange-500 transition"
+          className="text-gray-500 dark:text-gray-400 hover:text-orange-500 transition"
         >
           {open ? "←" : "→"}
         </button>
@@ -45,8 +45,8 @@ export default function Sidebar() {
               text-sm font-medium transition-all group
               ${
                 isActive
-                  ? "text-white bg-[#111] shadow-lg shadow-orange-500/30"
-                  : "text-gray-400 hover:text-white hover:bg-[#111] hover:shadow-md hover:shadow-orange-500/30"
+                  ? "text-white bg-black dark:text-white dark:bg-[#111] shadow-lg shadow-orange-500/10 dark:shadow-orange-500/30"
+                  : "text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-[#111]"
               }`
             }
           >
@@ -56,9 +56,7 @@ export default function Sidebar() {
                   <span className="absolute left-0 w-1 h-full rounded-r-xl bg-orange-500"></span>
                 )}
 
-                <span className="text-xl text-orange-500">
-                  {item.icon}
-                </span>
+                <span className="text-xl text-orange-500">{item.icon}</span>
 
                 {open && <span className="transition-all">{item.name}</span>}
               </>
@@ -72,20 +70,19 @@ export default function Sidebar() {
           className={`${open ? "px-4 py-3" : "p-3"} 
             rounded-xl cursor-pointer
             transition-all duration-300
-            bg-[rgba(25,25,35,0.65)]
-            backdrop-blur-md
-            border border-orange-500/80
-            shadow-[0_0_18px_rgba(249,115,22,0.35)]
-            hover:shadow-[0_0_28px_rgba(249,115,22,0.55)]
+            bg-gradient-to-br from-orange-50 to-white
+            dark:bg-[rgba(25,25,35,0.65)]
+            dark:backdrop-blur-md
+            border border-orange-200 dark:border-orange-500/80
+            shadow-sm dark:shadow-[0_0_18px_rgba(249,115,22,0.35)]
+            hover:shadow-md dark:hover:shadow-[0_0_28px_rgba(249,115,22,0.55)]
             hover:-translate-y-1
-            text-transparent bg-clip-text
-            bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600
+            text-gray-900 dark:text-transparent dark:bg-clip-text
+            dark:bg-gradient-to-r dark:from-orange-400 dark:via-orange-500 dark:to-orange-600
           `}
         >
           {open ? (
-            <span className="font-semibold tracking-wide">
-              Upgrade to Pro
-            </span>
+            <span className="font-semibold tracking-wide">Upgrade to Pro</span>
           ) : (
             <span className="text-xl">⭐</span>
           )}
