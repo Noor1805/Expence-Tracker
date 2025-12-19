@@ -1,6 +1,8 @@
 import express from "express";
 import {
   setBudget,
+  setCategoryLimit,
+  getBudgets,
   getBudgetStats,
   updateBudget,
   deleteBudget,
@@ -11,7 +13,8 @@ import { protect } from "../middlewares/authMiddleware.js";
 const router = express.Router();
 
 router.post("/set", protect, setBudget);
-
+router.post("/set-category", protect, setCategoryLimit);
+router.get("/", protect, getBudgets);
 router.get("/stats", protect, getBudgetStats);
 
 router.put("/update/:id", protect, updateBudget);

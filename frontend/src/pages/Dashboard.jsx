@@ -41,21 +41,37 @@ export default function Dashboard() {
   const [paymentStats, setPaymentStats] = useState([]);
   const [balanceHistory, setBalanceHistory] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
+  const [budgetStats, setBudgetStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
   const fetchData = async () => {
     try {
       setLoading(true);
-      const [statsRes, recentRes, catRes, monthRes, payRes, balRes, upRes] =
-        await Promise.all([
-          api.get("/transactions/stats/total"),
-          api.get("/transactions/recent"),
-          api.get("/transactions/stats/category"),
-          api.get("/transactions/stats/monthly"),
-          api.get("/transactions/stats/payment-method"),
-          api.get("/transactions/stats/balance"),
-          api.get("/transactions/upcoming"),
-        ]);
+      const now = new Date();
+      const month = now.getMonth();
+      const year = now.getFullYear();
+
+      const [
+        statsRes,
+        recentRes,
+        catRes,
+        monthRes,
+        payRes,
+        balRes,
+        upRes,
+        budgetRes,
+      ] = await Promise.all([
+        api.get("/transactions/stats/total"),
+        api.get("/transactions/recent"),
+        api.get("/transactions/stats/category"),
+        api.get("/transactions/stats/monthly"),
+        api.get("/transactions/stats/payment-method"),
+        api.get("/transactions/stats/balance"),
+        api.get("/transactions/upcoming"),
+        api
+          .get(`/budget/stats?month=${month}&year=${year}`)
+          .catch(() => ({ data: { data: null } })),
+      ]);
 
       setStats(statsRes.data.data);
       setRecentTransactions(recentRes.data.data || []);
@@ -64,6 +80,7 @@ export default function Dashboard() {
       setPaymentStats(payRes.data.data || []);
       setBalanceHistory(balRes.data.data || []);
       setUpcoming(upRes.data.data || []);
+      setBudgetStats(budgetRes.data.data || {});
     } catch (err) {
       console.error("Dashboard fetch error:", err);
     } finally {
@@ -87,6 +104,7 @@ export default function Dashboard() {
           "#A78BFA",
           "#34D399",
           "#FB7185",
+          50,
         ],
         borderWidth: 0,
         hoverOffset: 10,
@@ -207,7 +225,7 @@ export default function Dashboard() {
         My Dashboard
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
         <div className="p-6 rounded-2xl bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-[#1a1a25] shadow-lg relative overflow-hidden group hover:shadow-[0_0_25px_rgba(34,211,238,0.2)] transition-all duration-300">
           <div className="relative z-10">
             <h2 className="text-gray-400 text-sm">Balance</h2>
@@ -239,6 +257,35 @@ export default function Dashboard() {
           <p className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-green-500 mt-2">
             ₹{stats.totalIncome}
           </p>
+        </div>
+
+        <div className="p-6 rounded-2xl bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-yellow-900/20 shadow-lg hover:shadow-[0_0_25px_rgba(251,191,36,0.2)] transition-all duration-300 relative overflow-hidden">
+          <div className="relative z-10">
+            <h2 className="text-gray-400 text-sm">Budget Health</h2>
+            <p className="text-xl font-bold text-white mt-2">
+              {budgetStats?.remainingBudget < 0 ? "-" : ""}₹
+              {Math.abs(budgetStats?.remainingBudget || 0).toLocaleString()}
+              <span className="text-xs text-gray-500 font-normal ml-1">
+                left
+              </span>
+            </p>
+            <div className="w-full h-2 bg-white/10 rounded-full mt-3 overflow-hidden">
+              <div
+                className={`h-full ${
+                  budgetStats?.percentageUsed > 100
+                    ? "bg-red-500"
+                    : "bg-green-500"
+                }`}
+                style={{
+                  width: `${Math.min(budgetStats?.percentageUsed || 0, 100)}%`,
+                }}
+              />
+            </div>
+            <p className="text-xs text-gray-400 mt-2">
+              {budgetStats?.percentageUsed?.toFixed(0) || 0}% used of ₹
+              {budgetStats?.overallBudget?.toLocaleString() || 0}
+            </p>
+          </div>
         </div>
       </div>
 

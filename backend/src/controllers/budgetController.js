@@ -1,5 +1,7 @@
 import Budget from "../models/Budget.js";
 import Transaction from "../models/Transaction.js";
+import Category from "../models/Category.js";
+import mongoose from "mongoose";
 import {
   budgetSchema,
   budgetUpdateSchema,
@@ -42,6 +44,163 @@ export const setBudget = async (req, res) => {
     });
   } catch (error) {
     console.error("Set Budget Error:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const setCategoryLimit = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { category, limit } = req.body;
+
+    if (!category || !limit) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Category and Limit are required" });
+    }
+
+    let categoryId = category;
+
+    if (!mongoose.Types.ObjectId.isValid(category)) {
+      const catDoc = await Category.findOne({
+        name: { $regex: new RegExp(`^${category}$`, "i") },
+        user: userId,
+      });
+
+      if (!catDoc) {
+        return res
+          .status(404)
+          .json({
+            success: false,
+            message: `Category '${category}' not found. Please create it first.`,
+          });
+      }
+      categoryId = catDoc._id.toString();
+    }
+
+    const now = new Date();
+    const month = now.getMonth();
+    const year = now.getFullYear();
+
+    let budget = await Budget.findOne({ user: userId, month, year });
+
+    if (!budget) {
+      budget = new Budget({
+        user: userId,
+        month,
+        year,
+        categoryBudgets: [],
+        overallBudget: 0,
+      });
+    }
+
+    const index = budget.categoryBudgets.findIndex(
+      (cb) => cb.category === categoryId || cb.category === category
+    );
+
+    const numLimit = Number(limit);
+
+    if (index > -1) {
+      budget.categoryBudgets[index].amount = numLimit;
+      budget.categoryBudgets[index].category = categoryId;
+    } else {
+      budget.categoryBudgets.push({ category: categoryId, amount: numLimit });
+    }
+
+    budget.overallBudget = budget.categoryBudgets.reduce(
+      (sum, item) => sum + item.amount,
+      0
+    );
+
+    await budget.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Budget set successfully",
+      data: budget,
+    });
+  } catch (error) {
+    console.error("Set Category Budget Error:", error);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const getBudgets = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const now = new Date();
+    const month = now.getMonth();
+    const year = now.getFullYear();
+
+    const budget = await Budget.findOne({ user: userId, month, year });
+
+    if (!budget) {
+      return res.status(200).json({ success: true, data: [] });
+    }
+
+    const startDate = new Date(year, month, 1);
+    const endDate = new Date(year, month + 1, 1);
+
+    const expenses = await Transaction.aggregate([
+      {
+        $match: {
+          user: new mongoose.Types.ObjectId(userId),
+          type: "expense",
+          date: { $gte: startDate, $lt: endDate },
+        },
+      },
+      {
+        $group: {
+          _id: "$category",
+          total: { $sum: "$amount" },
+        },
+      },
+    ]);
+
+    const expenseMap = {};
+    expenses.forEach((e) => {
+      expenseMap[e._id] = e.total;
+    });
+
+    const categoryIds = budget.categoryBudgets
+      .map((cb) => cb.category)
+      .filter((id) => mongoose.Types.ObjectId.isValid(id));
+
+    const categoriesDb = await Category.find({ _id: { $in: categoryIds } });
+    const categoryMap = {}; // Map ID -> Category Doc
+
+    categoriesDb.forEach((c) => {
+      categoryMap[c._id.toString()] = c;
+    });
+
+    const result = budget.categoryBudgets.map((cb) => {
+      const catObj = categoryMap[cb.category];
+      const catName = catObj
+        ? catObj.name
+        : mongoose.Types.ObjectId.isValid(cb.category)
+        ? "Unknown"
+        : cb.category;
+
+      const spent = expenseMap[catName] || 0;
+
+      return {
+        _id: cb._id,
+        category: catObj || { name: catName, type: "expense" },
+        limit: cb.amount,
+        spent: spent || 0,
+      };
+    });
+
+    return res.status(200).json({
+      success: true,
+      data: result,
+    });
+  } catch (error) {
+    console.error("Get Budgets Error:", error);
     return res
       .status(500)
       .json({ success: false, message: "Internal server error" });
@@ -163,19 +322,37 @@ export const updateBudget = async (req, res) => {
 export const deleteBudget = async (req, res) => {
   try {
     const userId = req.user.id;
-    const budgetId = req.params.id;
+    const budgetItemId = req.params.id;
 
-    const deletedBudget = await Budget.findOneAndDelete({
-      _id: budgetId,
+    const budget = await Budget.findOne({
+      "categoryBudgets._id": budgetItemId,
       user: userId,
     });
 
-    if (!deletedBudget) {
+    if (!budget) {
       return res.status(404).json({
         success: false,
-        message: "Budget not found",
+        message: "Budget item not found",
       });
     }
+
+    const originalLength = budget.categoryBudgets.length;
+    budget.categoryBudgets = budget.categoryBudgets.filter(
+      (cb) => cb._id.toString() !== budgetItemId
+    );
+
+    if (budget.categoryBudgets.length === originalLength) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Item not found in budget error" });
+    }
+
+    budget.overallBudget = budget.categoryBudgets.reduce(
+      (sum, item) => sum + item.amount,
+      0
+    );
+
+    await budget.save();
 
     return res.status(200).json({
       success: true,
