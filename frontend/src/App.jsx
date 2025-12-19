@@ -8,6 +8,8 @@ import NotFound from "./pages/NotFound";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 // Private Pages
 import Dashboard from "./pages/Dashboard";
@@ -15,6 +17,8 @@ import Transactions from "./pages/Transactions";
 import Categories from "./pages/Categories";
 import Budgets from "./pages/Budgets";
 import Settings from "./pages/Settings";
+import Profile from "./pages/Profile";
+import Admin from "./pages/Admin";
 
 // Router Guards
 import PrivateRoute from "./router/PrivateRoute";
@@ -28,6 +32,8 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           {/* Redirects for legacy routes if user attempts to go to /transactions directly */}
           <Route
@@ -43,6 +49,8 @@ export default function App() {
               <Route path="categories" element={<Categories />} />
               <Route path="budgets" element={<Budgets />} />
               <Route path="settings" element={<Settings />} />
+              <Route path="profile" element={<Profile />} />
+              <Route path="admin" element={<Admin />} />
             </Route>
           </Route>
 

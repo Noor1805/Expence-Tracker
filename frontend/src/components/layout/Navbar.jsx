@@ -1,11 +1,18 @@
-import { FiSun, FiMoon, FiBell, FiUser, FiLogOut, FiSettings } from "react-icons/fi";
-import { useEffect, useState, useRef } from "react";
+import {
+  FiSun,
+  FiMoon,
+  FiBell,
+  FiUser,
+  FiLogOut,
+  FiSettings,
+} from "react-icons/fi";
+import { useEffect, useState, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+import { ThemeContext } from "../../context/ThemeContext";
+import api from "../../services/api";
 
 export default function Navbar() {
-  const [darkMode, setDarkMode] = useState(
-    localStorage.getItem("theme") === "dark"
-  );
+  const { theme, toggleTheme } = useContext(ThemeContext);
   const [showProfile, setShowProfile] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
 
@@ -13,29 +20,12 @@ export default function Navbar() {
   const notifRef = useRef(null);
   const navigate = useNavigate();
 
-  
-  useEffect(() => {
-    if (darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [darkMode]);
-
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (
-        profileRef.current &&
-        !profileRef.current.contains(e.target)
-      ) {
+      if (profileRef.current && !profileRef.current.contains(e.target)) {
         setShowProfile(false);
       }
-      if (
-        notifRef.current &&
-        !notifRef.current.contains(e.target)
-      ) {
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
         setShowNotifications(false);
       }
     };
@@ -44,30 +34,39 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
+  const handleLogout = async () => {
+    try {
+      await api.post("/auth/logout");
+    } catch (e) {
+      console.error("Logout error", e);
+    } finally {
+      localStorage.removeItem("token");
+      navigate("/login");
+    }
   };
 
   return (
-    <div className="w-full h-16 flex items-center justify-between px-6
+    <div
+      className="w-full h-16 flex items-center justify-between px-6
       bg-white dark:bg-[#0B0B0B]
       border-b border-gray-200 dark:border-white/10
-      backdrop-blur-xl z-50">
-
-      <h1 className="text-xl font-semibold text-gray-900 dark:text-gray-200 audiowide-regular">
+      backdrop-blur-xl z-50"
+    >
+      <h1
+        className="text-xl font-semibold text-gray-900 dark:text-gray-200 audiowide-regular cursor-pointer"
+        onClick={() => navigate("/app")}
+      >
         Mon<span className="text-orange-500">exa</span>
       </h1>
 
       <div className="flex items-center gap-4 relative">
-
         <button
-          onClick={() => setDarkMode(!darkMode)}
+          onClick={() => toggleTheme()}
           className="p-2 rounded-full
           bg-black/5 dark:bg-white/5
           hover:bg-black/10 dark:hover:bg-white/10 transition"
         >
-          {darkMode ? (
+          {theme === "dark" ? (
             <FiSun className="text-orange-400" />
           ) : (
             <FiMoon className="text-gray-700" />
@@ -86,11 +85,12 @@ export default function Navbar() {
           </button>
 
           {showNotifications && (
-            <div className="absolute right-0 mt-3 w-72 rounded-2xl
+            <div
+              className="absolute right-0 mt-3 w-72 rounded-2xl
               bg-white dark:bg-[#0F0F0F]
               border border-gray-200 dark:border-white/10
-              shadow-2xl p-4 z-50">
-
+              shadow-2xl p-4 z-50"
+            >
               <h4 className="font-semibold text-sm mb-3 text-gray-800 dark:text-gray-200">
                 Notifications
               </h4>
@@ -113,23 +113,30 @@ export default function Navbar() {
           </button>
 
           {showProfile && (
-            <div className="absolute right-0 mt-3 w-52 rounded-2xl
+            <div
+              className="absolute right-0 mt-3 w-52 rounded-2xl
               bg-white dark:bg-[#0F0F0F]
               border border-gray-200 dark:border-white/10
-              shadow-2xl overflow-hidden z-50">
-
+              shadow-2xl overflow-hidden z-50"
+            >
               <button
-                onClick={() => navigate("/profile")}
+                onClick={() => {
+                  navigate("/app/profile");
+                  setShowProfile(false);
+                }}
                 className="w-full flex items-center gap-3 px-4 py-3
-                hover:bg-black/5 dark:hover:bg-white/5 text-sm"
+                hover:bg-black/5 dark:hover:bg-white/5 text-sm dark:text-gray-200"
               >
                 <FiUser /> Profile
               </button>
 
               <button
-                onClick={() => navigate("/settings")}
+                onClick={() => {
+                  navigate("/app/settings");
+                  setShowProfile(false);
+                }}
                 className="w-full flex items-center gap-3 px-4 py-3
-                hover:bg-black/5 dark:hover:bg-white/5 text-sm"
+                hover:bg-black/5 dark:hover:bg-white/5 text-sm dark:text-gray-200"
               >
                 <FiSettings /> Settings
               </button>
