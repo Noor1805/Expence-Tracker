@@ -1,11 +1,19 @@
 import { useContext, useEffect, useState } from "react";
 import api from "../services/api";
 import { ThemeContext } from "../context/ThemeContext";
-import { FiBell, FiShield, FiTrash2, FiUser, FiInfo } from "react-icons/fi";
+import {
+  FiBell,
+  FiShield,
+  FiTrash2,
+  FiUser,
+  FiInfo,
+  FiCreditCard,
+  FiLogOut,
+} from "react-icons/fi";
 import { motion } from "framer-motion";
 
 export default function Settings() {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+  const { theme } = useContext(ThemeContext);
 
   const [settings, setSettings] = useState({
     theme: theme,
@@ -44,9 +52,7 @@ export default function Settings() {
 
   // SAVE SETTINGS
   const saveSettings = async (updated) => {
-    // Optimistic UI update
     setSettings(updated);
-
     try {
       await api.put("/settings", {
         ...updated,
@@ -84,154 +90,204 @@ export default function Settings() {
 
   if (loading) {
     return (
-      <div className="p-10 text-center text-gray-500 animate-pulse">
-        Loading settings...
+      <div className="min-h-screen flex items-center justify-center bg-[#05080d]">
+        <div className="w-10 h-10 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="space-y-8 max-w-4xl pb-20"
-    >
-      <div className="flex items-center gap-3 mb-6">
-        <h1 className="text-3xl font-bold text-white tracking-wide">
-          Settings
-        </h1>
-      </div>
-
-      {/* PROFILE */}
-      <section className="glass neo rounded-3xl p-8 border border-white/5 relative overflow-hidden group">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/10 rounded-full blur-3xl -translate-y-10 translate-x-10 group-hover:bg-orange-500/20 transition-all duration-700"></div>
-
-        <h2 className="text-xl text-white font-semibold mb-6 flex items-center gap-3">
-          <FiUser className="text-orange-400" /> User Profile
-        </h2>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-2">
-            <label className="text-sm text-gray-400 ml-1">Full Name</label>
-            <input
-              className="input bg-black/20 border-white/10 text-gray-300 cursor-not-allowed"
-              value={settings.name || "User"}
-              disabled
-              readOnly
-            />
-          </div>
-          <div className="space-y-2">
-            <label className="text-sm text-gray-400 ml-1">Email Address</label>
-            <input
-              className="input bg-black/20 border-white/10 text-gray-300 cursor-not-allowed"
-              value={settings.email || ""}
-              disabled
-              readOnly
-            />
-          </div>
-        </div>
-        <div className="mt-4 flex items-center gap-2 text-xs text-orange-400/80 bg-orange-500/5 p-3 rounded-xl border border-orange-500/10">
-          <FiInfo />
-          <span>
-            Profile details are managed via your account provider. Contact
-            support to update.
-          </span>
-        </div>
-      </section>
-
-      {/* APPEARANCE & PREFERENCES */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Currency */}
-        <section className="glass neo rounded-3xl p-8 border border-white/5">
-          <h2 className="text-xl text-white font-semibold mb-6 flex items-center gap-3">
-            Currency
-          </h2>
-
-          <div className="relative">
-            <select
-              value={settings.currency || "INR"}
-              onChange={(e) =>
-                saveSettings({ ...settings, currency: e.target.value })
-              }
-              className="w-full appearance-none bg-[#0a0a0f] text-white px-6 py-4 rounded-2xl border border-white/10 focus:border-orange-500 focus:ring-1 focus:ring-orange-500 outline-none transition-all cursor-pointer text-lg"
-            >
-              <option value="INR">₹ INR (Indian Rupee)</option>
-              <option value="USD">$ USD (US Dollar)</option>
-              <option value="EUR">€ EUR (Euro)</option>
-              <option value="GBP">£ GBP (British Pound)</option>
-            </select>
-            <div className="absolute right-6 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">
-              ▼
-            </div>
-          </div>
-          <p className="text-gray-500 text-sm mt-4 pl-1">
-            Updates currency symbol across all dashboards.
+    <div className="min-h-screen bg-[#05080d] p-4 md:p-8 lg:p-10 flex flex-col items-center">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="w-full max-w-5xl space-y-8 md:space-y-10"
+      >
+        <div className="text-center pt-4 md:pt-0">
+          <h1 className="text-3xl md:text-5xl font-bold text-white tracking-widest audiowide-regular mb-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
+            SETTINGS
+          </h1>
+          <p className="text-gray-400 text-sm md:text-base">
+            Manage your preferences and account
           </p>
-        </section>
-      </div>
+        </div>
 
-      {/* NOTIFICATIONS */}
-      <section className="glass neo rounded-3xl p-8 border border-white/5">
-        <h2 className="text-xl text-white font-semibold mb-6 flex items-center gap-3">
-          <FiBell className="text-teal-400" /> Notifications
-        </h2>
+        {/* MAIN GRID - Stack on mobile, 2 cols on huge screens */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
+          {/* LEFT COLUMN: Profile & Currency */}
+          <div className="space-y-6 md:space-y-8">
+            {/* 1. PROFILE CARD */}
+            <section className="relative overflow-hidden p-6 md:p-8 rounded-[30px] border border-white/10 bg-[#111] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-[40px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
 
-        <div
-          className="flex items-center justify-between p-4 rounded-2xl hover:bg-white/5 transition-colors cursor-pointer"
-          onClick={() =>
-            saveSettings({
-              ...settings,
-              notifications: !settings.notifications,
-            })
-          }
-        >
-          <div>
-            <p className="text-white font-medium text-lg">Push Notifications</p>
-            <p className="text-gray-400 text-sm">
-              Receive alerts about budget limits and monthly reports
-            </p>
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center text-xl text-cyan-400 shrink-0">
+                  <FiUser />
+                </div>
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-white audiowide-regular tracking-wide">
+                    Profile
+                  </h2>
+                  <p className="text-xs md:text-sm text-gray-500">
+                    Your account details
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-5 relative z-10">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-500 tracking-widest uppercase ml-2">
+                    Display Name
+                  </label>
+                  <div className="w-full px-5 py-3 md:px-6 md:py-4 rounded-2xl bg-[#1a1a1a] border border-white/5 text-gray-300 font-medium truncate">
+                    {settings.name || "User"}
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-500 tracking-widest uppercase ml-2">
+                    Email Address
+                  </label>
+                  <div className="w-full px-5 py-3 md:px-6 md:py-4 rounded-2xl bg-[#1a1a1a] border border-white/5 text-gray-300 font-medium opacity-75 truncate">
+                    {settings.email || "No email"}
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3 p-4 rounded-2xl bg-cyan-500/5 border border-cyan-500/10 text-cyan-400/80 text-xs md:text-sm mt-2">
+                  <FiInfo className="mt-0.5 text-base shrink-0" />
+                  <p>
+                    Profile information is managed by your authentication
+                    provider defined during signup.
+                  </p>
+                </div>
+              </div>
+            </section>
+
+            {/* 2. CURRENCY */}
+            <section className="p-6 md:p-8 rounded-[30px] border border-white/10 bg-[#111] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center text-xl text-emerald-400 shrink-0">
+                  <FiCreditCard />
+                </div>
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-white audiowide-regular tracking-wide">
+                    Currency
+                  </h2>
+                  <p className="text-xs md:text-sm text-gray-500">
+                    Global display currency
+                  </p>
+                </div>
+              </div>
+
+              <div className="relative group">
+                <select
+                  value={settings.currency || "INR"}
+                  onChange={(e) =>
+                    saveSettings({ ...settings, currency: e.target.value })
+                  }
+                  className="w-full appearance-none bg-[#1a1a1a] text-white px-5 py-4 rounded-2xl border border-white/10 focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 outline-none transition-all cursor-pointer text-base md:text-lg font-medium tracking-wide"
+                >
+                  <option value="INR">₹ INR (Indian Rupee)</option>
+                  <option value="USD">$ USD (US Dollar)</option>
+                  <option value="EUR">€ EUR (Euro)</option>
+                  <option value="GBP">£ GBP (British Pound)</option>
+                </select>
+                <div className="absolute right-6 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none group-hover:text-emerald-400 transition-colors">
+                  ▼
+                </div>
+              </div>
+            </section>
           </div>
 
-          <div
-            className={`w-14 h-8 rounded-full p-1 transition-colors duration-300 ${
-              settings.notifications ? "bg-teal-500" : "bg-gray-700"
-            }`}
-          >
-            <div
-              className={`w-6 h-6 bg-white rounded-full shadow-md transform transition-transform duration-300 ${
-                settings.notifications ? "translate-x-6" : "translate-x-0"
-              }`}
-            />
+          {/* RIGHT COLUMN: Notifications & Security */}
+          <div className="space-y-6 md:space-y-8">
+            {/* 3. NOTIFICATIONS */}
+            <section className="p-5 md:p-8 rounded-[30px] border border-white/10 bg-[#111] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center text-xl text-purple-400 shrink-0">
+                  <FiBell />
+                </div>
+                <div>
+                  <h2 className="text-lg md:text-2xl font-bold text-white audiowide-regular tracking-wide">
+                    Alerts
+                  </h2>
+                  <p className="text-xs md:text-sm text-gray-500">
+                    Manage app notifications
+                  </p>
+                </div>
+              </div>
+
+              <div
+                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 md:p-5 rounded-3xl bg-[#1a1a1a] border border-white/5 cursor-pointer hover:border-purple-500/30 transition-all group gap-4"
+                onClick={() =>
+                  saveSettings({
+                    ...settings,
+                    notifications: !settings.notifications,
+                  })
+                }
+              >
+                <div className="flex-1 min-w-0">
+                  <p className="text-white font-bold text-base md:text-lg mb-1 group-hover:text-purple-300 transition-colors">
+                    Push Notifications
+                  </p>
+                  <p className="text-gray-500 text-xs md:text-sm leading-relaxed">
+                    Receive alerts about monthly reports & budget limits
+                  </p>
+                </div>
+
+                {/* Custom Toggle Switch */}
+                <div
+                  className={`w-14 h-8 md:w-16 md:h-9 rounded-full p-1 relative transition-colors duration-300 shrink-0 self-start sm:self-center ${
+                    settings.notifications ? "bg-purple-500" : "bg-gray-700"
+                  }`}
+                >
+                  <div
+                    className={`absolute top-1 left-1 w-6 h-6 md:w-7 md:h-7 bg-white rounded-full shadow-md transition-all duration-300 ${
+                      settings.notifications
+                        ? "translate-x-6 md:translate-x-7"
+                        : "translate-x-0"
+                    }`}
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* 4. DANGER ZONE */}
+            <section className="p-6 md:p-8 rounded-[30px] border border-red-500/20 bg-gradient-to-b from-red-900/10 to-transparent shadow-[0_10px_40px_-10px_rgba(255,0,0,0.1)]">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-xl text-red-500 shrink-0">
+                  <FiShield />
+                </div>
+                <div>
+                  <h2 className="text-xl md:text-2xl font-bold text-white audiowide-regular tracking-wide">
+                    Security
+                  </h2>
+                  <p className="text-xs md:text-sm text-gray-500">
+                    Critical account actions
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                <button
+                  onClick={logoutAll}
+                  className="w-full py-4 rounded-2xl bg-[#1a1a1a] hover:bg-white/5 border border-white/10 text-gray-300 hover:text-white font-bold tracking-wide transition-all flex items-center justify-center gap-2 group text-sm md:text-base"
+                >
+                  <FiLogOut className="group-hover:-translate-x-1 transition-transform" />
+                  Log Out All Devices
+                </button>
+
+                <button
+                  onClick={deleteAccount}
+                  className="w-full py-4 rounded-2xl bg-red-500/10 hover:bg-red-500 hover:text-white border border-red-500/30 text-red-400 font-bold tracking-wide transition-all flex items-center justify-center gap-2 text-sm md:text-base"
+                >
+                  <FiTrash2 />
+                  Delete Account
+                </button>
+              </div>
+            </section>
           </div>
         </div>
-      </section>
-
-      {/*SECURITY & DANGER */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        <section className="glass neo rounded-3xl p-8 border border-white/5">
-          <h2 className="text-xl text-white font-semibold mb-6 flex items-center gap-3">
-            <FiShield className="text-purple-400" /> Security
-          </h2>
-          <button
-            onClick={logoutAll}
-            className="w-full py-4 rounded-2xl bg-white/5 hover:bg-purple-500/10 hover:text-purple-400 border border-white/10 text-gray-300 font-medium transition-all"
-          >
-            Logout from all devices
-          </button>
-        </section>
-
-        <section className="glass neo rounded-3xl p-8 border border-red-500/20 bg-red-500/5">
-          <h2 className="text-xl text-red-400 font-semibold mb-6 flex items-center gap-3">
-            <FiTrash2 /> Danger Zone
-          </h2>
-          <button
-            onClick={deleteAccount}
-            className="w-full py-4 rounded-2xl bg-red-500/10 hover:bg-red-500 hover:text-white border border-red-500/20 text-red-400 font-medium transition-all"
-          >
-            Delete Account
-          </button>
-        </section>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }

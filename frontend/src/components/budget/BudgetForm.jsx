@@ -27,40 +27,60 @@ export default function BudgetForm({ categories, onSuccess }) {
   return (
     <form
       onSubmit={submit}
-      className="glass neo rounded-2xl p-6 border border-white/10"
+      className="
+        p-8 rounded-[35px]
+        bg-[#111] 
+        border border-cyan-500/30
+        shadow-[0_0_40px_rgba(6,182,212,0.15)]
+        relative overflow-hidden
+      "
     >
-      <h2 className="text-lg font-semibold text-white mb-4">
+      <h3 className="text-white text-2xl font-bold mb-8 tracking-wide relative z-10 text-center audiowide-regular">
         Set Monthly Budget
-      </h2>
+      </h3>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <input
-          type="text"
-          required
-          placeholder="Category Name (e.g. Food)"
-          value={form.category}
-          onChange={(e) => setForm({ ...form, category: e.target.value })}
-          className="input"
-          list="category-suggestions"
-        />
-        <datalist id="category-suggestions">
-          {(categories || []).map((c) => (
-            <option key={c._id} value={c.name} />
-          ))}
-        </datalist>
+      <div className="space-y-6 relative z-10">
+        {/* Category Input */}
+        <div className="space-y-2">
+          <label className="text-gray-400 text-xs font-bold tracking-widest ml-1 uppercase">
+            Category
+          </label>
+          <div className="relative">
+            <input
+              type="text"
+              required
+              placeholder="e.g. Food"
+              value={form.category}
+              onChange={(e) => setForm({ ...form, category: e.target.value })}
+              className="w-full px-5 py-4 rounded-2xl bg-[#1a1a1a] border border-white/10 text-white placeholder-gray-600 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all outline-none"
+              list="category-suggestions"
+            />
+            <datalist id="category-suggestions">
+              {(categories || []).map((c) => (
+                <option key={c._id} value={c.name} />
+              ))}
+            </datalist>
+          </div>
+        </div>
 
-        <input
-          type="number"
-          required
-          placeholder="Monthly Limit"
-          value={form.limit}
-          onChange={(e) => setForm({ ...form, limit: e.target.value })}
-          className="input"
-        />
+        {/* Limit Input */}
+        <div className="space-y-2">
+          <label className="text-gray-400 text-xs font-bold tracking-widest ml-1 uppercase">
+            Monthly Limit
+          </label>
+          <input
+            type="number"
+            required
+            placeholder="₹ 5000"
+            value={form.limit}
+            onChange={(e) => setForm({ ...form, limit: e.target.value })}
+            className="w-full px-5 py-4 rounded-2xl bg-[#1a1a1a] border border-white/10 text-white placeholder-gray-600 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all outline-none"
+          />
+        </div>
 
         <button
           disabled={loading}
-          className="bg-orange-500 hover:bg-orange-400 text-black rounded-xl font-semibold transition-colors"
+          className="w-full py-5 text-white font-bold text-xl rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 shadow-xl shadow-cyan-500/20 hover:shadow-cyan-500/40 transform hover:-translate-y-0.5 transition-all mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? "Saving..." : "Save Budget"}
         </button>

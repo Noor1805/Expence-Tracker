@@ -7,6 +7,7 @@ import TransactionCard from "../components/transactions/TransactionCard";
 import TransactionFilters from "../components/transactions/TransactionFilters";
 import AddEditTransactionForm from "../components/transactions/AddEditTransactionForm";
 import ImportCSVModal from "../components/transactions/ImportCSVModal";
+import { motion } from "framer-motion";
 
 export default function Transactions() {
   const [filters, setFilters] = useState({
@@ -92,139 +93,175 @@ export default function Transactions() {
   };
 
   return (
-    <div className="relative space-y-8">
-      <div className="flex items-center z-50 justify-between">
-        <h1 className="text-3xl font-bold text-white tracking-tight">
-          Transactions
-        </h1>
+    <div className="min-h-screen bg-[#05080d] p-2 sm:p-4 md:p-8 lg:p-10 pb-24 overflow-x-hidden">
+      <div className="max-w-7xl mx-auto space-y-6 md:space-y-8">
+        {/* HEADER */}
+        <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+          <div>
+            <h1 className="text-3xl md:text-5xl font-bold text-white tracking-widest audiowide-regular mb-1 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
+              TRANSACTIONS
+            </h1>
+            <p className="text-gray-400 ml-1 text-sm md:text-base">
+              Track every penny
+            </p>
+          </div>
 
-        <div className="flex gap-3">
+          <div className="grid grid-cols-2 gap-3 w-full lg:w-auto">
+            <button
+              onClick={() => {
+                setEditing(null);
+                setShowAdd(true);
+              }}
+              className="
+                    flex-1 lg:flex-none
+                    px-5 py-3 rounded-2xl font-bold tracking-wide
+                    bg-gradient-to-r from-cyan-600 to-blue-600
+                    text-white text-sm md:text-base
+                    shadow-lg shadow-cyan-500/20
+                    hover:shadow-cyan-500/40 hover:-translate-y-0.5
+                    transition-all
+                    "
+            >
+              + New
+            </button>
+
+            <button
+              onClick={() => setShowImport(true)}
+              className="
+                    flex-1 lg:flex-none
+                    px-5 py-3 rounded-2xl font-bold tracking-wide
+                    bg-[#1a1a1a] text-cyan-400 text-sm md:text-base
+                    border border-cyan-500/30
+                    hover:bg-cyan-500/10
+                    transition-all
+                    "
+            >
+              Import
+            </button>
+          </div>
+        </div>
+
+        {/* FILTERS */}
+        <TransactionFilters
+          filters={filters}
+          setFilters={setFilters}
+          onApply={applyFilters}
+          onOpenImport={() => setShowImport(true)}
+        />
+
+        {/* TOP STATS */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <StatsCard
+            title="Income"
+            value={`₹${stats.totalIncome.toLocaleString()}`}
+            color="text-emerald-400"
+            border="border-emerald-500"
+          />
+          <StatsCard
+            title="Expense"
+            value={`₹${stats.totalExpense.toLocaleString()}`}
+            color="text-red-400"
+            border="border-red-500"
+          />
+          <StatsCard
+            title="Balance"
+            value={`₹${stats.balance.toLocaleString()}`}
+            color="text-cyan-400"
+            border="border-cyan-500"
+          />
+        </div>
+
+        {/* LIST */}
+        <div className="mt-4">
+          {loading ? (
+            <div className="flex items-center justify-center h-[300px]">
+              <div className="w-12 h-12 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+            </div>
+          ) : transactions.length === 0 ? (
+            <div
+              className="
+                p-12 rounded-[30px] border border-dashed border-white/10
+                flex flex-col items-center justify-center
+                text-gray-500 bg-[#111]
+                "
+            >
+              <div className="text-5xl mb-4 opacity-50 grayscale">📦</div>
+              <p className="text-xl font-medium">No transactions found</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              {transactions.map((t) => (
+                <TransactionCard
+                  key={t._id}
+                  item={t}
+                  onEdit={(item) => {
+                    setEditing(item);
+                    setShowAdd(true);
+                  }}
+                  onDelete={async (id) => {
+                    if (!confirm("Delete transaction?")) return;
+                    await api.delete(`/transactions/${id}`);
+                    fetchTransactions();
+                    fetchStats();
+                  }}
+                />
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* PAGINATION */}
+        <div className="flex justify-center items-center gap-4 pt-8">
           <button
-            onClick={() => {
-              setEditing(null);
-              setShowAdd(true);
-            }}
+            disabled={filters.page <= 1}
+            onClick={() => setFilters((f) => ({ ...f, page: f.page - 1 }))}
             className="
-              px-5 py-2.5 rounded-full font-semibold
-              bg-gradient-to-r from-orange-500 to-orange-600
-              text-black
-              shadow-[0_0_25px_rgba(249,115,22,0.55)]
-              hover:shadow-[0_0_35px_rgba(249,115,22,0.75)]
-              transition-all
+                px-6 py-3 rounded-xl
+                bg-[#1a1a1a] text-gray-300
+                border border-white/10
+                disabled:opacity-40 disabled:cursor-not-allowed
+                hover:border-cyan-500/50 hover:text-cyan-400
+                transition-all
             "
           >
-            + Add
+            Previous
           </button>
 
+          <span className="text-gray-400 font-mono bg-[#111] px-4 py-2 rounded-lg border border-white/5">
+            Page {filters.page}
+          </span>
+
           <button
-            onClick={() => setShowImport(true)}
+            onClick={() => setFilters((f) => ({ ...f, page: f.page + 1 }))}
             className="
-              px-5 py-2.5 rounded-full font-semibold
-              bg-black/40 text-orange-400
-              border border-orange-500/40
-              hover:bg-black/60
-              hover:shadow-[0_0_25px_rgba(249,115,22,0.5)]
-              transition-all
+                 px-6 py-3 rounded-xl
+                bg-[#1a1a1a] text-gray-300
+                border border-white/10
+                hover:border-cyan-500/50 hover:text-cyan-400
+                transition-all
             "
           >
-            Import
+            Next
           </button>
         </div>
+
+        {/* MODALS */}
+        <AddEditTransactionForm
+          open={showAdd}
+          onClose={() => {
+            setShowAdd(false);
+            setEditing(null);
+          }}
+          onSave={handleSave}
+          initial={editing}
+        />
+
+        <ImportCSVModal
+          open={showImport}
+          onClose={() => setShowImport(false)}
+          onImported={handleImportSuccess}
+        />
       </div>
-      <TransactionFilters
-        filters={filters}
-        setFilters={setFilters}
-        onApply={applyFilters}
-        onOpenImport={() => setShowImport(true)}
-      />
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <StatsCard title="Income" value={`₹${stats.totalIncome}`} />
-        <StatsCard title="Expense" value={`₹${stats.totalExpense}`} />
-        <StatsCard title="Balance" value={`₹${stats.balance}`} />
-      </div>
-
-      <div className="mt-4">
-        {loading ? (
-          <div className="glass rounded-2xl h-[260px] animate-pulse" />
-        ) : transactions.length === 0 ? (
-          <div
-            className="
-            glass rounded-3xl h-[320px]
-            flex flex-col items-center justify-center
-            text-gray-400
-          "
-          >
-            <div className="text-5xl mb-4 opacity-40">📦</div>
-            <p className="text-lg">No transactions yet</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {transactions.map((t) => (
-              <TransactionCard
-                key={t._id}
-                item={t}
-                onEdit={(item) => {
-                  setEditing(item);
-                  setShowAdd(true);
-                }}
-                onDelete={async (id) => {
-                  if (!confirm("Delete transaction?")) return;
-                  await api.delete(`/transactions/${id}`);
-                  fetchTransactions();
-                  fetchStats();
-                }}
-              />
-            ))}
-          </div>
-        )}
-      </div>
-
-      <div className="flex justify-center items-center gap-4 pt-4">
-        <button
-          disabled={filters.page <= 1}
-          onClick={() => setFilters((f) => ({ ...f, page: f.page - 1 }))}
-          className="
-            px-4 py-2 rounded-xl
-            bg-black/40 text-orange-400
-            border border-orange-500/30
-            disabled:opacity-40
-            hover:bg-black/60
-          "
-        >
-          Prev
-        </button>
-
-        <span className="text-gray-300">Page {filters.page}</span>
-
-        <button
-          onClick={() => setFilters((f) => ({ ...f, page: f.page + 1 }))}
-          className="
-            px-4 py-2 rounded-xl
-            bg-black/40 text-orange-400
-            border border-orange-500/30
-            hover:bg-black/60
-          "
-        >
-          Next
-        </button>
-      </div>
-
-      <AddEditTransactionForm
-        open={showAdd}
-        onClose={() => {
-          setShowAdd(false);
-          setEditing(null);
-        }}
-        onSave={handleSave}
-        initial={editing}
-      />
-
-      <ImportCSVModal
-        open={showImport}
-        onClose={() => setShowImport(false)}
-        onImported={handleImportSuccess}
-      />
     </div>
   );
 }

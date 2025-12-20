@@ -417,10 +417,14 @@ export const getPaymentMethodStats = async (req, res) => {
       {
         $match: {
           user: new mongoose.Types.ObjectId(req.user.id),
-          type: "expense",
         },
       },
-      { $group: { _id: "$paymentMethod", total: { $sum: "$amount" } } },
+      {
+        $group: {
+          _id: { $toLower: "$paymentMethod" },
+          total: { $sum: "$amount" },
+        },
+      },
       { $sort: { total: -1 } },
     ]);
     return successResponse(res, "Payment stats fetched", stats);

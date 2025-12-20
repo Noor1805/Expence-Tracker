@@ -3,37 +3,50 @@ export default function BudgetSummaryCard({ budgets }) {
   const totalSpent = budgets.reduce((a, b) => a + (b.spent || 0), 0);
   const remaining = Math.max(totalLimit - totalSpent, 0);
 
+  const StatCard = ({ title, amount, color, borderColor }) => (
+    <div
+      className={`relative overflow-hidden p-6 rounded-[25px] bg-[#111] border border-white/5 shadow-[0_10px_30px_-10px_rgba(0,0,0,0.5)] group hover:translate-y-[-2px] transition-all duration-300`}
+      style={{ borderBottom: `4px solid ${borderColor}` }}
+    >
+      <div className="relative z-10">
+        <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">
+          {title}
+        </p>
+        <h3
+          className="text-3xl audiowide-regular tracking-wide"
+          style={{ color: color }}
+        >
+          ₹{amount.toLocaleString()}
+        </h3>
+      </div>
+      {/* Glow Effect */}
+      <div
+        className="absolute -right-6 -top-6 w-24 h-24 rounded-full blur-[40px] opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none"
+        style={{ background: borderColor }}
+      />
+    </div>
+  );
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      <div className="glass neo p-6 rounded-2xl border-l-[6px] border-blue-500 relative overflow-hidden group">
-        <div className="relative z-10">
-          <p className="text-gray-400 text-sm font-medium">Total Budget</p>
-          <h3 className="text-2xl text-white font-bold mt-2">
-            ₹{totalLimit.toLocaleString()}
-          </h3>
-        </div>
-        <div className="absolute right-0 top-0 w-24 h-full bg-blue-500/10 skew-x-12 translate-x-12 group-hover:translate-x-6 transition-transform" />
-      </div>
-
-      <div className="glass neo p-6 rounded-2xl border-l-[6px] border-orange-500 relative overflow-hidden group">
-        <div className="relative z-10">
-          <p className="text-gray-400 text-sm font-medium">Total Spent</p>
-          <h3 className="text-2xl text-orange-400 font-bold mt-2">
-            ₹{totalSpent.toLocaleString()}
-          </h3>
-        </div>
-        <div className="absolute right-0 top-0 w-24 h-full bg-orange-500/10 skew-x-12 translate-x-12 group-hover:translate-x-6 transition-transform" />
-      </div>
-
-      <div className="glass neo p-6 rounded-2xl border-l-[6px] border-emerald-500 relative overflow-hidden group">
-        <div className="relative z-10">
-          <p className="text-gray-400 text-sm font-medium">Remaining</p>
-          <h3 className="text-2xl text-emerald-400 font-bold mt-2">
-            ₹{remaining.toLocaleString()}
-          </h3>
-        </div>
-        <div className="absolute right-0 top-0 w-24 h-full bg-emerald-500/10 skew-x-12 translate-x-12 group-hover:translate-x-6 transition-transform" />
-      </div>
+      <StatCard
+        title="Total Budget"
+        amount={totalLimit}
+        color="#22d3ee" // Cyan
+        borderColor="#06b6d4"
+      />
+      <StatCard
+        title="Total Spent"
+        amount={totalSpent}
+        color="#fb923c" // Orange
+        borderColor="#f97316"
+      />
+      <StatCard
+        title="Remaining"
+        amount={remaining}
+        color={remaining > 0 ? "#34d399" : "#ff4d4d"} // Emerald or Red
+        borderColor={remaining > 0 ? "#10b981" : "#ef4444"}
+      />
     </div>
   );
 }

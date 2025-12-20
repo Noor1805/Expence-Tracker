@@ -1,5 +1,6 @@
 import { FiEdit2, FiTrash2, FiActivity } from "react-icons/fi";
 import api from "../../services/api";
+import { ICONS } from "./IconPicker";
 
 export default function CategoryCard({
   category,
@@ -7,103 +8,136 @@ export default function CategoryCard({
   onDelete,
   onViewHistory,
 }) {
-  const handleDelete = async () => {
+  const handleDelete = async (e) => {
+    e.stopPropagation();
     if (!confirm("Delete this category?")) return;
     try {
       await api.delete(`/categories/${category._id}`);
       onDelete();
     } catch (err) {
-      console.error("Failed to delete category", err);
+      alert(err.response?.data?.message || "Failed to delete");
     }
   };
 
   const formattedAmount = new Intl.NumberFormat("en-US", {
     style: "currency",
-    currency: "USD",
+    currency: "INR",
   }).format(category.totalAmount || 0);
+
+  const isIncome = category.type === "income";
+  const iconObj = ICONS.find((i) => i.id === category.icon) || ICONS[0];
+
+  // Helper to ensure we can append opacity correctly.
+  const getBaseHex = (c) => {
+    if (!c) return "#000000";
+    if (c.length === 9) return c.substring(0, 7);
+    return c;
+  };
+
+  const baseColor = getBaseHex(category.color);
 
   return (
     <div
-      className="group relative overflow-hidden rounded-2xl p-5 border border-white/5 bg-white/5 hover:bg-white/10 transition-all duration-300 backdrop-blur-md"
+      className="
+        relative w-full max-w-[340px] mx-auto aspect-[4/5]
+        rounded-[25px]
+        p-6 flex flex-col items-center justify-between
+        border border-white/10
+        group cursor-pointer
+        transition-all duration-500 hover:-translate-y-1
+      "
       style={{
-        boxShadow: `0 4px 20px -10px ${category.color}40`,
+        background: `linear-gradient(165deg, ${baseColor}55 0%, #050505 60%, ${baseColor}22 100%)`,
+        boxShadow: `0 15px 40px -10px ${baseColor}10`, // Subtle colored outer glow
+        borderColor: `${baseColor}40`,
       }}
+      onClick={() => onViewHistory(category)}
     >
+      {/* Top Controls */}
+      <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            onEdit(category);
+          }}
+          className="p-2 rounded-full bg-black/60 text-white hover:bg-white/20 backdrop-blur-md"
+        >
+          <FiEdit2 />
+        </button>
+        <button
+          onClick={handleDelete}
+          className="p-2 rounded-full bg-black/60 text-rose-400 hover:bg-rose-500/20 backdrop-blur-md"
+        >
+          <FiTrash2 />
+        </button>
+      </div>
+
+      {/* 1. Icon Circle */}
+      <div className="mt-4 relative">
+        <div
+          className="w-24 h-24 rounded-full flex items-center justify-center text-4xl text-white relative z-10"
+          style={{
+            background: baseColor,
+            // Black shadows for "pop" effect as requested
+            boxShadow:
+              "0 10px 25px -5px rgba(0,0,0,0.8), 0 8px 10px -6px rgba(0,0,0,0.5)",
+          }}
+        >
+          {iconObj.icon}
+        </div>
+        {/* Glow behind icon */}
+        <div
+          className="absolute inset-0 rounded-full blur-[30px] opacity-40 z-0"
+          style={{ background: baseColor }}
+        />
+      </div>
+
+      {/* 2. Name */}
+      <h3 className="text-2xl audiowide-regular font-bold text-white tracking-wide mt-2">
+        {category.name}
+      </h3>
+
+      {/* 3. Pills */}
       <div
-        className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-500 pointer-events-none"
-        style={{
-          background: `radial-gradient(circle at center, ${category.color}, transparent 70%)`,
-        }}
-      />
+        className="w-full bg-white/5 border rounded-full flex justify-between items-center px-2"
+        style={{ borderColor: `${baseColor}40` }}
+      >
+        <span
+          className="px-4 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase"
+          style={{
+            color: isIncome ? "#23f06eff" : "#f30c2eff",
+          }}
+        >
+          {category.type}
+        </span>
+        <span
+          className="px-4 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase"
+          style={{ color: isIncome ? "#23f06eff" : "#f30c2eff" }}
+        >
+          {category.type}
+        </span>
+      </div>
 
-      <div className="relative z-10 flex flex-col h-full justify-between">
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex gap-4 items-center">
-            <div
-              className="w-14 h-14 rounded-2xl flex items-center justify-center text-2xl shadow-lg border border-white/10"
-              style={{
-                background: `linear-gradient(135deg, ${category.color}20, ${category.color}40)`,
-                color: "white",
-                boxShadow: `0 0 15px ${category.color}30`,
-              }}
-            >
-              {category.icon}
-            </div>
-            <div>
-              <h4 className="font-bold text-white text-lg tracking-wide">
-                {category.name}
-              </h4>
-              <span
-                className={`text-xs px-2 py-1 rounded-full border inline-block mt-1 ${
-                  category.type === "income"
-                    ? "border-emerald-500/30 text-emerald-400 bg-emerald-500/10"
-                    : "border-rose-500/30 text-rose-400 bg-rose-500/10"
-                }`}
-              >
-                {category.type.toUpperCase()}
-              </span>
-            </div>
-          </div>
-
-          <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 translate-x-2 group-hover:translate-x-0">
-            <button
-              onClick={() => onEdit(category)}
-              className="p-2 rounded-lg bg-blue-500/20 text-blue-400 hover:bg-blue-500 hover:text-white transition-colors"
-            >
-              <FiEdit2 size={16} />
-            </button>
-            <button
-              onClick={handleDelete}
-              className="p-2 rounded-lg bg-red-500/20 text-red-400 hover:bg-red-500 hover:text-white transition-colors"
-            >
-              <FiTrash2 size={16} />
-            </button>
-          </div>
+      {/* 4. Bottom Stats Box - Centered & Refined */}
+      <div className="w-full bg-white/5 rounded-2xl flex flex-col items-center justify-center p-5 border border-white/5 backdrop-blur-sm mt-2 relative overflow-hidden text-center">
+        <p className="text-gray-400 text-xs uppercase tracking-wider font-medium mb-1">
+          Total {isIncome ? "Earned" : "Spent"}:
+        </p>
+        <div className="text-3xl font-bold text-white tracking-tight mb-2">
+          {formattedAmount}
         </div>
 
-        <div className="grid grid-cols-2 gap-2 pt-4 border-t border-white/5 mt-2">
-          <div className="bg-white/5 rounded-xl py-3 px-1">
-            <p className="text-xs text-gray-400 mb-1">
-              Total {category.type === "expense" ? "Spent" : "Earned"}
-            </p>
-            <p className="font-mono text-white text-lg font-semibold tracking-tight">
-              {formattedAmount}
-            </p>
-          </div>
-          <button
-            onClick={() => onViewHistory(category)}
-            className="bg-white/5 rounded-xl p-3 flex flex-col justify-center hover:bg-white/10 transition-colors text-left group-hover/stats"
-          >
-            <p className="text-xs text-gray-400 mb-1 group-hover/stats:text-blue-300 transition-colors">
-              Transactions ↗
-            </p>
-            <div className="flex items-center gap-2">
-              <FiActivity className="text-gray-500 group-hover/stats:text-blue-400 transition-colors" />
-              <p className="font-mono text-white text-lg font-semibold">
-                {category.transactionCount || 0}
-              </p>
-            </div>
-          </button>
+        <div className="w-full h-[1px] bg-white/10 mb-3"></div>
+
+        {/* Heartbeat Line + Count */}
+        <div
+          className="flex items-center justify-center gap-2 text-sm font-medium"
+          style={{ color: baseColor }}
+        >
+          <FiActivity className="text-3xl animate-pulse" />
+          <span className="text-gray-300">
+            {category.transactionCount || 0} Transactions
+          </span>
         </div>
       </div>
     </div>

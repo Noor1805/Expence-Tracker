@@ -1,99 +1,81 @@
 export default function TransactionFilters({ filters, setFilters, onApply }) {
   return (
-    <div className="w-full glass neo p-5 rounded-2xl mb-5 border border-white/10">
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+    <div className="w-full glass neo p-4 md:p-6 rounded-[30px] mb-8 border border-white/5 relative overflow-hidden">
+      {/* Search Bar - Full Width */}
+      <div className="mb-4 md:mb-6 relative">
+        <input
+          type="text"
+          placeholder="Search by note..."
+          value={filters.search}
+          onChange={(e) =>
+            setFilters((f) => ({ ...f, search: e.target.value }))
+          }
+          className="w-full px-5 py-3 md:py-4 rounded-2xl bg-[#111] text-gray-200 placeholder-gray-500 border border-white/10 focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all outline-none"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Type Filter */}
         <select
           value={filters.type}
           onChange={(e) => setFilters((f) => ({ ...f, type: e.target.value }))}
-          className="w-full p-3 rounded-xl bg-black/40 text-gray-200 border border-white/10
-                     focus:ring-2 focus:ring-orange-500 shadow-inner"
+          className="w-full px-5 py-3 rounded-2xl bg-[#1a1a1a] text-gray-300 border border-white/10 outline-none focus:border-cyan-500 transition-all appearance-none cursor-pointer"
         >
-          <option value="" className="text-black">
-            All Types
-          </option>
-          <option value="income" className="text-black">
-            Income
-          </option>
-          <option value="expense" className="text-black">
-            Expense
-          </option>
+          <option value="">All Types</option>
+          <option value="income">Income</option>
+          <option value="expense">Expense</option>
         </select>
 
+        {/* Payment Filter */}
         <select
           value={filters.paymentMethod}
           onChange={(e) =>
             setFilters((f) => ({ ...f, paymentMethod: e.target.value }))
           }
-          className="w-full p-3 rounded-xl bg-black/40 text-gray-200 border border-white/10
-                     focus:ring-2 focus:ring-teal-400 shadow-inner"
+          className="w-full px-5 py-3 rounded-2xl bg-[#1a1a1a] text-gray-300 border border-white/10 outline-none focus:border-cyan-500 transition-all appearance-none cursor-pointer"
         >
-          <option value="" className="text-black">
-            All Payments
-          </option>
-          <option value="cash" className="text-black">
-            Cash
-          </option>
-          <option value="card" className="text-black">
-            Card
-          </option>
-          <option value="upi" className="text-black">
-            UPI
-          </option>
+          <option value="">All Payments</option>
+          <option value="cash">Cash</option>
+          <option value="card">Card</option>
+          <option value="upi">UPI</option>
         </select>
 
-        <input
-          type="text"
-          placeholder="Search notes..."
-          value={filters.search}
-          onChange={(e) =>
-            setFilters((f) => ({ ...f, search: e.target.value }))
-          }
-          className="w-full p-3 rounded-xl bg-black/40 text-gray-200 placeholder-gray-500
-                     border border-white/10 focus:ring-2 focus:ring-purple-400 shadow-inner"
-        />
+        {/* Start Date */}
+        <div className="flex flex-col">
+          <input
+            type="date"
+            value={filters.startDate}
+            onChange={(e) =>
+              setFilters((f) => ({ ...f, startDate: e.target.value }))
+            }
+            className="w-full px-5 py-3 rounded-2xl bg-[#1a1a1a] text-gray-300 border border-white/10 outline-none focus:border-cyan-500 transition-all"
+          />
+        </div>
 
-        <div className="flex flex-col md:flex-row md:items-center gap-4">
-          <div className="flex flex-col w-full">
-            <label className="text-xs text-gray-400 mb-1 ml-1">
-              Start Date
-            </label>
-            <input
-              type="date"
-              value={filters.startDate}
-              onChange={(e) =>
-                setFilters((f) => ({ ...f, startDate: e.target.value }))
-              }
-              className="w-full p-3 rounded-xl bg-black/40 text-gray-200 border border-white/10
-                 focus:ring-2 focus:ring-blue-400 shadow-inner"
-            />
-          </div>
-
-          <div className="flex flex-col w-full">
-            <label className="text-xs text-gray-400 mb-1 ml-1">End Date</label>
-            <input
-              type="date"
-              value={filters.endDate}
-              onChange={(e) =>
-                setFilters((f) => ({ ...f, endDate: e.target.value }))
-              }
-              className="w-full p-3 rounded-xl bg-black/40 text-gray-200 border border-white/10
-                 focus:ring-2 focus:ring-purple-400 shadow-inner"
-            />
-          </div>
+        {/* End Date */}
+        <div className="flex flex-col">
+          <input
+            type="date"
+            value={filters.endDate}
+            onChange={(e) =>
+              setFilters((f) => ({ ...f, endDate: e.target.value }))
+            }
+            className="w-full px-5 py-3 rounded-2xl bg-[#1a1a1a] text-gray-300 border border-white/10 outline-none focus:border-cyan-500 transition-all"
+          />
         </div>
       </div>
 
-      <div className="flex items-center justify-end mt-4">
+      <div className="flex justify-end mt-6">
         <button
           onClick={onApply}
           className="
-    px-6 py-2 rounded-xl font-semibold
-    bg-gradient-to-r from-orange-500 to-orange-600
-    text-black
-    shadow-[0_0_3px_rgba(249,115,22,0.45)]
-    hover:shadow-[0_0_6px_rgba(249,115,22,0.65)]
-    transition-all
-  "
+            w-full md:w-auto px-8 py-3 rounded-2xl font-bold tracking-wide
+            bg-gradient-to-r from-cyan-600 to-blue-600
+            text-white
+            shadow-lg shadow-cyan-500/20
+            hover:shadow-cyan-500/40 hover:-translate-y-0.5
+            transition-all
+          "
         >
           Apply Filters
         </button>

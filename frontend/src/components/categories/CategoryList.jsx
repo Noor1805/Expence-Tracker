@@ -10,7 +10,7 @@ export default function CategoryList({
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-20">
-        <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-10 h-10 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
         <p className="text-gray-400 mt-4 text-sm animate-pulse">
           Loading amazing categories...
         </p>
@@ -28,12 +28,14 @@ export default function CategoryList({
     );
   }
 
+  // Changed to max 2 columns on 2xl to allow wider cards as requested
+  // Previously was 3 columns which might have made them too narrow
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
-      {categories.map((cat) => (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+      {categories.map((c) => (
         <CategoryCard
-          key={cat._id}
-          category={cat}
+          key={c._id}
+          category={c}
           onEdit={onEdit}
           onDelete={onDelete}
           onViewHistory={onViewHistory}

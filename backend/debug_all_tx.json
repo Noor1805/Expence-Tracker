@@ -1,0 +1,44 @@
+[
+  {
+    "_id": "6942c5c721ae42642b8e85ce",
+    "amount": 5000,
+    "type": "income",
+    "paymentMethod": "card"
+  },
+  {
+    "_id": "6942c727fdd9c64f8fa97120",
+    "amount": 600,
+    "type": "expense",
+    "paymentMethod": "upi"
+  },
+  {
+    "_id": "6943ab1b5a500f8729a54ac8",
+    "amount": 7000,
+    "type": "income",
+    "paymentMethod": "upi"
+  },
+  {
+    "_id": "6943ab6e5a500f8729a54b11",
+    "amount": 500,
+    "type": "expense",
+    "paymentMethod": "card"
+  },
+  {
+    "_id": "6944a15908d6bc65d74a7efd",
+    "amount": 800,
+    "type": "expense",
+    "paymentMethod": "upi"
+  },
+  {
+    "_id": "694558e51d9001a19d8ca232",
+    "amount": 200,
+    "type": "expense",
+    "paymentMethod": "upi"
+  },
+  {
+    "_id": "6945f6f91d9001a19d8ca471",
+    "amount": 400,
+    "type": "income",
+    "paymentMethod": "cash"
+  }
+]

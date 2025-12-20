@@ -37,57 +37,65 @@ export default function Budgets() {
   }, []);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className="space-y-8 pb-10"
-    >
-      <div className="flex flex-col md:flex-row justify-between items-end md:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-white tracking-wide">
-            Budgets
+    <div className="min-h-screen bg-[#05080d] p-6 lg:p-10">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        className="max-w-7xl mx-auto space-y-10"
+      >
+        <div className="text-center">
+          <h1 className="text-4xl md:text-5xl font-bold text-white tracking-widest audiowide-regular mb-2 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
+            BUDGETS
           </h1>
-          <p className="text-gray-400 mt-1">
+          <p className="text-gray-400 tracking-wide">
             Manage your monthly spending limits
           </p>
         </div>
-      </div>
 
-      <BudgetSummaryCard budgets={budgets} />
+        <BudgetSummaryCard budgets={budgets} />
 
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-        <div className="xl:col-span-1">
-          <BudgetForm categories={categories} onSuccess={fetchAll} />
-        </div>
+        <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
+          {/* LEFT: FORM */}
+          <div className="w-full xl:col-span-1 xl:sticky xl:top-6">
+            <BudgetForm categories={categories} onSuccess={fetchAll} />
+          </div>
 
-        <div className="xl:col-span-2 space-y-4">
-          <h2 className="text-xl font-semibold text-white mb-4">
-            Category Allocations
-          </h2>
-
-          {loading ? (
-            <div className="text-center py-10 text-gray-500 animate-pulse">
-              Loading budgets...
+          {/* RIGHT: LIST */}
+          <div className="w-full xl:col-span-2">
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-2xl font-bold text-white audiowide-regular tracking-wide">
+                Allocations
+              </h2>
+              <span className="text-sm text-gray-500 font-mono">
+                {budgets.length} Active
+              </span>
             </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {budgets.length > 0 ? (
-                budgets.map((b) => (
-                  <CategoryBudgetItem
-                    key={b._id}
-                    budget={b}
-                    onChange={fetchAll}
-                  />
-                ))
-              ) : (
-                <div className="col-span-full py-10 text-center text-gray-500 bg-white/5 rounded-2xl border border-dashed border-white/10">
-                  No budgets set yet. Create one to get started!
-                </div>
-              )}
-            </div>
-          )}
+
+            {loading ? (
+              <div className="flex flex-col items-center justify-center py-20">
+                <div className="w-10 h-10 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {budgets.length > 0 ? (
+                  budgets.map((b) => (
+                    <CategoryBudgetItem
+                      key={b._id}
+                      budget={b}
+                      onChange={fetchAll}
+                    />
+                  ))
+                ) : (
+                  <div className="col-span-full py-16 text-center text-gray-500 bg-[#111] rounded-[30px] border border-dashed border-white/10">
+                    <p className="text-lg mb-2">No budgets set yet.</p>
+                    <p className="text-sm">Create one to start tracking!</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </motion.div>
+      </motion.div>
+    </div>
   );
 }

@@ -180,8 +180,23 @@ export default function Dashboard() {
       {
         label: "Spending",
         data: paymentStats.map((p) => p.total),
-        backgroundColor: ["#A78BFA", "#F472B6", "#22D3EE", "#FBBF24"],
+        backgroundColor: paymentStats.map((p) => {
+          const method = (p._id || "others").toUpperCase();
+          switch (method) {
+            case "UPI":
+              return "#A78BFA"; // Purple
+            case "CARD":
+              return "#22D3EE"; // Cyan
+            case "CASH":
+              return "#FBBF24"; // Yellow
+            case "NET BANKING":
+              return "#F472B6"; // Pink
+            default:
+              return "#9CA3AF"; // Gray
+          }
+        }),
         borderRadius: 8,
+        borderWidth: 0,
       },
     ],
   };
@@ -424,27 +439,43 @@ export default function Dashboard() {
             {recentTransactions.map((t) => (
               <div
                 key={t._id}
-                className="flex items-center justify-between p-3 rounded-lg bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition"
+                className="group flex items-center justify-between p-3 rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5 hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
               >
-                <div className="flex items-center gap-3">
-                  <div className="w-2 h-10 rounded-full bg-blue-500/20" />
-                  <div>
-                    <p className="text-gray-900 dark:text-white font-medium text-sm">
+                <div className="flex items-center gap-3 min-w-0">
+                  <div
+                    className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                      t.type === "income"
+                        ? "bg-emerald-500/10 text-emerald-400"
+                        : "bg-red-500/10 text-red-400"
+                    }`}
+                  >
+                    <span className="font-bold text-lg">{t.category?.[0]}</span>
+                  </div>
+
+                  <div className="min-w-0 flex-1">
+                    <p className="text-gray-900 dark:text-white font-bold text-sm truncate pr-2">
                       {t.category}
                     </p>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      {new Date(t.date).toLocaleDateString()}
-                    </p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] uppercase tracking-wider text-gray-500 dark:text-gray-400 bg-black/20 px-1.5 py-0.5 rounded">
+                        {t.paymentMethod}
+                      </span>
+                      <span className="text-xs text-gray-500 dark:text-gray-400">
+                        {new Date(t.date).getDate()}/
+                        {new Date(t.date).getMonth() + 1}
+                      </span>
+                    </div>
                   </div>
                 </div>
+
                 <span
-                  className={`font-bold text-sm ${
+                  className={`font-bold font-mono text-sm whitespace-nowrap ml-2 shrink-0 ${
                     t.type === "income"
                       ? "text-emerald-500 dark:text-emerald-400"
                       : "text-rose-500 dark:text-rose-400"
                   }`}
                 >
-                  {t.type === "income" ? "+" : "-"}₹{t.amount}
+                  {t.type === "income" ? "+" : "-"}₹{t.amount.toLocaleString()}
                 </span>
               </div>
             ))}
