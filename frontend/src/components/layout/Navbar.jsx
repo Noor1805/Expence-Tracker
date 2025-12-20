@@ -53,8 +53,6 @@ export default function Navbar() {
       </h1>
 
       <div className="flex items-center gap-4 relative">
-        {/* Toggle Button Removed Here */}
-
         <div ref={notifRef} className="relative">
           <button
             onClick={() => setShowNotifications(!showNotifications)}
