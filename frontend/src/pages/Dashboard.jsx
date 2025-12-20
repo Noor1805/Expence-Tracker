@@ -2,6 +2,10 @@ import { useEffect, useState, useContext } from "react";
 import api from "../services/api";
 import { Link } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
+import CategoryChart from "../components/analytics/CategoryChart";
+import MonthlyChart from "../components/analytics/MonthlyChart";
+import PaymentChart from "../components/analytics/PaymentChart";
+
 import {
   Chart as ChartJS,
   ArcElement,
@@ -15,7 +19,7 @@ import {
   Title,
   Filler,
 } from "chart.js";
-import { Doughnut, Line, Bar } from "react-chartjs-2";
+import { Line } from "react-chartjs-2";
 
 ChartJS.register(
   ArcElement,
@@ -114,91 +118,6 @@ export default function Dashboard() {
     },
   };
 
-  const categoryChartData = {
-    labels: categoryStats.map((c) => c._id),
-    datasets: [
-      {
-        data: categoryStats.map((c) => c.total),
-        backgroundColor: [
-          "#F472B6",
-          "#22D3EE",
-          "#FBBF24",
-          "#A78BFA",
-          "#34D399",
-          "#FB7185",
-          "#60A5FA",
-        ],
-        borderWidth: 0,
-        hoverOffset: 10,
-      },
-    ],
-  };
-
-  const monthlyChartData = {
-    labels: monthlyStats.map((m) => `${m._id.month}/${m._id.year}`),
-    datasets: [
-      {
-        label: "Income",
-        data: monthlyStats
-          .filter((m) => m._id.type === "income")
-          .map((m) => m.total),
-        borderColor: "#34D399",
-        backgroundColor: (context) => {
-          const ctx = context.chart.ctx;
-          const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-          gradient.addColorStop(0, "rgba(52, 211, 153, 0.4)");
-          gradient.addColorStop(1, "rgba(52, 211, 153, 0.05)");
-          return gradient;
-        },
-        fill: true,
-        tension: 0.4,
-      },
-      {
-        label: "Expense",
-        data: monthlyStats
-          .filter((m) => m._id.type === "expense")
-          .map((m) => m.total),
-        borderColor: "#F87171",
-        backgroundColor: (context) => {
-          const ctx = context.chart.ctx;
-          const gradient = ctx.createLinearGradient(0, 0, 0, 400);
-          gradient.addColorStop(0, "rgba(248, 113, 113, 0.4)");
-          gradient.addColorStop(1, "rgba(248, 113, 113, 0.05)");
-          return gradient;
-        },
-        fill: true,
-        tension: 0.4,
-      },
-    ],
-  };
-
-  const paymentChartData = {
-    labels: paymentStats.map((p) => p._id.toUpperCase()),
-    datasets: [
-      {
-        label: "Spending",
-        data: paymentStats.map((p) => p.total),
-        backgroundColor: paymentStats.map((p) => {
-          const method = (p._id || "others").toUpperCase();
-          switch (method) {
-            case "UPI":
-              return "#A78BFA"; 
-            case "CARD":
-              return "#22D3EE"; 
-            case "CASH":
-              return "#FBBF24"; 
-            case "NET BANKING":
-              return "#F472B6"; 
-            default:
-              return "#9CA3AF"; 
-          }
-        }),
-        borderRadius: 8,
-        borderWidth: 0,
-      },
-    ],
-  };
-
   const cumulativeData = balanceHistory.reduce((acc, curr) => {
     const dailyNet = (curr.dailyIncome || 0) - (curr.dailyExpense || 0);
     const prevBalance = acc.length > 0 ? acc[acc.length - 1] : 0;
@@ -247,7 +166,6 @@ export default function Dashboard() {
       </h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
-        
         <div className="p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#1a1a25] shadow-lg dark:shadow-none relative overflow-hidden group hover:shadow-xl dark:hover:shadow-[0_0_25px_rgba(34,211,238,0.2)] transition-all duration-300">
           <div className="relative z-10">
             <h2 className="text-gray-500 dark:text-gray-400 text-sm">
@@ -269,7 +187,6 @@ export default function Dashboard() {
           </div>
         </div>
 
-        
         <div className="p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#26131a] shadow-lg dark:shadow-none hover:shadow-xl dark:hover:shadow-[0_0_25px_rgba(244,114,182,0.2)] transition-all duration-300">
           <h2 className="text-gray-500 dark:text-gray-400 text-sm">Expense</h2>
           <p className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-rose-600 dark:from-pink-500 dark:to-rose-500 mt-2">
@@ -277,7 +194,6 @@ export default function Dashboard() {
           </p>
         </div>
 
-        
         <div className="p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#123122] shadow-lg dark:shadow-none hover:shadow-xl dark:hover:shadow-[0_0_25px_rgba(52,211,153,0.2)] transition-all duration-300">
           <h2 className="text-gray-500 dark:text-gray-400 text-sm">Income</h2>
           <p className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-green-600 dark:from-emerald-400 dark:to-green-500 mt-2">
@@ -285,7 +201,6 @@ export default function Dashboard() {
           </p>
         </div>
 
-        
         <div className="p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-yellow-900/20 shadow-lg dark:shadow-none hover:shadow-xl dark:hover:shadow-[0_0_25px_rgba(251,191,36,0.2)] transition-all duration-300 relative overflow-hidden">
           <div className="relative z-10">
             <h2 className="text-gray-500 dark:text-gray-400 text-sm">
@@ -319,7 +234,6 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        
         <div className="xl:col-span-2 p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#1a1a25] shadow-lg dark:shadow-none h-[350px]">
           <h3 className="text-gray-900 dark:text-gray-300 mb-6 text-lg font-medium">
             Balance History
@@ -329,57 +243,26 @@ export default function Dashboard() {
           </div>
         </div>
 
-        
         <div className="xl:col-span-1 p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#123122] shadow-lg dark:shadow-none h-[350px]">
           <h3 className="text-emerald-500 dark:text-emerald-400 mb-4 text-lg font-medium">
             Income Trend
           </h3>
           <div className="w-full h-[85%] relative">
             <div className="w-full h-[85%] relative">
-              <Bar
-                data={{
-                  labels: balanceHistory.map(
-                    (b) => `${b._id.day}/${b._id.month}`
-                  ),
-                  datasets: [
-                    {
-                      label: "Income",
-                      data: balanceHistory.map((b) => b.dailyIncome),
-                      backgroundColor: "#34D399",
-                      borderRadius: 6,
-                    },
-                  ],
-                }}
-                options={{
-                  ...chartOptions,
-                  plugins: { legend: { display: false } },
-                }}
-              />
+              <MonthlyChart data={balanceHistory} type="income" />
             </div>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        
         <div className="xl:col-span-1 p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#1a1a25] shadow-lg dark:shadow-none h-[350px] flex flex-col items-center justify-center">
           <h3 className="text-gray-900 dark:text-gray-300 mb-2 text-sm font-medium">
             Expense Categories
           </h3>
           <div className="w-full h-full relative">
             {categoryStats.length > 0 ? (
-              <Doughnut
-                data={categoryChartData}
-                options={{
-                  maintainAspectRatio: false,
-                  plugins: {
-                    legend: {
-                      position: "bottom",
-                      labels: { color: chartTextColor },
-                    },
-                  },
-                }}
-              />
+              <CategoryChart data={categoryStats} />
             ) : (
               <p className="text-gray-500 text-center mt-20">
                 No category data
@@ -388,39 +271,19 @@ export default function Dashboard() {
           </div>
         </div>
 
-        
         <div className="xl:col-span-2 p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#26131a] shadow-lg dark:shadow-none h-[350px]">
           <h3 className="text-rose-500 dark:text-rose-400 mb-4 text-lg font-medium">
             Expense Trend
           </h3>
           <div className="w-full h-[85%] relative">
             <div className="w-full h-[85%] relative">
-              <Bar
-                data={{
-                  labels: balanceHistory.map(
-                    (b) => `${b._id.day}/${b._id.month}`
-                  ),
-                  datasets: [
-                    {
-                      label: "Expense",
-                      data: balanceHistory.map((b) => b.dailyExpense),
-                      backgroundColor: "#F87171",
-                      borderRadius: 6,
-                    },
-                  ],
-                }}
-                options={{
-                  ...chartOptions,
-                  plugins: { legend: { display: false } },
-                }}
-              />
+              <MonthlyChart data={balanceHistory} type="expense" />
             </div>
           </div>
         </div>
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        
         <div className="xl:col-span-2 p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#1b1b25] shadow-lg dark:shadow-none h-[400px] flex flex-col">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-gray-900 dark:text-white font-semibold text-lg">
@@ -512,17 +375,15 @@ export default function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        
         <div className="xl:col-span-1 p-6 rounded-2xl bg-white dark:bg-[rgba(15,15,20,0.8)] backdrop-blur-xl border border-gray-200 dark:border-[#12323b] shadow-lg dark:shadow-none h-[350px]">
           <h3 className="text-gray-900 dark:text-gray-300 mb-4 text-sm font-medium">
             Payment Methods
           </h3>
           <div className="w-full h-full pb-6 relative">
-            <Bar data={paymentChartData} options={chartOptions} />
+            <PaymentChart data={paymentStats} />
           </div>
         </div>
 
-        
         <div className="xl:col-span-2 p-6 rounded-2xl bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 backdrop-blur-xl border border-gray-200 dark:border-white/5 shadow-lg dark:shadow-none h-[350px] flex items-center justify-center">
           <div className="text-center">
             <h3 className="text-xl text-gray-900 dark:text-white font-bold mb-2">
