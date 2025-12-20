@@ -55,12 +55,10 @@ export default function Budgets() {
         <BudgetSummaryCard budgets={budgets} />
 
         <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
-          {/* LEFT: FORM */}
           <div className="w-full xl:col-span-1 xl:sticky xl:top-6">
             <BudgetForm categories={categories} onSuccess={fetchAll} />
           </div>
 
-          {/* RIGHT: LIST */}
           <div className="w-full xl:col-span-2">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-white audiowide-regular tracking-wide">

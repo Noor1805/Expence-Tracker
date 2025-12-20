@@ -1,7 +1,6 @@
 export default function BudgetProgress({ used, limit }) {
   const percent = Math.min((used / limit) * 100, 100);
 
-  // Dynamic Neon Colors
   let colorClass = "bg-emerald-500 shadow-[0_0_10px_#10b981]";
   if (percent > 70) colorClass = "bg-yellow-500 shadow-[0_0_10px_#eab308]";
   if (percent > 90) colorClass = "bg-red-500 shadow-[0_0_10px_#ef4444]";

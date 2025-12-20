@@ -28,8 +28,6 @@ export default function CategoryList({
     );
   }
 
-  // Changed to max 2 columns on 2xl to allow wider cards as requested
-  // Previously was 3 columns which might have made them too narrow
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
       {categories.map((c) => (

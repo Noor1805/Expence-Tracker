@@ -12,7 +12,6 @@ export default function Admin() {
         const res = await api.get("/auth/me");
         setUser(res.data.data);
       } catch {
-        // ignore
       } finally {
         setLoading(false);
       }

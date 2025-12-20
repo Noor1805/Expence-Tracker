@@ -11,8 +11,8 @@ export default function StatsCard({ title, value }) {
     <div
       className="
         relative
-        rounded-2xl
-        p-5
+        rounded-2xl 
+        p-5 
         bg-white/[10%]
         backdrop-blur-lg
         border border-white/10
@@ -28,12 +28,12 @@ export default function StatsCard({ title, value }) {
         "
       />
 
-      <div className="flex items-center justify-between">
+      <div className="flex items-center  justify-between">
         <span className="text-sm text-gray-300">{title}</span>
 
         <span
           className="
-            p-2 rounded-lg
+            p-2 rounded-lg 
             bg-black/30
             border border-white/10
             text-gray-300
@@ -43,7 +43,7 @@ export default function StatsCard({ title, value }) {
         </span>
       </div>
 
-      <div className="mt-4 text-3xl font-semibold text-orange-400 tracking-tight">
+      <div className="mt-4 text-3xl md:text-4xl font-semibold text-orange-400 tracking-tight">
         {value}
       </div>
     </div>

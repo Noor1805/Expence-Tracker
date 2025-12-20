@@ -1,4 +1,4 @@
-// src/components/transactions/AddEditTransactionForm.jsx
+
 import React, { useEffect, useState } from "react";
 
 export default function AddEditTransactionForm({ open, onClose, onSave, initial }) {
@@ -28,7 +28,6 @@ export default function AddEditTransactionForm({ open, onClose, onSave, initial 
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // simple validation
     if (!form.amount || !form.category) {
       alert("Amount and category required");
       return;

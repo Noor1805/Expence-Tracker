@@ -22,7 +22,7 @@ export default function PublicNavbar() {
   };
 
   const navItems = [
-    { label: "Home", id: "home" }, // Ensure Home has id="home"
+    { label: "Home", id: "home" },
     { label: "Features", id: "features" },
     { label: "Pricing", id: "pricing" },
     { label: "Contact", id: "contact" },
@@ -57,7 +57,6 @@ export default function PublicNavbar() {
           ))}
         </nav>
 
-        {/* AUTH BUTTONS */}
         <div className="hidden md:flex items-center gap-4">
           <Link
             to="/login"
@@ -81,7 +80,6 @@ export default function PublicNavbar() {
           </Link>
         </div>
 
-        {/* MOBILE MENU TOGGLE */}
         <button
           className="md:hidden text-white text-3xl"
           onClick={() => setOpen(!open)}

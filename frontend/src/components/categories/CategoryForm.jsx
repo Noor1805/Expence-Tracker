@@ -4,12 +4,12 @@ import IconPicker, { ICONS } from "./IconPicker";
 import { FiCheck } from "react-icons/fi";
 
 const COLORS = [
-  "#ca1472ff", // pink
-  "#0ed8f7ff", // cyan
-  "#f5c814ff", // yellow
-  "#542dcbff", // purple
-  "#0ac24dff", // green
-  "#e91434ff", // red
+  "#ca1472ff", 
+  "#0ed8f7ff", 
+  "#f5c814ff", 
+  "#542dcbff", 
+  "#0ac24dff", 
+  "#e91434ff", 
 ];
 
 export default function CategoryForm({ editingCategory, onSuccess }) {
@@ -68,7 +68,7 @@ export default function CategoryForm({ editingCategory, onSuccess }) {
       </h3>
 
       <div className="space-y-8 relative z-10">
-        {/* Name */}
+        
         <div className="space-y-3">
           <label className="text-gray-400 text-sm ml-2 py-2.5 font-medium tracking-wide">
             NAME
@@ -82,7 +82,7 @@ export default function CategoryForm({ editingCategory, onSuccess }) {
           />
         </div>
 
-        {/* Type */}
+        
         <div className="space-y-3">
           <label className="text-gray-400 text-sm ml-2 py-2.5 font-medium tracking-wide">
             TYPE
@@ -102,7 +102,7 @@ export default function CategoryForm({ editingCategory, onSuccess }) {
           </div>
         </div>
 
-        {/* Icon */}
+        
         <div className="space-y-3">
           <label className="text-gray-400 text-sm ml-7 font-medium tracking-wide">
             ICON
@@ -120,7 +120,7 @@ export default function CategoryForm({ editingCategory, onSuccess }) {
           </div>
         </div>
 
-        {/* Colors */}
+        
         <div className="space-y-3">
           <label className="text-gray-400 text-sm ml-1 font-medium tracking-wide">
             COLOR TAGS

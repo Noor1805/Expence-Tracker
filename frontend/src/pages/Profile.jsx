@@ -29,7 +29,6 @@ export default function Profile() {
     <div className="max-w-4xl space-y-8 animate-fade-in">
       <h1 className="text-3xl font-bold text-white">My Profile</h1>
 
-      {/* Profile Header */}
       <div className="glass neo p-8 rounded-3xl border border-white/5 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
 
@@ -48,8 +47,6 @@ export default function Profile() {
           </div>
         </div>
       </div>
-
-      {/* Details Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div className="glass neo p-6 rounded-2xl border border-white/5">
           <h3 className="text-lg font-semibold text-white mb-4 flex items-center gap-2">

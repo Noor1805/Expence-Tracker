@@ -40,7 +40,6 @@ export default function BudgetForm({ categories, onSuccess }) {
       </h3>
 
       <div className="space-y-6 relative z-10">
-        {/* Category Input */}
         <div className="space-y-2">
           <label className="text-gray-400 text-xs font-bold tracking-widest ml-1 uppercase">
             Category
@@ -63,7 +62,6 @@ export default function BudgetForm({ categories, onSuccess }) {
           </div>
         </div>
 
-        {/* Limit Input */}
         <div className="space-y-2">
           <label className="text-gray-400 text-xs font-bold tracking-widest ml-1 uppercase">
             Monthly Limit

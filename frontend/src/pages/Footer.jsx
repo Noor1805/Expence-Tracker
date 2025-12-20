@@ -3,8 +3,7 @@ import footerImg from "../assets/images/fbg1.png";
 export default function Footer() {
   return (
     <footer className="relative mt-32 overflow-hidden bg-[#050505]">
-
-      {/* ROTATED IMAGE */}
+      
       <img
         src={footerImg}
         alt="footer decoration"
@@ -20,7 +19,6 @@ export default function Footer() {
         "
       />
 
-      {/* GLASS LAYER */}
       <div
         className="
           relative z-10
@@ -30,7 +28,6 @@ export default function Footer() {
       >
         <div className="max-w-7xl mx-auto px-6 py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
 
-          {/* BRAND */}
           <div>
             <h2 className="text-2xl audiowide-regular font-bold text-white tracking-tight">
               Mon<span className="text-orange-500">exa</span>
@@ -41,7 +38,6 @@ export default function Footer() {
             </p>
           </div>
 
-          {/* LINKS */}
           <div>
             <h3 className="text-white audiowide-regular font-semibold mb-4 tracking-wide">
               Product
@@ -82,7 +78,6 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* NEWSLETTER */}
           <div>
             <h3 className="text-white audiowide-regular font-semibold mb-4 tracking-wide">
               Stay Updated
@@ -117,7 +112,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* BOTTOM BAR */}
         <div className="border-t border-white/15 py-4 text-center text-gray-400 text-sm">
           © {new Date().getFullYear()} Monexa. All rights reserved.
         </div>

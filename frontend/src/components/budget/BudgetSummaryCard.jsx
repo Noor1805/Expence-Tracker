@@ -19,7 +19,6 @@ export default function BudgetSummaryCard({ budgets }) {
           ₹{amount.toLocaleString()}
         </h3>
       </div>
-      {/* Glow Effect */}
       <div
         className="absolute -right-6 -top-6 w-24 h-24 rounded-full blur-[40px] opacity-10 group-hover:opacity-20 transition-opacity pointer-events-none"
         style={{ background: borderColor }}
@@ -32,19 +31,19 @@ export default function BudgetSummaryCard({ budgets }) {
       <StatCard
         title="Total Budget"
         amount={totalLimit}
-        color="#22d3ee" // Cyan
+        color="#22d3ee" 
         borderColor="#06b6d4"
       />
       <StatCard
         title="Total Spent"
         amount={totalSpent}
-        color="#fb923c" // Orange
+        color="#fb923c" 
         borderColor="#f97316"
       />
       <StatCard
         title="Remaining"
         amount={remaining}
-        color={remaining > 0 ? "#34d399" : "#ff4d4d"} // Emerald or Red
+        color={remaining > 0 ? "#34d399" : "#ff4d4d"} 
         borderColor={remaining > 0 ? "#10b981" : "#ef4444"}
       />
     </div>

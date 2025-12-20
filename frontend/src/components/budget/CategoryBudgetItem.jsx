@@ -27,7 +27,6 @@ export default function CategoryBudgetItem({ budget, onChange }) {
         transition-all duration-300 group
       "
     >
-      {/* Delete Button (Hidden) */}
       <button
         onClick={remove}
         className="absolute top-4 right-4 p-2.5 rounded-full bg-red-500/10 text-red-400 hover:bg-red-500 hover:text-white opacity-0 group-hover:opacity-100 transition-all z-20"
@@ -35,7 +34,6 @@ export default function CategoryBudgetItem({ budget, onChange }) {
         <FiTrash2 size={16} />
       </button>
 
-      {/* Header */}
       <div className="flex items-center gap-4 mb-2">
         <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#1a1a1a] to-black border border-white/10 flex items-center justify-center text-cyan-400 text-xl font-bold shadow-inner">
           {category?.name?.[0]?.toUpperCase()}
@@ -53,7 +51,6 @@ export default function CategoryBudgetItem({ budget, onChange }) {
 
       <BudgetProgress used={spent} limit={limit} />
 
-      {/* Footer Info */}
       <div className="flex justify-between items-center mt-4 pt-4 border-t border-dashed border-white/5">
         <p className="text-xs text-gray-500 font-medium uppercase tracking-wider">
           Remaining

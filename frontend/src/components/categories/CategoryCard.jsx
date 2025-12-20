@@ -27,7 +27,6 @@ export default function CategoryCard({
   const isIncome = category.type === "income";
   const iconObj = ICONS.find((i) => i.id === category.icon) || ICONS[0];
 
-  // Helper to ensure we can append opacity correctly.
   const getBaseHex = (c) => {
     if (!c) return "#000000";
     if (c.length === 9) return c.substring(0, 7);
@@ -48,12 +47,11 @@ export default function CategoryCard({
       "
       style={{
         background: `linear-gradient(165deg, ${baseColor}55 0%, #050505 60%, ${baseColor}22 100%)`,
-        boxShadow: `0 15px 40px -10px ${baseColor}10`, // Subtle colored outer glow
+        boxShadow: `0 15px 40px -10px ${baseColor}10`,
         borderColor: `${baseColor}40`,
       }}
       onClick={() => onViewHistory(category)}
     >
-      {/* Top Controls */}
       <div className="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
         <button
           onClick={(e) => {
@@ -72,41 +70,34 @@ export default function CategoryCard({
         </button>
       </div>
 
-      {/* 1. Icon Circle */}
       <div className="mt-4 relative">
         <div
           className="w-24 h-24 rounded-full flex items-center justify-center text-4xl text-white relative z-10"
           style={{
             background: baseColor,
-            // Black shadows for "pop" effect as requested
             boxShadow:
               "0 10px 25px -5px rgba(0,0,0,0.8), 0 8px 10px -6px rgba(0,0,0,0.5)",
           }}
         >
           {iconObj.icon}
         </div>
-        {/* Glow behind icon */}
         <div
           className="absolute inset-0 rounded-full blur-[30px] opacity-40 z-0"
           style={{ background: baseColor }}
         />
       </div>
 
-      {/* 2. Name */}
       <h3 className="text-2xl audiowide-regular font-bold text-white tracking-wide mt-2">
         {category.name}
       </h3>
 
-      {/* 3. Pills */}
       <div
         className="w-full bg-white/5 border rounded-full flex justify-between items-center px-2"
         style={{ borderColor: `${baseColor}40` }}
       >
         <span
           className="px-4 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase"
-          style={{
-            color: isIncome ? "#23f06eff" : "#f30c2eff",
-          }}
+          style={{ color: isIncome ? "#23f06eff" : "#f30c2eff" }}
         >
           {category.type}
         </span>
@@ -118,7 +109,6 @@ export default function CategoryCard({
         </span>
       </div>
 
-      {/* 4. Bottom Stats Box - Centered & Refined */}
       <div className="w-full bg-white/5 rounded-2xl flex flex-col items-center justify-center p-5 border border-white/5 backdrop-blur-sm mt-2 relative overflow-hidden text-center">
         <p className="text-gray-400 text-xs uppercase tracking-wider font-medium mb-1">
           Total {isIncome ? "Earned" : "Spent"}:
@@ -129,7 +119,6 @@ export default function CategoryCard({
 
         <div className="w-full h-[1px] bg-white/10 mb-3"></div>
 
-        {/* Heartbeat Line + Count */}
         <div
           className="flex items-center justify-center gap-2 text-sm font-medium"
           style={{ color: baseColor }}

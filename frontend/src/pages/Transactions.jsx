@@ -98,7 +98,7 @@ export default function Transactions() {
         {/* HEADER */}
         <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div>
-            <h1 className="text-3xl md:text-5xl font-bold text-white tracking-widest audiowide-regular mb-1 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
+            <h1 className="text-2xl md:text-5xl font-bold text-white tracking-widest audiowide-regular mb-1 text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">
               TRANSACTIONS
             </h1>
             <p className="text-gray-400 ml-1 text-sm md:text-base">
@@ -106,21 +106,26 @@ export default function Transactions() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 w-full lg:w-auto">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 w-full lg:w-auto lg:flex">
             <button
               onClick={() => {
                 setEditing(null);
                 setShowAdd(true);
               }}
               className="
-                    flex-1 lg:flex-none
-                    px-5 py-3 rounded-2xl font-bold tracking-wide
-                    bg-gradient-to-r from-cyan-600 to-blue-600
-                    text-white text-sm md:text-base
-                    shadow-lg shadow-cyan-500/20
-                    hover:shadow-cyan-500/40 hover:-translate-y-0.5
-                    transition-all
-                    "
+                col-span-1
+                w-full lg:w-auto
+                px-3 py-2.5 sm:px-5 sm:py-3
+                rounded-xl sm:rounded-[18px]
+                font-bold tracking-wide
+                bg-gradient-to-r from-cyan-600 to-blue-600
+                text-white text-xs sm:text-sm md:text-base
+                shadow-lg shadow-cyan-500/20
+                hover:shadow-cyan-500/40 hover:-translate-y-0.5
+                active:scale-95
+                transition-all
+                whitespace-nowrap
+              "
             >
               + New
             </button>
@@ -128,13 +133,18 @@ export default function Transactions() {
             <button
               onClick={() => setShowImport(true)}
               className="
-                    flex-1 lg:flex-none
-                    px-5 py-3 rounded-2xl font-bold tracking-wide
-                    bg-[#1a1a1a] text-cyan-400 text-sm md:text-base
-                    border border-cyan-500/30
-                    hover:bg-cyan-500/10
-                    transition-all
-                    "
+                col-span-1
+                w-full lg:w-auto
+                px-3 py-2.5 sm:px-5 sm:py-3
+                rounded-xl sm:rounded-[18px]
+                font-bold tracking-wide
+                bg-[#1a1a1a] text-cyan-400 text-xs sm:text-sm md:text-base
+                border border-cyan-500/30
+                hover:bg-cyan-500/10
+                active:scale-95
+                transition-all
+                whitespace-nowrap
+              "
             >
               Import
             </button>
@@ -150,7 +160,7 @@ export default function Transactions() {
         />
 
         {/* TOP STATS */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-6">
           <StatsCard
             title="Income"
             value={`₹${stats.totalIncome.toLocaleString()}`}
@@ -189,7 +199,7 @@ export default function Transactions() {
               <p className="text-xl font-medium">No transactions found</p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6">
               {transactions.map((t) => (
                 <TransactionCard
                   key={t._id}
@@ -211,34 +221,40 @@ export default function Transactions() {
         </div>
 
         {/* PAGINATION */}
-        <div className="flex justify-center items-center gap-4 pt-8">
+        <div className="flex flex-wrap justify-between sm:justify-center items-center gap-3 pt-6 md:pt-8 w-full">
           <button
             disabled={filters.page <= 1}
             onClick={() => setFilters((f) => ({ ...f, page: f.page - 1 }))}
             className="
-                px-6 py-3 rounded-xl
+                flex-1 sm:flex-none
+                px-4 py-2.5 sm:px-6 sm:py-3
+                rounded-xl
                 bg-[#1a1a1a] text-gray-300
                 border border-white/10
                 disabled:opacity-40 disabled:cursor-not-allowed
                 hover:border-cyan-500/50 hover:text-cyan-400
                 transition-all
+                text-sm sm:text-base
             "
           >
             Previous
           </button>
 
-          <span className="text-gray-400 font-mono bg-[#111] px-4 py-2 rounded-lg border border-white/5">
+          <span className="text-gray-400 font-mono bg-[#111] px-3 py-2 sm:px-4 sm:py-2 rounded-lg border border-white/5 text-sm sm:text-base whitespace-nowrap">
             Page {filters.page}
           </span>
 
           <button
             onClick={() => setFilters((f) => ({ ...f, page: f.page + 1 }))}
             className="
-                 px-6 py-3 rounded-xl
+                flex-1 sm:flex-none
+                px-4 py-2.5 sm:px-6 sm:py-3
+                 rounded-xl
                 bg-[#1a1a1a] text-gray-300
                 border border-white/10
                 hover:border-cyan-500/50 hover:text-cyan-400
                 transition-all
+                text-sm sm:text-base
             "
           >
             Next

@@ -112,11 +112,8 @@ export default function Settings() {
           </p>
         </div>
 
-        {/* MAIN GRID - Stack on mobile, 2 cols on huge screens */}
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 md:gap-8">
-          {/* LEFT COLUMN: Profile & Currency */}
           <div className="space-y-6 md:space-y-8">
-            {/* 1. PROFILE CARD */}
             <section className="relative overflow-hidden p-6 md:p-8 rounded-[30px] border border-white/10 bg-[#111] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
               <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-[40px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
 
@@ -162,7 +159,6 @@ export default function Settings() {
               </div>
             </section>
 
-            {/* 2. CURRENCY */}
             <section className="p-6 md:p-8 rounded-[30px] border border-white/10 bg-[#111] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-emerald-500/20 to-teal-500/20 flex items-center justify-center text-xl text-emerald-400 shrink-0">
@@ -198,9 +194,7 @@ export default function Settings() {
             </section>
           </div>
 
-          {/* RIGHT COLUMN: Notifications & Security */}
           <div className="space-y-6 md:space-y-8">
-            {/* 3. NOTIFICATIONS */}
             <section className="p-5 md:p-8 rounded-[30px] border border-white/10 bg-[#111] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center text-xl text-purple-400 shrink-0">
@@ -234,7 +228,6 @@ export default function Settings() {
                   </p>
                 </div>
 
-                {/* Custom Toggle Switch */}
                 <div
                   className={`w-14 h-8 md:w-16 md:h-9 rounded-full p-1 relative transition-colors duration-300 shrink-0 self-start sm:self-center ${
                     settings.notifications ? "bg-purple-500" : "bg-gray-700"
@@ -251,7 +244,6 @@ export default function Settings() {
               </div>
             </section>
 
-            {/* 4. DANGER ZONE */}
             <section className="p-6 md:p-8 rounded-[30px] border border-red-500/20 bg-gradient-to-b from-red-900/10 to-transparent shadow-[0_10px_40px_-10px_rgba(255,0,0,0.1)]">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-xl text-red-500 shrink-0">
