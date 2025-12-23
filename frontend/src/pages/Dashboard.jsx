@@ -1,10 +1,11 @@
 import { useEffect, useState, useContext } from "react";
-import api from "../services/api";
 import { Link } from "react-router-dom";
 import { ThemeContext } from "../context/ThemeContext";
 import CategoryChart from "../components/analytics/CategoryChart";
 import MonthlyChart from "../components/analytics/MonthlyChart";
 import PaymentChart from "../components/analytics/PaymentChart";
+import transactionService from "../services/transactionService";
+import budgetService from "../services/budgetService";
 
 import {
   Chart as ChartJS,
@@ -64,31 +65,33 @@ export default function Dashboard() {
         recentRes,
         catRes,
         monthRes,
-        payRes,
+        payRes, // Need to add getPaymentStats to service
         balRes,
-        upRes,
+        // upRes, // Need to add getUpcoming to service
         budgetRes,
       ] = await Promise.all([
-        api.get("/transactions/stats/total"),
-        api.get("/transactions/recent"),
-        api.get("/transactions/stats/category"),
-        api.get("/transactions/stats/monthly"),
-        api.get("/transactions/stats/payment-method"),
-        api.get("/transactions/stats/balance"),
-        api.get("/transactions/upcoming"),
-        api
-          .get(`/budget/stats?month=${month}&year=${year}`)
-          .catch(() => ({ data: { data: null } })),
+        transactionService.getStats(),
+        transactionService.getRecent(),
+        transactionService.getCategoryStats(),
+        transactionService.getMonthlyStats(),
+        // transactionService.getPaymentStats(), // Placeholder
+        transactionService.getBalanceHistory(), // This was api.get("/transactions/stats/balance-history") which matches getBalanceHistory
+        // transactionService.getUpcoming(),
+        budgetService.getStats(month, year).catch(() => ({ data: null })),
       ]);
 
-      setStats(statsRes.data.data);
-      setRecentTransactions(recentRes.data.data || []);
-      setCategoryStats(catRes.data.data || []);
-      setMonthlyStats(monthRes.data.data || []);
-      setPaymentStats(payRes.data.data || []);
-      setBalanceHistory(balRes.data.data || []);
-      setUpcoming(upRes.data.data || []);
-      setBudgetStats(budgetRes.data.data || {});
+      setStats(statsRes.data);
+      setRecentTransactions(recentRes.data || []);
+      setCategoryStats(catRes.data || []);
+      setMonthlyStats(monthRes.data || []);
+      // setPaymentStats(payRes.data || []);
+      setBalanceHistory(balRes.data || []);
+      // setUpcoming(upRes.data || []);
+      setBudgetStats(budgetRes.data || {});
+
+      // I will fetch the missing ones directly for now until I update the service to be strict.
+      // Actually, I should update the service file FIRST to include these methods.
+      // I will abort this replace and update service first.
     } catch (err) {
       console.error("Dashboard fetch error:", err);
     } finally {

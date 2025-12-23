@@ -1,27 +1,11 @@
-import { useEffect, useState } from "react";
-import api from "../services/api";
+import { useContext } from "react";
+import useAuth from "../hooks/useAuth";
 import { User, Mail, Calendar, Shield, MapPin } from "lucide-react";
 import moment from "moment";
 
 export default function Profile() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { user } = useAuth();
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await api.get("/auth/me");
-        setUser(res.data.data);
-      } catch (err) {
-        console.error("Failed to fetch profile");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchProfile();
-  }, []);
-
-  if (loading) return <div className="p-10 text-white">Loading Profile...</div>;
   if (!user)
     return <div className="p-10 text-red-500">Failed to load profile.</div>;
 

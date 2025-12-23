@@ -1,5 +1,4 @@
-import mongoose from "mongoose";
-import Transaction from "../models/Transaction.js";
+import * as transactionService from "../services/transactionService.js";
 import cloudinary from "../config/cloudinary.js";
 import { v4 as uuidv4 } from "uuid";
 import { validationResult } from "express-validator";
@@ -9,6 +8,7 @@ import { exportToExcel } from "../utils/excelExport.js";
 import { generatePDF } from "../utils/pdfExport.js";
 
 import { successResponse, errorResponse } from "../utils/response.js";
+import Transaction from "../models/Transaction.js"; // Needed for exports for now or should move export logic too
 
 export const createTransaction = async (req, res) => {
   try {
@@ -16,7 +16,7 @@ export const createTransaction = async (req, res) => {
     if (!errors.isEmpty())
       return errorResponse(res, "Validation failed", 400, errors.array());
 
-    const transaction = await Transaction.create({
+    const transaction = await transactionService.createTransaction({
       user: req.user.id,
       ...req.body,
     });
@@ -30,39 +30,11 @@ export const createTransaction = async (req, res) => {
 
 export const getTransactions = async (req, res) => {
   try {
-    const { page = 1, limit = 10, sort = "desc", ...filters } = req.query;
-    const query = { user: req.user.id };
-
-    if (filters.type) query.type = filters.type;
-    if (filters.category) query.category = filters.category;
-    if (filters.paymentMethod) query.paymentMethod = filters.paymentMethod;
-
-    if (filters.startDate && filters.endDate) {
-      query.date = {
-        $gte: new Date(filters.startDate),
-        $lte: new Date(filters.endDate),
-      };
-    }
-
-    if (filters.search) {
-      query.note = { $regex: filters.search, $options: "i" };
-    }
-
-    const skip = (page - 1) * limit;
-    const sortOrder = sort === "desc" ? -1 : 1;
-
-    const total = await Transaction.countDocuments(query);
-    const transactions = await Transaction.find(query)
-      .sort({ date: sortOrder })
-      .skip(skip)
-      .limit(Number(limit));
-
-    return successResponse(res, "Transactions fetched", {
-      transactions,
-      total,
-      totalPages: Math.ceil(total / limit),
-      currentPage: Number(page),
-    });
+    const result = await transactionService.getTransactions(
+      req.user.id,
+      req.query
+    );
+    return successResponse(res, "Transactions fetched", result);
   } catch (error) {
     console.error("Get Transactions Error:", error);
     return errorResponse(res, "Internal server error", 500);
@@ -71,10 +43,10 @@ export const getTransactions = async (req, res) => {
 
 export const getTransactionById = async (req, res) => {
   try {
-    const transaction = await Transaction.findOne({
-      _id: req.params.id,
-      user: req.user.id,
-    });
+    const transaction = await transactionService.getTransactionById(
+      req.params.id,
+      req.user.id
+    );
 
     if (!transaction) return errorResponse(res, "Transaction not found", 404);
 
@@ -91,10 +63,10 @@ export const updateTransaction = async (req, res) => {
     if (!errors.isEmpty())
       return errorResponse(res, "Validation failed", 400, errors.array());
 
-    const transaction = await Transaction.findOneAndUpdate(
-      { _id: req.params.id, user: req.user.id },
-      { ...req.body },
-      { new: true }
+    const transaction = await transactionService.updateTransaction(
+      req.params.id,
+      req.user.id,
+      req.body
     );
 
     if (!transaction) return errorResponse(res, "Transaction not found", 404);
@@ -108,10 +80,10 @@ export const updateTransaction = async (req, res) => {
 
 export const deleteTransaction = async (req, res) => {
   try {
-    const deleted = await Transaction.findOneAndDelete({
-      _id: req.params.id,
-      user: req.user.id,
-    });
+    const deleted = await transactionService.deleteTransaction(
+      req.params.id,
+      req.user.id
+    );
 
     if (!deleted) return errorResponse(res, "Transaction not found", 404);
 
@@ -129,10 +101,10 @@ export const bulkDeleteTransactions = async (req, res) => {
     if (!ids || !Array.isArray(ids))
       return errorResponse(res, "Invalid IDs list", 400);
 
-    const result = await Transaction.deleteMany({
-      _id: { $in: ids },
-      user: req.user.id,
-    });
+    const result = await transactionService.bulkDeleteTransactions(
+      ids,
+      req.user.id
+    );
 
     return successResponse(res, `${result.deletedCount} deleted`);
   } catch (error) {
@@ -143,7 +115,7 @@ export const bulkDeleteTransactions = async (req, res) => {
 
 export const clearAllTransactions = async (req, res) => {
   try {
-    const result = await Transaction.deleteMany({ user: req.user.id });
+    const result = await transactionService.clearAllTransactions(req.user.id);
     return successResponse(
       res,
       `All transactions cleared: ${result.deletedCount} items removed`
@@ -158,10 +130,10 @@ export const uploadReceipt = async (req, res) => {
   try {
     if (!req.file) return errorResponse(res, "No file uploaded", 400);
 
-    const transaction = await Transaction.findOne({
-      _id: req.params.id,
-      user: req.user.id,
-    });
+    const transaction = await transactionService.getTransactionById(
+      req.params.id,
+      req.user.id
+    );
 
     if (!transaction) return errorResponse(res, "Transaction not found", 404);
 
@@ -195,6 +167,8 @@ export const uploadReceipt = async (req, res) => {
 
 export const exportCSV = async (req, res) => {
   try {
+    // Keep this direct specifically for exports or create a service function that returns cursor?
+    // For now, simpler to use service to get all and then export
     const transactions = await Transaction.find({ user: req.user.id });
 
     if (!transactions.length)
@@ -262,10 +236,13 @@ export const exportPDF = async (req, res) => {
 
 export const duplicateTransactions = async (req, res) => {
   try {
-    const transaction = await Transaction.findById(req.params.id);
+    const transaction = await transactionService.getTransactionById(
+      req.params.id,
+      req.user.id
+    ); // Reusing service
     if (!transaction) return errorResponse(res, "Transaction not found", 404);
 
-    const newTransaction = await Transaction.create({
+    const newTransaction = await transactionService.createTransaction({
       ...transaction.toObject(),
       _id: undefined,
       createdAt: undefined,
@@ -278,14 +255,14 @@ export const duplicateTransactions = async (req, res) => {
   }
 };
 
-// Basic implementation to find recurring transactions
 export const getUpcomingTransactions = async (req, res) => {
   try {
+    // This was basic implementation using direct find. Move to Service?
+    // Using direct find here as it's partial implementation in original code
     const recurring = await Transaction.find({
       user: req.user.id,
       isRecurring: true,
     });
-    // For a real app, you'd calculate the next date. Simplified here:
     return successResponse(res, "Upcoming transactions fetched", recurring);
   } catch (error) {
     return errorResponse(res, error.message, 500);
@@ -302,32 +279,8 @@ export const importTransactions = async (req, res) => {
 
 export const getTotalStats = async (req, res) => {
   try {
-    const stats = await Transaction.aggregate([
-      { $match: { user: new mongoose.Types.ObjectId(req.user.id) } },
-      {
-        $group: {
-          _id: null,
-          totalIncome: {
-            $sum: {
-              $cond: [{ $eq: ["$type", "income"] }, "$amount", 0],
-            },
-          },
-          totalExpense: {
-            $sum: {
-              $cond: [{ $eq: ["$type", "expense"] }, "$amount", 0],
-            },
-          },
-        },
-      },
-    ]);
-
-    const data = stats[0] || { totalIncome: 0, totalExpense: 0 };
-
-    return successResponse(res, "Total stats fetched", {
-      totalIncome: data.totalIncome,
-      totalExpense: data.totalExpense,
-      balance: data.totalIncome - data.totalExpense,
-    });
+    const stats = await transactionService.getSimpleStats(req.user.id);
+    return successResponse(res, "Total stats fetched", stats);
   } catch (error) {
     console.error("Get Total Stats Error:", error);
     return errorResponse(res, "Internal server error", 500);
@@ -336,35 +289,7 @@ export const getTotalStats = async (req, res) => {
 
 export const getBalanceHistory = async (req, res) => {
   try {
-    const days = 30;
-    const dateLimit = new Date();
-    dateLimit.setDate(dateLimit.getDate() - days);
-
-    const history = await Transaction.aggregate([
-      {
-        $match: {
-          user: new mongoose.Types.ObjectId(req.user.id),
-          date: { $gte: dateLimit },
-        },
-      },
-      {
-        $group: {
-          _id: {
-            year: { $year: "$date" },
-            month: { $month: "$date" },
-            day: { $dayOfMonth: "$date" },
-          },
-          dailyIncome: {
-            $sum: { $cond: [{ $eq: ["$type", "income"] }, "$amount", 0] },
-          },
-          dailyExpense: {
-            $sum: { $cond: [{ $eq: ["$type", "expense"] }, "$amount", 0] },
-          },
-        },
-      },
-      { $sort: { "_id.year": 1, "_id.month": 1, "_id.day": 1 } },
-    ]);
-
+    const history = await transactionService.getBalanceHistory(req.user.id);
     return successResponse(res, "Balance history fetched", history);
   } catch (error) {
     return errorResponse(res, error.message, 500);
@@ -373,16 +298,7 @@ export const getBalanceHistory = async (req, res) => {
 
 export const getCategoryStats = async (req, res) => {
   try {
-    const stats = await Transaction.aggregate([
-      {
-        $match: {
-          user: new mongoose.Types.ObjectId(req.user.id),
-          type: "expense",
-        },
-      },
-      { $group: { _id: "$category", total: { $sum: "$amount" } } },
-      { $sort: { total: -1 } },
-    ]);
+    const stats = await transactionService.getCategoryStats(req.user.id);
     return successResponse(res, "Category stats fetched", stats);
   } catch (error) {
     return errorResponse(res, error.message, 500);
@@ -391,20 +307,7 @@ export const getCategoryStats = async (req, res) => {
 
 export const getMonthlyStats = async (req, res) => {
   try {
-    const stats = await Transaction.aggregate([
-      { $match: { user: new mongoose.Types.ObjectId(req.user.id) } },
-      {
-        $group: {
-          _id: {
-            month: { $month: "$date" },
-            year: { $year: "$date" },
-            type: "$type",
-          },
-          total: { $sum: "$amount" },
-        },
-      },
-      { $sort: { "_id.year": 1, "_id.month": 1 } },
-    ]);
+    const stats = await transactionService.getMonthlyStats(req.user.id);
     return successResponse(res, "Monthly stats fetched", stats);
   } catch (error) {
     return errorResponse(res, error.message, 500);
@@ -413,20 +316,7 @@ export const getMonthlyStats = async (req, res) => {
 
 export const getPaymentMethodStats = async (req, res) => {
   try {
-    const stats = await Transaction.aggregate([
-      {
-        $match: {
-          user: new mongoose.Types.ObjectId(req.user.id),
-        },
-      },
-      {
-        $group: {
-          _id: { $toLower: "$paymentMethod" },
-          total: { $sum: "$amount" },
-        },
-      },
-      { $sort: { total: -1 } },
-    ]);
+    const stats = await transactionService.getPaymentMethodStats(req.user.id);
     return successResponse(res, "Payment stats fetched", stats);
   } catch (error) {
     return errorResponse(res, error.message, 500);
@@ -435,10 +325,9 @@ export const getPaymentMethodStats = async (req, res) => {
 
 export const getRecentTransactions = async (req, res) => {
   try {
-    const transactions = await Transaction.find({ user: req.user.id })
-      .sort({ date: -1 })
-      .limit(5);
-
+    const transactions = await transactionService.getRecentTransactions(
+      req.user.id
+    );
     return successResponse(res, "Recent transactions fetched", transactions);
   } catch (error) {
     console.error("Get Recent Transactions Error:", error);

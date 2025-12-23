@@ -1,40 +1,11 @@
-import bcrypt from "bcryptjs";
-import crypto from "crypto";
-import User from "../models/User.js";
-import {
-  generateAccessToken,
-  generateRefreshToken,
-  verifyRefreshToken,
-} from "../utils/jwt.js";
-import { sendEmail } from "../utils/sendEmail.js";
+import * as userService from "../services/userService.js";
 
-const SALT_ROUNDS = 10;
-
-//register code
-
+// REGISTER
 export async function register(req, res, next) {
   try {
-    const { name, email, password } = req.body;
-
-    const exists = await User.findOne({ email });
-    if (exists) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Email already exists" });
-    }
-
-    const hashed = await bcrypt.hash(password, SALT_ROUNDS);
-
-    const user = await User.create({ name, email, password: hashed });
-
-    const accessToken = generateAccessToken({ id: user._id, role: user.role });
-    const refreshToken = generateRefreshToken({
-      id: user._id,
-      role: user.role,
-    });
-
-    user.refreshTokens.push({ token: refreshToken, createdAt: new Date() });
-    await user.save();
+    const { user, accessToken, refreshToken } = await userService.registerUser(
+      req.body
+    );
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
@@ -49,35 +20,21 @@ export async function register(req, res, next) {
       accessToken,
     });
   } catch (error) {
+    if (error.message === "Email already exists") {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email already exists" });
+    }
     next(error);
   }
 }
 
-// login
+// LOGIN
 export async function login(req, res, next) {
   try {
-    const { email, password } = req.body;
-
-    const user = await User.findOne({ email });
-    if (!user)
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid credentials" });
-
-    const match = await bcrypt.compare(password, user.password);
-    if (!match)
-      return res
-        .status(400)
-        .json({ success: false, message: "Invalid credentials" });
-
-    const accessToken = generateAccessToken({ id: user._id, role: user.role });
-    const refreshToken = generateRefreshToken({
-      id: user._id,
-      role: user.role,
-    });
-
-    user.refreshTokens.push({ token: refreshToken, createdAt: new Date() });
-    await user.save();
+    const { user, accessToken, refreshToken } = await userService.loginUser(
+      req.body
+    );
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
@@ -99,21 +56,21 @@ export async function login(req, res, next) {
         accessToken,
       },
     });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    if (error.message === "Invalid credentials") {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid credentials" });
+    }
+    next(error);
   }
 }
-
-//logout
 
 // LOGOUT
 export async function logout(req, res, next) {
   try {
     const token = req.cookies?.refreshToken;
-
-    if (token) {
-      await User.updateOne({}, { $pull: { refreshTokens: { token } } });
-    }
+    await userService.logoutUser(token);
 
     res.clearCookie("refreshToken", {
       httpOnly: true,
@@ -130,8 +87,7 @@ export async function logout(req, res, next) {
 // LOGOUT ALL DEVICES
 export async function logoutAll(req, res, next) {
   try {
-    const userId = req.user.id;
-    await User.updateOne({ _id: userId }, { $set: { refreshTokens: [] } });
+    await userService.logoutAllDevices(req.user.id);
 
     res.clearCookie("refreshToken", {
       httpOnly: true,
@@ -145,36 +101,20 @@ export async function logoutAll(req, res, next) {
   }
 }
 
-//refreshtoken
+// REFRESH TOKEN
 export async function refreshToken(req, res, next) {
   try {
     const token = req.cookies?.refreshToken;
-    if (!token)
-      return res
-        .status(401)
-        .json({ success: false, message: "No refresh token" });
-
-    let payload = verifyRefreshToken(token);
-
-    const user = await User.findById(payload.id);
-    if (!user)
-      return res
-        .status(401)
-        .json({ success: false, message: "User not found" });
-
-    const valid = user.refreshTokens.find((rt) => rt.token === token);
-    if (!valid)
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid refresh token" });
-
-    const newAccessToken = generateAccessToken({
-      id: user._id,
-      role: user.role,
-    });
-
-    res.json({ success: true, data: { accessToken: newAccessToken } });
+    const { accessToken } = await userService.refreshUserToken(token);
+    res.json({ success: true, data: { accessToken } });
   } catch (err) {
+    if (
+      err.message === "No refresh token" ||
+      err.message === "Invalid refresh token" ||
+      err.message === "User not found"
+    ) {
+      return res.status(401).json({ success: false, message: err.message });
+    }
     next(err);
   }
 }
@@ -182,89 +122,54 @@ export async function refreshToken(req, res, next) {
 // GET ME
 export async function getMe(req, res, next) {
   try {
-    const user = await User.findById(req.user.id).select(
-      "-password -refreshTokens -resetPasswordToken -resetPasswordExpires"
-    );
-
-    if (!user)
-      return res.status(404).json({ success: false, message: "Not found" });
-
+    const user = await userService.getUserProfile(req.user.id);
     res.json({ success: true, data: user });
   } catch (err) {
+    if (err.message === "User not found") {
+      return res.status(404).json({ success: false, message: "Not found" });
+    }
     next(err);
   }
 }
 
-//forgot password
+// FORGOT PASSWORD
 export async function forgotPassword(req, res, next) {
   try {
-    const user = await User.findOne({ email: req.body.email });
-
-    if (!user) {
+    const result = await userService.forgotPassword(req.body.email);
+    return res.status(200).json({
+      success: true,
+      ...result,
+    });
+  } catch (error) {
+    if (error.message === "Email not found") {
       return res.status(404).json({
         success: false,
         message: "Email not found",
       });
     }
-
-    const resetToken = crypto.randomBytes(32).toString("hex");
-
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = Date.now() + 3600000;
-    await user.save();
-
-    const resetURL = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
-
-    await sendEmail({
-      to: user.email,
-      subject: "Reset Your Password",
-      html: `
-        <p>You requested a password reset.</p>
-        <p>Click the link below to reset:</p>
-        <a href="${resetURL}">${resetURL}</a>
-      `,
-    });
-
-    return res.status(200).json({
-      success: true,
-      message: "Password reset email sent",
-    });
-  } catch (error) {
     next(error);
   }
 }
 
-//reset password
+// RESET PASSWORD
 export async function resetPassword(req, res, next) {
   try {
-    const { token } = req.params;
-    const { password } = req.body;
-
-    const user = await User.findOne({
-      resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() },
-    });
-
-    if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid or expired password reset token",
-      });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, SALT_ROUNDS);
-
-    user.password = hashedPassword;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
-
-    await user.save();
-
+    const result = await userService.resetPassword(
+      req.params.token,
+      req.body.password
+    );
     return res.status(200).json({
       success: true,
+      ...result,
       message: "Password reset successful. You can now log in.",
     });
   } catch (error) {
+    if (error.message === "Invalid or expired password reset token") {
+      return res.status(400).json({
+        success: false,
+        message: error.message,
+      });
+    }
     next(error);
   }
 }
@@ -272,10 +177,7 @@ export async function resetPassword(req, res, next) {
 // DELETE ACCOUNT
 export async function deleteAccount(req, res, next) {
   try {
-    const userId = req.user.id;
-
-    // Optional: Delete related data
-    await User.findByIdAndDelete(userId);
+    await userService.deleteUserAccount(req.user.id);
 
     res.clearCookie("refreshToken", {
       httpOnly: true,

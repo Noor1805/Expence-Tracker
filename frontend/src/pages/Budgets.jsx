@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
-import api from "../services/api";
+// import api from "../services/api"; // Removed
+import budgetService from "../services/budgetService";
+import categoryService from "../services/categoryService";
+
 import { motion } from "framer-motion";
 
 import BudgetForm from "../components/budget/BudgetForm";
@@ -15,12 +18,12 @@ export default function Budgets() {
     setLoading(true);
     try {
       const [budgetRes, categoryRes] = await Promise.all([
-        api.get("/budget"),
-        api.get("/categories"),
+        budgetService.getAll(),
+        categoryService.getAll(),
       ]);
-      setBudgets(budgetRes.data.data || []);
+      setBudgets(budgetRes.data || []);
 
-      const allCategories = categoryRes.data.data || [];
+      const allCategories = categoryRes.data || [];
       const expenseCategories = allCategories.filter(
         (c) => c.type && c.type.toLowerCase() === "expense"
       );

@@ -1,0 +1,494 @@
+﻿[
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\services\\transactionService.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\services\\budgetService.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\router\\AppRouter.jsx",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\services\\notificationService.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\services\\recurringService.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\utils\\formatCurrency.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\services\\userService.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\utils\\calculateStats.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\services\\recurringService.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\services\\transactionService.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\services\\categoryService.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\hooks\\useTheme.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\hooks\\useDebounce.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\services\\authService.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\Notifications.jsx",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\services\\adminService.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\context\\NotificationContext.jsx",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\context\\AuthContext.jsx",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\context\\SidebarContext.jsx",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\hooks\\useAxios.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\services\\budgetService.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\auth\\ForgotPasswordForm.jsx",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\auth\\AuthForm.jsx",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\auth\\LoginForm.jsx",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\auth\\ResetPasswordForm.jsx",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\hooks\\useAuth.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\auth\\RegisterForm.jsx",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\utils\\formatDate.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\utils\\validators.js",
+        "Length":  0
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\middlewares\\upload.js",
+        "Length":  119
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\routes\\contactRoutes.js",
+        "Length":  210
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\main.jsx",
+        "Length":  229
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\validations\\categoryValidation.js",
+        "Length":  254
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\config\\cloudinary.js",
+        "Length":  299
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\router\\PrivateRoute.jsx",
+        "Length":  323
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\utils\\csvExport.js",
+        "Length":  331
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\config\\db.js",
+        "Length":  334
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\config\\emailConfig.js",
+        "Length":  338
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\routes\\settingsRoutes.js",
+        "Length":  339
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\utils\\response.js",
+        "Length":  351
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\middlewares\\roleMiddleware.js",
+        "Length":  364
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\utils\\sendEmail.js",
+        "Length":  403
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\middlewares\\errorMiddleware.js",
+        "Length":  451
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\layout\\AppLayout.jsx",
+        "Length":  471
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\routes\\categoryRoutes.js",
+        "Length":  483
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\routes\\notificationRoutes.js",
+        "Length":  499
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\context\\ThemeContext.jsx",
+        "Length":  518
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\middlewares\\rateLimitMiddleware.js",
+        "Length":  546
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\utils\\fileUpload.js",
+        "Length":  560
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\utils\\jwt.js",
+        "Length":  587
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\routes\\budgetRoutes.js",
+        "Length":  614
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\models\\Category.js",
+        "Length":  620
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\utils\\currencyConverter.js",
+        "Length":  639
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\models\\Notification.js",
+        "Length":  684
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\validations\\budgetValidation.js",
+        "Length":  743
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\models\\Settings.js",
+        "Length":  748
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\services\\api.js",
+        "Length":  753
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\validations\\authValidation.js",
+        "Length":  756
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\models\\Budget.js",
+        "Length":  763
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\routes\\adminRoutes.js",
+        "Length":  796
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\routes\\authRoutes.js",
+        "Length":  897
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\budget\\BudgetProgressBar.jsx",
+        "Length":  907
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\validations\\transactionValidation.js",
+        "Length":  963
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\middlewares\\authMiddleware.js",
+        "Length":  990
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\models\\User.js",
+        "Length":  1142
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\utils\\excelExport.js",
+        "Length":  1151
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\transactions\\TransactionTable.jsx",
+        "Length":  1154
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\categories\\CategoryList.jsx",
+        "Length":  1247
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\transactions\\StatsCard.jsx",
+        "Length":  1253
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\models\\Transaction.js",
+        "Length":  1255
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\app.js",
+        "Length":  1264
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\analytics\\CategoryChart.jsx",
+        "Length":  1319
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\controllers\\contactController.js",
+        "Length":  1376
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\categories\\IconPicker.jsx",
+        "Length":  1410
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\Admin.jsx",
+        "Length":  1518
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\analytics\\MonthlyChart.jsx",
+        "Length":  1561
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\transactions\\ImportCSVModal.jsx",
+        "Length":  1629
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\budget\\BudgetSummaryCard.jsx",
+        "Length":  1774
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\analytics\\PaymentChart.jsx",
+        "Length":  1817
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\controllers\\settingsController.js",
+        "Length":  1823
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\Categories.jsx",
+        "Length":  2024
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\routes\\transactionRoutes.js",
+        "Length":  2039
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\App.jsx",
+        "Length":  2392
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\budget\\CategoryBudgetItem.jsx",
+        "Length":  2508
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\ForgotPassword.jsx",
+        "Length":  3110
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\controllers\\notificationController.js",
+        "Length":  3113
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\budget\\BudgetForm.jsx",
+        "Length":  3162
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\Login.jsx",
+        "Length":  3250
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\Pricing.jsx",
+        "Length":  3306
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\transactions\\AddEditTransactionForm.jsx",
+        "Length":  3336
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\transactions\\TransactionCard.jsx",
+        "Length":  3531
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\layout\\Sidebar.jsx",
+        "Length":  3540
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\Budgets.jsx",
+        "Length":  3599
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\categories\\CategoryHistoryModal.jsx",
+        "Length":  3647
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\Home.jsx",
+        "Length":  3746
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\transactions\\TransactionFilters.jsx",
+        "Length":  3826
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\utils\\pdfExport.js",
+        "Length":  3877
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\Signup.jsx",
+        "Length":  3883
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\Contact.jsx",
+        "Length":  4029
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\Footer.jsx",
+        "Length":  4030
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\ResetPassword.jsx",
+        "Length":  4178
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\index.css",
+        "Length":  4194
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\NotFound.jsx",
+        "Length":  4324
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\Profile.jsx",
+        "Length":  4447
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\categories\\CategoryCard.jsx",
+        "Length":  4480
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\layout\\Navbar.jsx",
+        "Length":  4731
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\layout\\PublicNavbar.jsx",
+        "Length":  4948
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\controllers\\categoryController.js",
+        "Length":  4991
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\Features.jsx",
+        "Length":  5340
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\controllers\\adminController.js",
+        "Length":  5526
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\categories\\CategoryForm.jsx",
+        "Length":  5929
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\controllers\\authController.js",
+        "Length":  7250
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\Transactions.jsx",
+        "Length":  9274
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\controllers\\budgetController.js",
+        "Length":  9675
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\Settings.jsx",
+        "Length":  11970
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\backend\\src\\controllers\\transactionController.js",
+        "Length":  13256
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\pages\\Dashboard.jsx",
+        "Length":  17120
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\components\\layout\\effects\\LightRays.jsx",
+        "Length":  20607
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\assets\\images\\bg3.jpeg",
+        "Length":  191193
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\assets\\images\\Dashboard.png",
+        "Length":  241093
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\assets\\images\\fb2.png",
+        "Length":  281925
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\assets\\images\\fbg1.png",
+        "Length":  396870
+    },
+    {
+        "FullName":  "C:\\Expence tracker\\frontend\\src\\assets\\images\\fbg.png",
+        "Length":  414800
+    }
+]

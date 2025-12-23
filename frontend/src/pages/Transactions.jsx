@@ -1,6 +1,6 @@
 // src/pages/Transactions.jsx
 import React, { useEffect, useState } from "react";
-import api from "../services/api";
+import transactionService from "../services/transactionService";
 
 import StatsCard from "../components/transactions/StatsCard";
 import TransactionCard from "../components/transactions/TransactionCard";
@@ -35,10 +35,10 @@ export default function Transactions() {
   const handleSave = async (payload) => {
     try {
       if (editing) {
-        await api.put(`/transactions/${editing._id}`, payload);
+        await transactionService.update(editing._id, payload);
         setEditing(null);
       } else {
-        await api.post("/transactions/create", payload);
+        await transactionService.create(payload);
       }
       setShowAdd(false);
       fetchTransactions();
@@ -57,8 +57,8 @@ export default function Transactions() {
   const fetchTransactions = async () => {
     setLoading(true);
     try {
-      const res = await api.get("/transactions", { params: filters });
-      setTransactions(res.data.data.transactions || []);
+      const res = await transactionService.getAll(filters);
+      setTransactions(res.data.transactions || []);
     } catch (err) {
       console.error(err);
     } finally {
@@ -68,9 +68,9 @@ export default function Transactions() {
 
   const fetchStats = async () => {
     try {
-      const res = await api.get("/transactions/stats/total");
-      if (res.data && res.data.data) {
-        const d = res.data.data;
+      const res = await transactionService.getStats();
+      if (res.data) {
+        const d = res.data;
         setStats({
           totalIncome: d.totalIncome ?? 0,
           totalExpense: d.totalExpense ?? 0,
@@ -210,7 +210,7 @@ export default function Transactions() {
                   }}
                   onDelete={async (id) => {
                     if (!confirm("Delete transaction?")) return;
-                    await api.delete(`/transactions/${id}`);
+                    await transactionService.delete(id);
                     fetchTransactions();
                     fetchStats();
                   }}

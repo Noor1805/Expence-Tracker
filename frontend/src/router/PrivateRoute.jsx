@@ -1,10 +1,13 @@
 import { Navigate, Outlet } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
 export default function PrivateRoute() {
-  const token = localStorage.getItem("token");
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) return null; // Or a spinner
 
   // If no token, redirect to login
-  if (!token) {
+  if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 

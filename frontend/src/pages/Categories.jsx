@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import CategoryForm from "../components/categories/CategoryForm";
 import CategoryList from "../components/categories/CategoryList";
 import CategoryHistoryModal from "../components/categories/CategoryHistoryModal";
-import api from "../services/api";
+import categoryService from "../services/categoryService";
 
 export default function Categories() {
   const [categories, setCategories] = useState([]);
@@ -13,8 +13,8 @@ export default function Categories() {
   const fetchCategories = async () => {
     try {
       setLoading(true);
-      const res = await api.get("/categories");
-      setCategories(res.data.data || res.data);
+      const res = await categoryService.getAll();
+      setCategories(res.data || []);
     } catch (e) {
       console.error(e);
     } finally {
@@ -34,7 +34,6 @@ export default function Categories() {
   return (
     <div className="min-h-screen bg-[#05080d] p-4 md:p-6 lg:p-8">
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 items-start">
-        
         <div className="w-full xl:col-span-1 xl:sticky xl:top-6">
           <CategoryForm
             editingCategory={editingCategory}
