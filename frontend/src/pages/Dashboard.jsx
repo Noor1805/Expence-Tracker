@@ -65,28 +65,30 @@ export default function Dashboard() {
         recentRes,
         catRes,
         monthRes,
-        payRes, // Need to add getPaymentStats to service
+        payRes,
         balRes,
-        // upRes, // Need to add getUpcoming to service
+        upRes,
         budgetRes,
       ] = await Promise.all([
         transactionService.getStats(),
         transactionService.getRecent(),
         transactionService.getCategoryStats(),
         transactionService.getMonthlyStats(),
-        // transactionService.getPaymentStats(), // Placeholder
-        transactionService.getBalanceHistory(), // This was api.get("/transactions/stats/balance-history") which matches getBalanceHistory
-        // transactionService.getUpcoming(),
+        transactionService.getPaymentStats(),
+        transactionService.getBalanceHistory(),
+        transactionService.getUpcoming(),
         budgetService.getStats(month, year).catch(() => ({ data: null })),
       ]);
 
-      setStats(statsRes.data);
+      setStats(
+        statsRes.data || { totalIncome: 0, totalExpense: 0, balance: 0 }
+      );
       setRecentTransactions(recentRes.data || []);
       setCategoryStats(catRes.data || []);
       setMonthlyStats(monthRes.data || []);
-      // setPaymentStats(payRes.data || []);
+      setPaymentStats(payRes.data || []);
       setBalanceHistory(balRes.data || []);
-      // setUpcoming(upRes.data || []);
+      setUpcoming(upRes.data || []);
       setBudgetStats(budgetRes.data || {});
 
       // I will fetch the missing ones directly for now until I update the service to be strict.
