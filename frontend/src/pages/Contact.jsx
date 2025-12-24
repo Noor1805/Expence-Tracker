@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Mail, MessageSquare } from "lucide-react";
-import api from "../services/api";
+import emailjs from "@emailjs/browser"; // Import EmailJS library
 
 export default function Contact() {
   const [form, setForm] = useState({
@@ -20,22 +20,27 @@ export default function Contact() {
     e.preventDefault();
     setLoading(true);
 
-    try {
-      // Call the API
-      const res = await api.post("/contact/send", form);
+    // EmailJS Configuration (Public Client-Side Keys)
+    const serviceId = "service_w08x5id";
+    const templateId = "template_pw72a1g";
+    const publicKey = "N2N3v2w9YWxYCFG85";
 
-      // Success Feedback
-      if (res.data.success) {
-        alert("Success! " + res.data.message);
-        setForm({ firstName: "", lastName: "", email: "", message: "" });
-      }
-    } catch (err) {
-      console.error("Contact Error:", err);
-      // Extract specific error message from backend
-      const errorMessage =
-        err.response?.data?.message ||
-        "Something went wrong. Please try again.";
-      alert("Error: " + errorMessage);
+    // Matching template variables to form data
+    const templateParams = {
+      from_name: `${form.firstName} ${form.lastName}`,
+      from_email: form.email,
+      message: form.message,
+      to_name: "Admin",
+    };
+
+    try {
+      await emailjs.send(serviceId, templateId, templateParams, publicKey);
+
+      alert("Message sent successfully! 🚀");
+      setForm({ firstName: "", lastName: "", email: "", message: "" });
+    } catch (error) {
+      console.error("EmailJS Error:", error);
+      alert("Failed to send message. Please try again later.");
     } finally {
       setLoading(false);
     }
