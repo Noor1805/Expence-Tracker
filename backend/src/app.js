@@ -13,6 +13,9 @@ import contactRoutes from "./routes/contactRoutes.js";
 
 const app = express();
 
+// Required for Render/Vercel (behind proxy) to work with rate limiters and secure cookies
+app.set("trust proxy", 1);
+
 app.use(
   cors({
     origin:
