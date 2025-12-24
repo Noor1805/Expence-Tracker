@@ -1,7 +1,17 @@
 import axios from "axios";
 
+const getBaseUrl = () => {
+  let url = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  // If it doesn't end in /api and isn't localhost (or even if it is), ensure /api appended
+  // But be careful not to double append if the user ALREADY put /api
+  if (!url.endsWith("/api")) {
+    url += "/api";
+  }
+  return url;
+};
+
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+  baseURL: getBaseUrl(),
   withCredentials: true,
 });
 
