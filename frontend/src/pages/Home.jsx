@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import React from "react";
 import LightRays from "../components/layout/effects/LightRays";
 import PublicNavbar from "../components/layout/PublicNavbar";
@@ -8,6 +9,8 @@ import Contact from "./Contact";
 import Footer from "./Footer";
 
 export default function Home() {
+  const isLoggedIn = !!localStorage.getItem("token"); // Check auth
+
   return (
     <div
       id="home"
@@ -66,9 +69,19 @@ export default function Home() {
         </p>
 
         <div className="flex  justify-center gap-4 sm:gap-6 mt-8 flex-wrap">
-          <button className="px-10 py-3.5 text-lg font-semibold rounded-full bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 text-white shadow-[0_0_25px_rgba(255,120,0,0.45)] transition-all duration-300">
-            Get Started
-          </button>
+          {isLoggedIn ? (
+            <Link to="/app">
+              <button className="px-10 py-3.5 text-lg font-semibold rounded-full bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 text-white shadow-[0_0_25px_rgba(255,120,0,0.45)] transition-all duration-300 hover:scale-105">
+                Go to Dashboard
+              </button>
+            </Link>
+          ) : (
+            <Link to="/signup">
+              <button className="px-10 py-3.5 text-lg font-semibold rounded-full bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 text-white shadow-[0_0_25px_rgba(255,120,0,0.45)] transition-all duration-300 hover:scale-105">
+                Get Started
+              </button>
+            </Link>
+          )}
 
           <button className="px-10 py-3.5 text-lg font-medium rounded-full text-gray-300 bg-black/40 border border-white/15 backdrop-blur-xl transition-all duration-300">
             Watch Demo
