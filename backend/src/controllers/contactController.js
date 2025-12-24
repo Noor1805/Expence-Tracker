@@ -13,14 +13,16 @@ export const sendContactEmail = async (req, res) => {
   try {
     console.log("Contact Controller: Received request from", email);
 
-    // FIX V6: Force Port 587 (STARTTLS).
-    // Port 465 (Service: Gmail) is blocked by Render (Timeout).
-    // Port 587 is the standard submission port and should work.
+    // FIX V7: Force Port 587 with explicit TLS requirement.
+    // Enable logger/debug to see SMTP handshake details in Render Console.
 
     const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com",
       port: 587,
-      secure: false, // Must be false for Port 587
+      secure: false, // Must be false for 587
+      requireTLS: true, // Force STARTTLS
+      logger: true, // Log SMTP exchanges
+      debug: true, // detailed debug output
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -28,10 +30,11 @@ export const sendContactEmail = async (req, res) => {
     });
 
     // Log config summary (masked)
-    console.log("DEBUG EMAIL CONFIG (V6):", {
+    console.log("DEBUG EMAIL CONFIG (V7):", {
       host: "smtp.gmail.com",
       port: 587,
       secure: false,
+      requireTLS: true,
       user: process.env.EMAIL_USER ? "SET" : "MISSING",
       pass: process.env.EMAIL_PASS ? "SET" : "MISSING",
     });
