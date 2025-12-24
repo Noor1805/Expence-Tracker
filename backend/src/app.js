@@ -9,7 +9,6 @@ import budgetRoutes from "./routes/budgetRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
-import settingsRoutes from "./routes/settingsRoutes.js";
 
 const app = express();
 
@@ -32,8 +31,6 @@ app.use("/api/transactions", transactionRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/budget", budgetRoutes);
 app.use("/api/admin", adminRoutes);
-app.use("/api/notifications", notificationRoutes);
-app.use("/api/settings", settingsRoutes);
 app.use("/api/notifications", notificationRoutes);
 app.use("/api/settings", settingsRoutes);
 
