@@ -194,8 +194,7 @@ export default function Settings() {
             </section>
           </div>
 
-
-
+          <div className="space-y-6 md:space-y-8">
             <section className="p-6 md:p-8 rounded-[30px] border border-red-500/20 bg-gradient-to-b from-red-900/10 to-transparent shadow-[0_10px_40px_-10px_rgba(255,0,0,0.1)]">
               <div className="flex items-center gap-4 mb-6">
                 <div className="w-12 h-12 rounded-xl bg-red-500/10 flex items-center justify-center text-xl text-red-500 shrink-0">
