@@ -11,12 +11,11 @@ export const sendContactEmail = async (req, res) => {
   }
 
   try {
-    // Use environment variables if present, otherwise fallback to Gmail SSL (Port 465)
-    // FIX: Default to Port 465 (SSL) if EMAIL_PORT is missing. This prevents ETIMEDOUT on Render.
+    // FIX V4: Switch to Port 587 (STARTTLS) as 465 is timing out on Render.
+    // This is the standard "Submission Port" and often bypasses firewall blocks.
     const transportHost = process.env.EMAIL_HOST || "smtp.gmail.com";
-    const transportPort = process.env.EMAIL_PORT || 465;
-    const transportSecure =
-      process.env.EMAIL_SECURE === "true" || transportPort == 465;
+    const transportPort = 587; // Force 587 for now to test
+    const transportSecure = false; // Must be false for Port 587 (STARTTLS)
 
     console.log("DEBUG EMAIL CONFIG:", {
       user: process.env.EMAIL_USER ? "SET" : "MISSING",
