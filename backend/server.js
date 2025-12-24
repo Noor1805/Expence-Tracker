@@ -13,7 +13,7 @@ initCronJobs();
 const PORT = process.env.PORT || 5000;
 
 // Debugging: Check critical environment variables
-console.log("🚀 SERVER STARTING - VERSION: Contact-V8 (Fresh Rewrite 587)");
+console.log("🚀 SERVER STARTING - VERSION: Contact-V9 (IPv4 Force Fix)");
 console.log("Starting server...");
 console.log("Environment:", process.env.NODE_ENV);
 console.log("MONGO_URI is set:", !!process.env.MONGO_URI);
