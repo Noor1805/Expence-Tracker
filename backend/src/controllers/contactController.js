@@ -11,12 +11,11 @@ export const sendContactEmail = async (req, res) => {
   }
 
   try {
-  try {
     console.log("Contact Controller: Received request from", email);
 
     // FIX V5: Revert to "service: gmail" preset.
     // This allows Nodemailer to pick the best port/settings automatically.
-    
+
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
