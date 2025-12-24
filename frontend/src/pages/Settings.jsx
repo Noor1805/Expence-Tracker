@@ -194,55 +194,7 @@ export default function Settings() {
             </section>
           </div>
 
-          <div className="space-y-6 md:space-y-8">
-            <section className="p-5 md:p-8 rounded-[30px] border border-white/10 bg-[#111] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)]">
-              <div className="flex items-center gap-4 mb-6">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-purple-500/20 to-pink-500/20 flex items-center justify-center text-xl text-purple-400 shrink-0">
-                  <FiBell />
-                </div>
-                <div>
-                  <h2 className="text-lg md:text-2xl font-bold text-white audiowide-regular tracking-wide">
-                    Alerts
-                  </h2>
-                  <p className="text-xs md:text-sm text-gray-500">
-                    Manage app notifications
-                  </p>
-                </div>
-              </div>
 
-              <div
-                className="flex flex-col sm:flex-row sm:items-center justify-between p-4 md:p-5 rounded-3xl bg-[#1a1a1a] border border-white/5 cursor-pointer hover:border-purple-500/30 transition-all group gap-4"
-                onClick={() =>
-                  saveSettings({
-                    ...settings,
-                    notifications: !settings.notifications,
-                  })
-                }
-              >
-                <div className="flex-1 min-w-0">
-                  <p className="text-white font-bold text-base md:text-lg mb-1 group-hover:text-purple-300 transition-colors">
-                    Push Notifications
-                  </p>
-                  <p className="text-gray-500 text-xs md:text-sm leading-relaxed">
-                    Receive alerts about monthly reports & budget limits
-                  </p>
-                </div>
-
-                <div
-                  className={`w-14 h-8 md:w-16 md:h-9 rounded-full p-1 relative transition-colors duration-300 shrink-0 self-start sm:self-center ${
-                    settings.notifications ? "bg-purple-500" : "bg-gray-700"
-                  }`}
-                >
-                  <div
-                    className={`absolute top-1 left-1 w-6 h-6 md:w-7 md:h-7 bg-white rounded-full shadow-md transition-all duration-300 ${
-                      settings.notifications
-                        ? "translate-x-6 md:translate-x-7"
-                        : "translate-x-0"
-                    }`}
-                  />
-                </div>
-              </div>
-            </section>
 
             <section className="p-6 md:p-8 rounded-[30px] border border-red-500/20 bg-gradient-to-b from-red-900/10 to-transparent shadow-[0_10px_40px_-10px_rgba(255,0,0,0.1)]">
               <div className="flex items-center gap-4 mb-6">

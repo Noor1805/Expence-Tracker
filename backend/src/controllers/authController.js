@@ -132,48 +132,6 @@ export async function getMe(req, res, next) {
   }
 }
 
-// FORGOT PASSWORD
-export async function forgotPassword(req, res, next) {
-  try {
-    const result = await userService.forgotPassword(req.body.email);
-    return res.status(200).json({
-      success: true,
-      ...result,
-    });
-  } catch (error) {
-    if (error.message === "Email not found") {
-      return res.status(404).json({
-        success: false,
-        message: "Email not found",
-      });
-    }
-    next(error);
-  }
-}
-
-// RESET PASSWORD
-export async function resetPassword(req, res, next) {
-  try {
-    const result = await userService.resetPassword(
-      req.params.token,
-      req.body.password
-    );
-    return res.status(200).json({
-      success: true,
-      ...result,
-      message: "Password reset successful. You can now log in.",
-    });
-  } catch (error) {
-    if (error.message === "Invalid or expired password reset token") {
-      return res.status(400).json({
-        success: false,
-        message: error.message,
-      });
-    }
-    next(error);
-  }
-}
-
 // DELETE ACCOUNT
 export async function deleteAccount(req, res, next) {
   try {

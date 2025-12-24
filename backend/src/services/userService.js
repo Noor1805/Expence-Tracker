@@ -6,8 +6,6 @@ import {
   generateRefreshToken,
   verifyRefreshToken,
 } from "../utils/jwt.js";
-import { sendEmail } from "../utils/sendEmail.js";
-
 const SALT_ROUNDS = 10;
 
 export const registerUser = async ({ name, email, password }) => {
@@ -98,51 +96,6 @@ export const getUserProfile = async (userId) => {
   );
   if (!user) throw new Error("User not found");
   return user;
-};
-
-export const forgotPassword = async (email) => {
-  const user = await User.findOne({ email });
-  if (!user) throw new Error("Email not found");
-
-  const resetToken = crypto.randomBytes(32).toString("hex");
-
-  user.resetPasswordToken = resetToken;
-  user.resetPasswordExpires = Date.now() + 3600000;
-  await user.save();
-
-  const resetURL = `${process.env.CLIENT_URL}/reset-password/${resetToken}`;
-
-  await sendEmail({
-    to: user.email,
-    subject: "Reset Your Password",
-    html: `
-      <p>You requested a password reset.</p>
-      <p>Click the link below to reset:</p>
-      <a href="${resetURL}">${resetURL}</a>
-    `,
-  });
-
-  return { message: "Password reset email sent" };
-};
-
-export const resetPassword = async (token, newPassword) => {
-  const user = await User.findOne({
-    resetPasswordToken: token,
-    resetPasswordExpires: { $gt: Date.now() },
-  });
-
-  if (!user) {
-    throw new Error("Invalid or expired password reset token");
-  }
-
-  const hashedPassword = await bcrypt.hash(newPassword, SALT_ROUNDS);
-
-  user.password = hashedPassword;
-  user.resetPasswordToken = undefined;
-  user.resetPasswordExpires = undefined;
-
-  await user.save();
-  return { message: "Password reset successful" };
 };
 
 export const deleteUserAccount = async (userId, token) => {

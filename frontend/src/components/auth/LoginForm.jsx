@@ -76,15 +76,6 @@ export default function LoginForm() {
           </div>
         </div>
 
-        <div className="text-right">
-          <Link
-            to="/forgot-password"
-            className="text-sm text-orange-500 hover:text-orange-400"
-          >
-            Forgot Password?
-          </Link>
-        </div>
-
         <button
           disabled={loading}
           className="w-full py-3 rounded-xl font-semibold
