@@ -51,7 +51,7 @@ export default function Sidebar() {
 
         <button
           onClick={() => setOpen(!open)}
-          className="text-gray-500 dark:text-gray-400 hover:text-orange-500 transition"
+          className="hidden md:block text-gray-500 dark:text-gray-400 hover:text-orange-500 transition"
         >
           {open ? "←" : "→"}
         </button>

@@ -25,7 +25,8 @@ export default function Contact() {
       alert("Message sent successfully 🚀");
       setForm({ firstName: "", lastName: "", email: "", message: "" });
     } catch (err) {
-      alert("Failed to send message");
+      console.error("Contact Error:", err);
+      alert(err.response?.data?.message || "Failed to send message");
     } finally {
       setLoading(false);
     }
