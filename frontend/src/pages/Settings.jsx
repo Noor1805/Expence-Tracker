@@ -213,7 +213,7 @@ export default function Settings() {
               <div className="space-y-4">
                 <button
                   onClick={logoutAll}
-                  className="w-full py-4 rounded-2xl bg-[#1a1a1a] hover:bg-white/5 border border-white/10 text-gray-300 hover:text-white font-bold tracking-wide transition-all flex items-center justify-center gap-1 group text-sm md:text-base"
+                  className="w-full py-4 rounded-2xl bg-[#1a1a1a] hover:bg-white/5 border border-white/10 text-gray-300 hover:text-white font-bold tracking-wide transition-all flex items-center justify-center gap-3 group text-sm md:text-base"
                 >
                   <FiLogOut className="group-hover:-translate-x-1 transition-transform" />
                   Log Out All Devices

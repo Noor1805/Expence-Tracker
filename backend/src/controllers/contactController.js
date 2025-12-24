@@ -11,15 +11,29 @@ export const sendContactEmail = async (req, res) => {
   }
 
   try {
-    const transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: process.env.EMAIL_PORT,
-      secure: process.env.EMAIL_SECURE === "true",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
+    // Use environment variables if present, otherwise fallback to Gmail SSL (Port 465)
+    // This fixes "Connection Timeout" on Render if users forget to set HOST/PORT environment variables
+    const transporterConfig = process.env.EMAIL_HOST
+      ? {
+          host: process.env.EMAIL_HOST,
+          port: process.env.EMAIL_PORT,
+          secure: process.env.EMAIL_SECURE === "true",
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+          },
+        }
+      : {
+          host: "smtp.gmail.com",
+          port: 465,
+          secure: true,
+          auth: {
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
+          },
+        };
+
+    const transporter = nodemailer.createTransport(transporterConfig);
 
     const mailOptions = {
       from: `"Monexa Contact" <${process.env.EMAIL_USER}>`,
