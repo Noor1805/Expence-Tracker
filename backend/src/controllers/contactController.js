@@ -11,28 +11,25 @@ export const sendContactEmail = async (req, res) => {
   }
 
   try {
-    // FIX V4: Switch to Port 587 (STARTTLS) as 465 is timing out on Render.
-    // This is the standard "Submission Port" and often bypasses firewall blocks.
-    const transportHost = process.env.EMAIL_HOST || "smtp.gmail.com";
-    const transportPort = 587; // Force 587 for now to test
-    const transportSecure = false; // Must be false for Port 587 (STARTTLS)
+  try {
+    console.log("Contact Controller: Received request from", email);
 
-    console.log("DEBUG EMAIL CONFIG:", {
-      user: process.env.EMAIL_USER ? "SET" : "MISSING",
-      pass: process.env.EMAIL_PASS ? "SET" : "MISSING",
-      host: transportHost,
-      port: transportPort,
-      secure: transportSecure,
-    });
-
+    // FIX V5: Revert to "service: gmail" preset.
+    // This allows Nodemailer to pick the best port/settings automatically.
+    
     const transporter = nodemailer.createTransport({
-      host: transportHost,
-      port: transportPort,
-      secure: transportSecure,
+      service: "gmail",
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
       },
+    });
+
+    // Log config summary (masked)
+    console.log("DEBUG EMAIL CONFIG (V5):", {
+      service: "gmail",
+      user: process.env.EMAIL_USER ? "SET" : "MISSING",
+      pass: process.env.EMAIL_PASS ? "SET" : "MISSING",
     });
 
     const mailOptions = {
