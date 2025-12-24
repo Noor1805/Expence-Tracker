@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Mail, User, MessageSquare } from "lucide-react";
+import { Mail, MessageSquare } from "lucide-react";
 import api from "../services/api";
 
 export default function Contact() {
@@ -21,12 +21,21 @@ export default function Contact() {
     setLoading(true);
 
     try {
-      await api.post("/contact/send", form);
-      alert("Message sent successfully 🚀");
-      setForm({ firstName: "", lastName: "", email: "", message: "" });
+      // Call the API
+      const res = await api.post("/contact/send", form);
+
+      // Success Feedback
+      if (res.data.success) {
+        alert("Success! " + res.data.message);
+        setForm({ firstName: "", lastName: "", email: "", message: "" });
+      }
     } catch (err) {
       console.error("Contact Error:", err);
-      alert(err.response?.data?.message || "Failed to send message");
+      // Extract specific error message from backend
+      const errorMessage =
+        err.response?.data?.message ||
+        "Something went wrong. Please try again.";
+      alert("Error: " + errorMessage);
     } finally {
       setLoading(false);
     }
@@ -98,6 +107,7 @@ export default function Contact() {
             name="email"
             value={form.email}
             onChange={handleChange}
+            type="email"
             placeholder="Email Address"
             className="input mt-6"
             required
@@ -115,10 +125,14 @@ export default function Contact() {
 
           <button
             disabled={loading}
-            className="mt-8 w-full py-3 rounded-xl font-semibold
-              bg-orange-500 text-black hover:bg-orange-400 transition"
+            className={`mt-8 w-full py-3 rounded-xl font-semibold transition
+              ${
+                loading
+                  ? "bg-gray-700 text-gray-400 cursor-not-allowed"
+                  : "bg-orange-500 text-black hover:bg-orange-400"
+              }`}
           >
-            {loading ? "Sending..." : "Submit Form"}
+            {loading ? "Sending Message..." : "Submit Form"}
           </button>
         </form>
       </div>
