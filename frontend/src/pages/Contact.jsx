@@ -20,17 +20,13 @@ export default function Contact() {
     e.preventDefault();
     setLoading(true);
 
-    // EmailJS Configuration (Public Client-Side Keys)
     const serviceId = "service_w08x5id";
     const templateId = "template_pw72a1g";
     const publicKey = "N2N3v2w9YWxYCFG85";
-
-    // Matching template variables to form data
     const templateParams = {
-      // Keys must match variables in your EmailJS Template
-      name: `${form.firstName} ${form.lastName}`, // Matches {{name}}
-      email: form.email, // Matches {{email}} (Reply To)
-      from_email: form.email, // Matches {{from_email}}
+      name: `${form.firstName} ${form.lastName}`,
+      email: form.email,
+      from_email: form.email,
       message: form.message,
       to_name: "Admin",
     };
@@ -38,7 +34,7 @@ export default function Contact() {
     try {
       await emailjs.send(serviceId, templateId, templateParams, publicKey);
 
-      alert("Message sent successfully! 🚀");
+      alert("Message sent successfully!");
       setForm({ firstName: "", lastName: "", email: "", message: "" });
     } catch (error) {
       console.error("EmailJS Error:", error);

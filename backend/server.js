@@ -7,19 +7,17 @@ import { initCronJobs } from "./src/services/cronService.js";
 
 connectDB();
 
-// Initialize Cron Jobs
 initCronJobs();
 
 const PORT = process.env.PORT || 5000;
 
-// Debugging: Check critical environment variables
 console.log("🚀 SERVER STARTING - VERSION: Contact-V9 (IPv4 Force Fix)");
 console.log("Starting server...");
 console.log("Environment:", process.env.NODE_ENV);
 console.log("MONGO_URI is set:", !!process.env.MONGO_URI);
 console.log("JWT_SECRET is set:", !!process.env.JWT_SECRET);
 console.log("CLIENT_URL is set:", !!process.env.CLIENT_URL);
-console.log("CLIENT_URL value:", process.env.CLIENT_URL); // Log safe value to check for trailing slash issues
+console.log("CLIENT_URL value:", process.env.CLIENT_URL);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

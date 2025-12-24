@@ -100,5 +100,4 @@ export const getUserProfile = async (userId) => {
 
 export const deleteUserAccount = async (userId, token) => {
   await User.findByIdAndDelete(userId);
-  // No explicit token invalidation needed as user is gone, but good practice to clear cookie in controller
 };
