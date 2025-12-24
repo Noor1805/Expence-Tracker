@@ -11,6 +11,12 @@ export const sendContactEmail = async (req, res) => {
   }
 
   try {
+    console.log("DEBUG EMAIL CONFIG:", {
+      user: process.env.EMAIL_USER ? "SET" : "MISSING",
+      pass: process.env.EMAIL_PASS ? "SET" : "MISSING",
+      host: process.env.EMAIL_HOST || "FALLBACK (Gmail)",
+    });
+
     // Use environment variables if present, otherwise fallback to Gmail SSL (Port 465)
     // This fixes "Connection Timeout" on Render if users forget to set HOST/PORT environment variables
     const transporterConfig = process.env.EMAIL_HOST
@@ -59,7 +65,7 @@ export const sendContactEmail = async (req, res) => {
     console.error("EMAIL ERROR 👉", error);
     res.status(500).json({
       success: false,
-      message: "Failed to send email",
+      message: error.message || "Failed to send email",
     });
   }
 };
