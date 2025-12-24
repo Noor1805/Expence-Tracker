@@ -31,21 +31,21 @@ export default function Home() {
             >
               <LightRays
                 raysOrigin="top-right"
-                raysSpeed={0.55}
-                flowStrength={0.08}
-                fogFallSpeed={1}
-                flowSpeed={1}
+                raysSpeed={0.3} // Slower speed = less updates
+                flowStrength={0.05} // Reduced strength
+                fogFallSpeed={0.5}
+                flowSpeed={0.5}
                 horizontalBeamOffset={0.15}
                 horizontalSizing={1.2}
                 verticalSizing={1.1}
-                rayLength={4.2}
+                rayLength={3.5} // Shorter rays
                 pulsating
-                fadeDistance={0.5}
-                saturation={1.35}
-                followMouse
-                mouseInfluence={0.025}
-                noiseAmount={0.02}
-                distortion={0.05}
+                fadeDistance={0.4}
+                saturation={1.2}
+                followMouse={false} // Disable mouse follow to save performance
+                mouseInfluence={0}
+                noiseAmount={0.01} // Less noise calculation
+                distortion={0.03}
               />
             </div>
           </div>

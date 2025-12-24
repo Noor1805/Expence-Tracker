@@ -133,18 +133,18 @@ export default function Settings() {
 
               <div className="space-y-5 relative z-10">
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-gray-500 tracking-widest uppercase ml-2">
+                  <label className="text-xs font-bold text-gray-400 tracking-widest uppercase ml-2">
                     Display Name
                   </label>
-                  <div className="w-full px-5 py-3 md:px-6 md:py-4 rounded-2xl bg-[#1a1a1a] border border-white/5 text-gray-300 font-medium truncate">
+                  <div className="w-full px-5 py-3 md:px-6 md:py-4 rounded-2xl bg-[#1a1a1a] border border-white/10 text-white font-medium truncate">
                     {settings.name || "User"}
                   </div>
                 </div>
                 <div className="space-y-2">
-                  <label className="text-xs font-bold text-gray-500 tracking-widest uppercase ml-2">
+                  <label className="text-xs font-bold text-gray-400 tracking-widest uppercase ml-2">
                     Email Address
                   </label>
-                  <div className="w-full px-5 py-3 md:px-6 md:py-4 rounded-2xl bg-[#1a1a1a] border border-white/5 text-gray-300 font-medium opacity-75 truncate">
+                  <div className="w-full px-5 py-3 md:px-6 md:py-4 rounded-2xl bg-[#1a1a1a] border border-white/10 text-white font-medium truncate">
                     {settings.email || "No email"}
                   </div>
                 </div>
