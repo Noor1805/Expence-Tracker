@@ -13,6 +13,8 @@ export async function sendEmail({ to, subject, text, html }) {
     return info;
 
   } catch (err) {
-    console.log("Email sending error:", err.message);
+  } catch (err) {
+    console.error("Email sending error:", err);
+    throw new Error(`Email failed to send: ${err.message}`);
   }
 }
