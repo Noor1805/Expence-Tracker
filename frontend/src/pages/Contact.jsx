@@ -27,8 +27,10 @@ export default function Contact() {
 
     // Matching template variables to form data
     const templateParams = {
-      from_name: `${form.firstName} ${form.lastName}`,
-      from_email: form.email,
+      // Keys must match variables in your EmailJS Template
+      name: `${form.firstName} ${form.lastName}`, // Matches {{name}}
+      email: form.email, // Matches {{email}} (Reply To)
+      from_email: form.email, // Matches {{from_email}}
       message: form.message,
       to_name: "Admin",
     };
