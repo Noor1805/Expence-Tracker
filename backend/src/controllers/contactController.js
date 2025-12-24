@@ -11,35 +11,30 @@ export const sendContactEmail = async (req, res) => {
   }
 
   try {
+    // Use environment variables if present, otherwise fallback to Gmail SSL (Port 465)
+    // FIX: Default to Port 465 (SSL) if EMAIL_PORT is missing. This prevents ETIMEDOUT on Render.
+    const transportHost = process.env.EMAIL_HOST || "smtp.gmail.com";
+    const transportPort = process.env.EMAIL_PORT || 465;
+    const transportSecure =
+      process.env.EMAIL_SECURE === "true" || transportPort == 465;
+
     console.log("DEBUG EMAIL CONFIG:", {
       user: process.env.EMAIL_USER ? "SET" : "MISSING",
       pass: process.env.EMAIL_PASS ? "SET" : "MISSING",
-      host: process.env.EMAIL_HOST || "FALLBACK (Gmail)",
+      host: transportHost,
+      port: transportPort,
+      secure: transportSecure,
     });
 
-    // Use environment variables if present, otherwise fallback to Gmail SSL (Port 465)
-    // This fixes "Connection Timeout" on Render if users forget to set HOST/PORT environment variables
-    const transporterConfig = process.env.EMAIL_HOST
-      ? {
-          host: process.env.EMAIL_HOST,
-          port: process.env.EMAIL_PORT,
-          secure: process.env.EMAIL_SECURE === "true",
-          auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-          },
-        }
-      : {
-          host: "smtp.gmail.com",
-          port: 465,
-          secure: true,
-          auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS,
-          },
-        };
-
-    const transporter = nodemailer.createTransport(transporterConfig);
+    const transporter = nodemailer.createTransport({
+      host: transportHost,
+      port: transportPort,
+      secure: transportSecure,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
 
     const mailOptions = {
       from: `"Monexa Contact" <${process.env.EMAIL_USER}>`,
