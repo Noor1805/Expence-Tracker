@@ -192,7 +192,7 @@ export const removeCategoryFromBudget = async (itemId, userId) => {
     user: userId,
   });
 
-  if (!budget) return null; // Or throw error
+  if (!budget) return null; 
 
   const originalLength = budget.categoryBudgets.length;
   budget.categoryBudgets = budget.categoryBudgets.filter(
@@ -209,114 +209,4 @@ export const removeCategoryFromBudget = async (itemId, userId) => {
   );
 
   return await budget.save();
-};
-
-import Notification from "../models/Notification.js";
-
-export const checkBudgetExceeded = async (
-  userId,
-  amount,
-  categoryName,
-  transactionDate
-) => {
-  try {
-    const notifications = [];
-    const dateObj = new Date(transactionDate || Date.now());
-    const month = dateObj.getMonth();
-    const year = dateObj.getFullYear();
-
-    console.log(
-      `Checking budget for User: ${userId}, Month: ${month}, Year: ${year}, Cat: ${categoryName}, Amount: ${amount}`
-    );
-
-    // Get stats for the specific month of the transaction
-    const stats = await getBudgetStats(userId, month, year);
-
-    if (!stats) {
-      console.log("No budget found for this month.");
-      return;
-    }
-
-    console.log(
-      `Overall Budget: ${stats.overallBudget}, Total Spent: ${stats.totalSpent}`
-    );
-
-    // 1. Overall Budget Check
-    if (stats.overallBudget > 0 && stats.totalSpent > stats.overallBudget) {
-      const previousTotal = stats.totalSpent - amount;
-      if (previousTotal <= stats.overallBudget) {
-        notifications.push({
-          user: userId,
-          title: "Overall Budget Exceeded",
-          message: `You have exceeded your overall monthly budget of ${stats.overallBudget}. Current spent: ${stats.totalSpent}`,
-          type: "warning",
-        });
-      }
-    }
-
-    // 2. Category Budget Check
-    // We need budget limits. getBudgetStats returns categoryBudgets which has limits.
-    // stats.categoryBudgets: [{ category: ID, amount: Limit, ... }]
-    // stats.categorySpent: { [Name]: Amount }
-
-    // We need to match categoryName to the budget entry.
-    // Issue: stats.categoryStats keys are names, but categoryBudgets has IDs.
-    // We must resolve names.
-    // Let's call getBudgetsWithSpent but we need it for the specific month/year?
-    // getBudgetsWithSpent uses `now` internally in previous implementation!
-    // We need to refactor getBudgetsWithSpent to accept month/year or query manually here.
-
-    // To be safe and quick, let's fetch the Category document to get ID if name is provided.
-    let categoryId = categoryName;
-    let categoryObj = null;
-
-    // Prepare comparison values
-    // Assume categoryName passed is what is stored in Transaction.
-    // If it's a name, we try to find a category with that name.
-    if (categoryName && !mongoose.Types.ObjectId.isValid(categoryName)) {
-      categoryObj = await Category.findOne({
-        name: categoryName,
-        user: userId,
-      });
-      if (categoryObj) categoryId = categoryObj._id.toString();
-    }
-
-    // stats.categoryBudgets contains the limits defined in Budget model.
-    // We iterate these limits to find the one matching our category.
-    const catBudget = stats.categoryBudgets.find(
-      (cb) =>
-        cb.category.toString() === categoryId ||
-        (categoryObj && cb.category.toString() === categoryObj._id.toString())
-    );
-
-    if (catBudget && catBudget.amount > 0) {
-      // Find spent for this category
-      // stats.categorySpent keys are the "category" field from transaction (which is usually Name string).
-      // If transaction stores Name, then stats.categorySpent[categoryName] is the spent.
-
-      const spent = stats.categorySpent[categoryName] || 0;
-      console.log(
-        `Category: ${categoryName}, Limit: ${catBudget.amount}, Spent: ${spent}`
-      );
-
-      if (spent > catBudget.amount) {
-        const previousSpent = spent - amount;
-        if (previousSpent <= catBudget.amount) {
-          notifications.push({
-            user: userId,
-            title: "Category Budget Exceeded",
-            message: `You have exceeded your budget for ${categoryName}. Limit: ${catBudget.amount}, Spent: ${spent}`,
-            type: "budget",
-          });
-        }
-      }
-    }
-
-    if (notifications.length > 0) {
-      console.log("Creating notifications:", notifications);
-      await Notification.insertMany(notifications);
-    }
-  } catch (error) {
-    console.error("Check Budget Exceeded Error:", error);
-  }
 };

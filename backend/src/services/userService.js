@@ -37,6 +37,10 @@ export const loginUser = async ({ email, password }) => {
     throw new Error("Invalid credentials");
   }
 
+  if (user.isBlocked) {
+    throw new Error("Account is blocked. Please contact support.");
+  }
+
   const match = await bcrypt.compare(password, user.password);
   if (!match) {
     throw new Error("Invalid credentials");

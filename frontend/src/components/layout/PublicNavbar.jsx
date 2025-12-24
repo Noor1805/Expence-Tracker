@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { FiMenu, FiX } from "react-icons/fi";
+import { FiMenu, FiX, FiLayout } from "react-icons/fi";
+import useAuth from "../../hooks/useAuth";
 
 export default function PublicNavbar() {
   const [open, setOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const handleNavClick = (sectionId) => {
     setOpen(false);
@@ -58,26 +60,40 @@ export default function PublicNavbar() {
         </nav>
 
         <div className="hidden md:flex items-center gap-4">
-          <Link
-            to="/login"
-            className="px-5 py-2 rounded-lg text-sm text-gray-200 border border-orange-500/30 
-            bg-black/40 backdrop-blur-md 
-            hover:bg-black/60 
-            transition-all duration-300 
-            shadow-[inset_0_0_10px_rgba(255,120,0,0.25)]"
-          >
-            Login
-          </Link>
+          {user ? (
+            <Link
+              to="/app"
+              className="px-5 py-2 rounded-lg text-sm font-semibold text-white 
+              bg-gradient-to-r from-orange-500 to-orange-600 
+              shadow-[0_0_3px_rgb(255,120,0),0_0_5px_rgba(255,120,0,0.6)]
+              transition-all duration-300 flex items-center gap-2"
+            >
+              <FiLayout /> Dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                to="/login"
+                className="px-5 py-2 rounded-lg text-sm text-gray-200 border border-orange-500/30 
+                bg-black/40 backdrop-blur-md 
+                hover:bg-black/60 
+                transition-all duration-300 
+                shadow-[inset_0_0_10px_rgba(255,120,0,0.25)]"
+              >
+                Login
+              </Link>
 
-          <Link
-            to="/signup"
-            className="px-5 py-2 rounded-lg text-sm font-semibold text-white 
-            bg-gradient-to-r from-orange-500 to-orange-600 
-            shadow-[0_0_3px_rgb(255,120,0),0_0_5px_rgba(255,120,0,0.6)]
-            transition-all duration-300"
-          >
-            Get Started
-          </Link>
+              <Link
+                to="/signup"
+                className="px-5 py-2 rounded-lg text-sm font-semibold text-white 
+                bg-gradient-to-r from-orange-500 to-orange-600 
+                shadow-[0_0_3px_rgb(255,120,0),0_0_5px_rgba(255,120,0,0.6)]
+                transition-all duration-300"
+              >
+                Get Started
+              </Link>
+            </>
+          )}
         </div>
 
         <button
@@ -107,27 +123,43 @@ export default function PublicNavbar() {
           ))}
 
           <div className="flex flex-col gap-4">
-            <Link
-              to="/login"
-              onClick={() => setOpen(false)}
-              className="px-5 py-3 rounded-lg text-center text-sm 
-              text-gray-200 border border-orange-500/30 bg-black/40 backdrop-blur-md 
-              shadow-[inset_0_0_10px_rgba(255,120,0,0.25)]"
-            >
-              Login
-            </Link>
+            {user ? (
+              <Link
+                to="/app"
+                onClick={() => setOpen(false)}
+                className="px-5 py-3 rounded-lg text-center text-sm font-semibold text-white
+                bg-gradient-to-r from-orange-500 to-orange-600
+                shadow-[0_0_0px_rgba(255,120,0,0.4)]
+                hover:shadow-[0_0_3px_rgba(255,120,0,0.55)]
+                transition-all duration-200 flex items-center justify-center gap-2"
+              >
+                <FiLayout /> Go to Dashboard
+              </Link>
+            ) : (
+              <>
+                <Link
+                  to="/login"
+                  onClick={() => setOpen(false)}
+                  className="px-5 py-3 rounded-lg text-center text-sm 
+                  text-gray-200 border border-orange-500/30 bg-black/40 backdrop-blur-md 
+                  shadow-[inset_0_0_10px_rgba(255,120,0,0.25)]"
+                >
+                  Login
+                </Link>
 
-            <Link
-              to="/signup"
-              onClick={() => setOpen(false)}
-              className="px-5 py-3 rounded-lg text-center text-sm font-semibold text-white
-              bg-gradient-to-r from-orange-500 to-orange-600
-              shadow-[0_0_0px_rgba(255,120,0,0.4)]
-              hover:shadow-[0_0_3px_rgba(255,120,0,0.55)]
-              transition-all duration-200"
-            >
-              Get Started
-            </Link>
+                <Link
+                  to="/signup"
+                  onClick={() => setOpen(false)}
+                  className="px-5 py-3 rounded-lg text-center text-sm font-semibold text-white
+                  bg-gradient-to-r from-orange-500 to-orange-600
+                  shadow-[0_0_0px_rgba(255,120,0,0.4)]
+                  hover:shadow-[0_0_3px_rgba(255,120,0,0.55)]
+                  transition-all duration-200"
+                >
+                  Get Started
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </div>
