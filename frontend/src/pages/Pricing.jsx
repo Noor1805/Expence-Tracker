@@ -45,7 +45,7 @@ export default function Pricing() {
     >
       <h1
         className="
-          absolute top-2 md:top-12 lg:top-18
+          absolute top-2 md:top-[-20px] lg:top-2 xl:top-6
           text-[100px] md:text-[220px]
           font-bold tracking-tight
           text-orange-500
