@@ -1,8 +1,18 @@
 import Transaction from "../models/Transaction.js";
 import mongoose from "mongoose";
+import * as budgetService from "./budgetService.js";
 
 export const createTransaction = async (data) => {
-  return await Transaction.create(data);
+  const transaction = await Transaction.create(data);
+  if (transaction.type === "expense") {
+    await budgetService.checkBudgetExceeded(
+      data.user,
+      data.amount,
+      data.category,
+      data.date
+    );
+  }
+  return transaction;
 };
 
 export const getTransactions = async (userId, queryParams) => {
@@ -46,11 +56,22 @@ export const getTransactionById = async (id, userId) => {
 };
 
 export const updateTransaction = async (id, userId, data) => {
-  return await Transaction.findOneAndUpdate(
+  const transaction = await Transaction.findOneAndUpdate(
     { _id: id, user: userId },
     { ...data },
     { new: true }
   );
+  if (transaction && transaction.type === "expense") {
+    // For updates, the amount change is complex to calculate "newly exceeded" perfectly without diffing.
+    // For simplicity, we just check if it IS exceeded now.
+    await budgetService.checkBudgetExceeded(
+      userId,
+      0,
+      transaction.category,
+      transaction.date
+    );
+  }
+  return transaction;
 };
 
 export const deleteTransaction = async (id, userId) => {

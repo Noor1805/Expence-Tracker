@@ -1,10 +1,18 @@
 import { NavLink } from "react-router-dom";
 import { useState } from "react";
-import { FiHome, FiList, FiPieChart, FiSettings } from "react-icons/fi";
+import {
+  FiHome,
+  FiList,
+  FiPieChart,
+  FiSettings,
+  FiShield,
+} from "react-icons/fi";
 import { BiCategoryAlt } from "react-icons/bi";
+import useAuth from "../../hooks/useAuth";
 
 export default function Sidebar() {
   const [open, setOpen] = useState(true);
+  const { user } = useAuth();
 
   const menuItems = [
     { name: "Dashboard", path: "/app", icon: <FiHome /> },
@@ -13,6 +21,10 @@ export default function Sidebar() {
     { name: "Budgets", path: "/app/budgets", icon: <FiPieChart /> },
     { name: "Settings", path: "/app/settings", icon: <FiSettings /> },
   ];
+
+  if (user?.role === "admin") {
+    menuItems.push({ name: "Admin", path: "/app/admin", icon: <FiShield /> });
+  }
 
   return (
     <div
