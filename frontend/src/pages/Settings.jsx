@@ -180,7 +180,7 @@ export default function Settings() {
                   onChange={(e) =>
                     saveSettings({ ...settings, currency: e.target.value })
                   }
-                  className="w-full appearance-none bg-[#1a1a1a] text-white px-5 py-4 rounded-2xl border border-white/10 focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 outline-none transition-all cursor-pointer text-base md:text-lg font-medium tracking-wide"
+                  className="w-full appearance-none bg-[#1a1a1a] text-white px-5 py-4 pr-12 rounded-2xl border border-white/10 focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/50 outline-none transition-all cursor-pointer text-sm md:text-lg font-medium tracking-wide"
                 >
                   <option value="INR">₹ INR (Indian Rupee)</option>
                   <option value="USD">$ USD (US Dollar)</option>
@@ -213,7 +213,7 @@ export default function Settings() {
               <div className="space-y-4">
                 <button
                   onClick={logoutAll}
-                  className="w-full py-4 rounded-2xl bg-[#1a1a1a] hover:bg-white/5 border border-white/10 text-gray-300 hover:text-white font-bold tracking-wide transition-all flex items-center justify-center gap-2 group text-sm md:text-base"
+                  className="w-full py-4 rounded-2xl bg-[#1a1a1a] hover:bg-white/5 border border-white/10 text-gray-300 hover:text-white font-bold tracking-wide transition-all flex items-center justify-center gap-3 group text-sm md:text-base"
                 >
                   <FiLogOut className="group-hover:-translate-x-1 transition-transform" />
                   Log Out All Devices

@@ -1,5 +1,5 @@
 import { NavLink } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   FiHome,
   FiList,
@@ -11,8 +11,18 @@ import { BiCategoryAlt } from "react-icons/bi";
 import useAuth from "../../hooks/useAuth";
 
 export default function Sidebar() {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(window.innerWidth > 768);
   const { user } = useAuth();
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 768) setOpen(false);
+      else setOpen(true);
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize(); // Check on mount
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const menuItems = [
     { name: "Dashboard", path: "/app", icon: <FiHome /> },

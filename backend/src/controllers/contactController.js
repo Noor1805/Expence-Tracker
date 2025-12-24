@@ -12,17 +12,19 @@ export const sendContactEmail = async (req, res) => {
 
   try {
     const transporter = nodemailer.createTransport({
-      service: "gmail",
+      host: process.env.EMAIL_HOST,
+      port: process.env.EMAIL_PORT,
+      secure: process.env.EMAIL_SECURE === "true",
       auth: {
-        user: process.env.EMAIL_USER,   
-        pass: process.env.EMAIL_PASS,   
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
 
     const mailOptions = {
       from: `"Monexa Contact" <${process.env.EMAIL_USER}>`,
-      to: process.env.EMAIL_USER,                            
-      replyTo: email,                                        
+      to: process.env.EMAIL_USER,
+      replyTo: email,
       subject: `New Contact Message from ${firstName} ${lastName}`,
       html: `
         <h2>New Contact Submission</h2>
@@ -40,7 +42,7 @@ export const sendContactEmail = async (req, res) => {
       message: "Email sent successfully",
     });
   } catch (error) {
-    console.error("EMAIL ERROR 👉", error); 
+    console.error("EMAIL ERROR 👉", error);
     res.status(500).json({
       success: false,
       message: "Failed to send email",
