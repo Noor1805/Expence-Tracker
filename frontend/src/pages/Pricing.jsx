@@ -109,8 +109,8 @@ export default function Pricing() {
                 mt-10 w-full py-3 rounded-xl font-semibold
                 ${
                   plan.highlight
-                    ? "bg-orange-500 text-black hover:bg-orange-400"
-                    : "bg-white/10 hover:bg-white/15"
+                    ? "bg-orange-500 text-black hover:bg-white/5 hover:text-orange-500"
+                    : "bg-white/10 hover:bg-white/5 hover:text-white"
                 }
               `}
             >
