@@ -90,6 +90,13 @@ const transactionService = {
     });
     return response;
   },
+
+  exportPDF: async () => {
+    const response = await api.get("/transactions/export/pdf", {
+      responseType: "blob",
+    });
+    return response;
+  },
 };
 
 export default transactionService;

@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import React from "react";
+import React, { useEffect } from "react";
+import Lenis from "lenis";
 import LightRays from "../components/layout/effects/LightRays";
 import PublicNavbar from "../components/layout/PublicNavbar";
 import heroImg from "../assets/images/Dashboard.png";
@@ -10,6 +11,29 @@ import Footer from "./Footer";
 
 export default function Home() {
   const isLoggedIn = !!localStorage.getItem("token"); // Check auth
+
+  useEffect(() => {
+    // Initialize Lenis
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smoothWheel: true,
+      smoothTouch: false, // Optional: disable on touch devices if desired
+    });
+
+    // RAF loop
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    // Cleanup
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
 
   return (
     <div
@@ -31,20 +55,20 @@ export default function Home() {
             >
               <LightRays
                 raysOrigin="top-right"
-                raysSpeed={0.3} // Slower speed = less updates
-                flowStrength={0.05} // Reduced strength
+                raysSpeed={0.3} 
+                flowStrength={0.05} 
                 fogFallSpeed={0.5}
                 flowSpeed={0.5}
                 horizontalBeamOffset={0.15}
                 horizontalSizing={1.2}
                 verticalSizing={1.1}
-                rayLength={3.5} // Shorter rays
+                rayLength={3.5} 
                 pulsating
                 fadeDistance={0.4}
                 saturation={1.2}
-                followMouse={false} // Disable mouse follow to save performance
+                followMouse={false} 
                 mouseInfluence={0}
-                noiseAmount={0.01} // Less noise calculation
+                noiseAmount={0.01} 
                 distortion={0.03}
               />
             </div>
@@ -77,7 +101,7 @@ export default function Home() {
             </Link>
           ) : (
             <Link to="/signup">
-              <button className="px-10 py-3.5 text-lg font-semibold rounded-full bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 text-white shadow-[0_0_25px_rgba(255,120,0,0.45)] transition-all duration-300 hover:scale-105">
+              <button className="px-10 py-3.5 text-lg font-semibold rounded-full bg-gradient-to-r from-orange-500 via-orange-400 to-orange-600 text-white shadow-[0_0_25px_rgba(255,120,0,0.45)] transition-all duration-300 hover:scale-105 hover:bg-none hover:bg-transparent border border-transparent hover:border-orange-500 hover:text-orange-500 hover:shadow-[0_0_35px_rgba(255,122,0,0.6)]">
                 Get Started
               </button>
             </Link>
