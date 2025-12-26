@@ -22,6 +22,7 @@ import Admin from "./pages/Admin";
 
 // Router Guards
 import PrivateRoute from "./router/PrivateRoute";
+import AdminRoute from "./components/auth/AdminRoute";
 
 export default function App() {
   return (
@@ -51,7 +52,12 @@ export default function App() {
                     <Route path="budgets" element={<Budgets />} />
                     <Route path="settings" element={<Settings />} />
                     <Route path="profile" element={<Profile />} />
-                    <Route path="admin" element={<Admin />} />
+                    <Route path="profile" element={<Profile />} />
+
+                    {/* Admin Route Protection */}
+                    <Route element={<AdminRoute />}>
+                      <Route path="admin" element={<Admin />} />
+                    </Route>
                   </Route>
                 </Route>
 

@@ -6,6 +6,11 @@ const authService = {
     return response.data;
   },
 
+  demoLogin: async () => {
+    const response = await api.post("/auth/demo-login");
+    return response.data;
+  },
+
   register: async (userData) => {
     const response = await api.post("/auth/register", userData);
     return response.data;

@@ -4,7 +4,7 @@ import useAuth from "../../hooks/useAuth";
 import { Mail, Lock } from "lucide-react";
 
 export default function LoginForm() {
-  const { login } = useAuth();
+  const { login, loginDemo } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
@@ -15,6 +15,21 @@ export default function LoginForm() {
 
   const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleDemoLogin = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      await loginDemo();
+      navigate("/app");
+    } catch (err) {
+      setError(
+        err.response?.data?.message || err.message || "Demo login failed"
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -82,6 +97,15 @@ export default function LoginForm() {
             bg-orange-500 text-black hover:bg-orange-400 transition disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? "Logging in..." : "Login"}
+        </button>
+
+        <button
+          type="button"
+          onClick={handleDemoLogin}
+          disabled={loading}
+          className="w-full py-3 rounded-xl font-semibold border border-orange-500/30 text-orange-500 hover:bg-orange-500/10 transition mt-4 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Login as Demo User
         </button>
       </form>
 

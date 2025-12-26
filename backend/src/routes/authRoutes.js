@@ -2,6 +2,7 @@ import express from "express";
 import {
   register,
   login,
+  demoLogin,
   logout,
   logoutAll,
   refreshToken,
@@ -17,6 +18,7 @@ const router = express.Router();
 router.post("/register", register);
 
 router.post("/login", loginLimiter, login);
+router.post("/demo-login", loginLimiter, demoLogin);
 
 router.post("/refresh-token", refreshToken);
 

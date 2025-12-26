@@ -66,6 +66,56 @@ export async function login(req, res, next) {
   }
 }
 
+// DEMO LOGIN
+export async function demoLogin(req, res, next) {
+  try {
+    const demoEmail = "demo@example.com";
+    const demoPassword = "demoPassword123";
+
+    // Check if demo user exists
+    let user = await userService.getUserByEmail(demoEmail);
+
+    if (!user) {
+      // Create demo user if not exists
+      const registration = await userService.registerUser({
+        name: "Demo User",
+        email: demoEmail,
+        password: demoPassword,
+      });
+      user = registration.user;
+    }
+
+    // Login logic re-used or called directly
+    const { accessToken, refreshToken } = await userService.loginUser({
+      email: demoEmail,
+      password: demoPassword,
+    });
+
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    res.json({
+      success: true,
+      data: {
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+          role: user.role,
+          currency: user.currency,
+        },
+        accessToken,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
 // LOGOUT
 export async function logout(req, res, next) {
   try {

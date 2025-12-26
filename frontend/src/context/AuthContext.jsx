@@ -48,6 +48,16 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const loginDemo = async () => {
+    const res = await authService.demoLogin();
+    if (res.success) {
+      localStorage.setItem("token", res.data.accessToken);
+      setUser(res.data.user);
+      setIsAuthenticated(true);
+      return res.data.user;
+    }
+  };
+
   const register = async (userData) => {
     const res = await authService.register(userData);
     if (res.success) {
@@ -73,6 +83,7 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated,
         loading,
         login,
+        loginDemo,
         register,
         logout,
         checkAuth,

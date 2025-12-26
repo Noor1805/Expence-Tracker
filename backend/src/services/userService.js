@@ -101,3 +101,7 @@ export const getUserProfile = async (userId) => {
 export const deleteUserAccount = async (userId, token) => {
   await User.findByIdAndDelete(userId);
 };
+
+export const getUserByEmail = async (email) => {
+  return await User.findOne({ email });
+};
