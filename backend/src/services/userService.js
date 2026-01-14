@@ -51,6 +51,9 @@ export const loginUser = async ({ email, password }) => {
   });
 
   user.refreshTokens.push({ token: refreshToken, createdAt: new Date() });
+  if (user.refreshTokens.length > 10) {
+    user.refreshTokens = user.refreshTokens.slice(-10);
+  }
   await user.save();
 
   return { user, accessToken, refreshToken };
@@ -58,7 +61,10 @@ export const loginUser = async ({ email, password }) => {
 
 export const logoutUser = async (token) => {
   if (token) {
-    await User.updateOne({}, { $pull: { refreshTokens: { token } } });
+    await User.updateOne(
+      { "refreshTokens.token": token },
+      { $pull: { refreshTokens: { token } } }
+    );
   }
 };
 
